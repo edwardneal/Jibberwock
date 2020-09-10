@@ -1,0 +1,477 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "type": "string",
+      "defaultValue": "dev",
+      "allowedValues": [ "dev", "prd" ]
+    },
+    "sqlServerAdministratorLogin": {
+      "type": "string",
+      "defaultValue": "dba"
+    },
+    "sqlServerAdministratorPassword": {
+      "type": "securestring"
+    },
+    "sqlServerAdministratorGroupName": {
+      "type": "string",
+      "defaultValue": "Jibberwock Database Admins"
+    },
+    "sqlServerAdministratorGroupSid": {
+      "type": "string",
+      "defaultValue": "035b50aa-92e3-4891-bacf-a9e539472f27"
+    }
+  },
+  "variables": {
+    "sharedName": "Jibberwock",
+    "allertProductName": "Allert",
+    "sqlServer": {
+      "serverName": "[concat(toLower(variables('sharedName')), '-mssql')]",
+      "database": {
+        "name": "[concat(toLower(variables('sharedName')), '-', parameters('environmentName'))]",
+        "edition": "Basic",
+        "collation": "SQL_Latin1_General_CP1_CI_AS",
+        "maxSize": "1073741824",
+        "serviceObjective": "Basic"
+      }
+    },
+    "allertProductConfiguration": {
+      "storageAccountName": "allert",
+      "storageTableName": "alertdefinitiongroupdata"
+    },
+    "storageAccount": {
+      "sku": "Standard_LRS",
+      "names": [
+        "root",
+        "[variables('allertProductConfiguration').storageAccountName]",
+        "admin"
+      ]
+    },
+    "keyVault": {
+      "name": "[concat(toLower(variables('sharedName')), '-credentials')]"
+    },
+    "appService": {
+      "name": "[concat(toLower(variables('sharedName')), '-hosting')]",
+      "globalCertificateName": "cloudflare-ssl-cert",
+      "plan": "S1",
+      "capacity": 1,
+      "services": [
+        {
+          "name": "[concat(toLower(variables('sharedName')), '-api')]",
+          "subdomain": "api",
+          "easyAuth": {
+            "clientId": "98010cfe-0e61-4daf-a403-94464e8899cb",
+            "issuerUrl": "https://jibberwockb2c.b2clogin.com/jibberwockb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignIn"
+          }
+        },
+        {
+          "name": "allert-api",
+          "subdomain": "allert-api",
+          "easyAuth": {
+            "clientId": "e7c77cb9-8ff1-4777-bc3f-02d01a32fb69",
+            "issuerUrl": "https://jibberwockb2c.b2clogin.com/jibberwockb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignIn"
+          }
+        },
+        {
+          "name": "[concat(toLower(variables('sharedName')), '-admin-api')]",
+          "subdomain": "admin-api",
+          "easyAuth": {
+            "clientId": "6d105e75-5dac-419c-9981-cfe1e6661fb0",
+            "issuerUrl": "https://jibberwockb2c.b2clogin.com/jibberwockb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignIn"
+          }
+        }
+      ]
+    },
+    "applicationInsights": {
+      "name": "[concat(toLower(variables('sharedName')), '-insights-', parameters('environmentName'))]"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2020-06-01",
+      "location": "[resourceGroup().location]",
+      "name": "[variables('appService').name]",
+      "tags": {
+        "purpose": "api"
+      },
+      "properties": {
+        "name": "[variables('appService').name]"
+      },
+      "sku": {
+        "capacity": "[variables('appService').capacity]",
+        "name": "[variables('appService').plan]"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "2019-06-01-preview",
+      "location": "[resourceGroup().location]",
+      "name": "[variables('sqlServer').serverName]",
+      "tags": {
+        "purpose": "sql"
+      },
+      "properties": {
+        "administratorLogin": "[parameters('sqlServerAdministratorLogin')]",
+        "administratorLoginPassword": "[parameters('sqlServerAdministratorPassword')]",
+        "minimalTlsVersion": "1.2"
+      },
+      "resources": [
+        {
+          "type": "administrators",
+          "apiVersion": "2019-06-01-preview",
+          "name": "activeDirectory",
+          "properties": {
+            "administratorType": "ActiveDirectory",
+            "azureADOnlyAuthentication": true,
+            "login": "[parameters('sqlServerAdministratorGroupName')]",
+            "sid": "[parameters('sqlServerAdministratorGroupSid')]",
+            "tenantId": "[subscription().tenantId]"
+          },
+          "dependsOn": [
+            "[variables('sqlServer').serverName]"
+          ]
+        },
+        {
+          "type": "databases",
+          "apiVersion": "2019-06-01-preview",
+          "location": "[resourceGroup().location]",
+          "name": "[variables('sqlServer').database.name]",
+          "tags": {
+            "purpose": "sql",
+            "environment": "[parameters('environmentName')]"
+          },
+          "properties": {
+            "collation": "[variables('sqlServer').database.collation]",
+            "maxSizeBytes": "[variables('sqlServer').database.maxSize]"
+          },
+          "sku": {
+            "name": "[variables('sqlServer').database.serviceObjective]",
+            "size": "[variables('sqlServer').database.edition]"
+          },
+          "dependsOn": [
+            "[variables('sqlServer').serverName]"
+          ]
+        },
+        {
+          "type": "firewallRules",
+          "apiVersion": "2015-05-01-preview",
+          "name": "AllowAllWindowsAzureIps",
+          "properties": {
+            "startIpAddress": "0.0.0.0",
+            "endIpAddress": "0.0.0.0"
+          },
+          "dependsOn": [
+            "[variables('sqlServer').serverName]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2019-06-01",
+      "location": "[resourceGroup().location]",
+      "name": "[concat(toLower(variables('sharedName')), variables('storageAccount').names[copyIndex()])]",
+      "tags": {
+        "purpose": "web-content"
+      },
+      "kind": "StorageV2",
+      "sku": {
+        "name": "[variables('storageAccount').sku]"
+      },
+      "copy": {
+        "name": "storageAccountsCopy",
+        "count": "[length(variables('storageAccount').names)]"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/tableServices",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(toLower(variables('sharedName')), variables('allertProductConfiguration').storageAccountName, '/default')]",
+      "location": "[resourceGroup().location]",
+      "kind": "StorageV2",
+      "sku": {
+        "name": "[variables('storageAccount').sku]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', concat(toLower(variables('sharedName')), variables('allertProductConfiguration').storageAccountName))]"
+      ]
+    },
+    {
+      "name": "[concat(toLower(variables('sharedName')), variables('allertProductConfiguration').storageAccountName, '/default/', variables('allertProductConfiguration').storageTableName)]",
+      "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+      "apiVersion": "2019-06-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/tableServices', concat(toLower(variables('sharedName')), variables('allertProductConfiguration').storageAccountName), 'default')]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2019-09-01",
+      "location": "[resourceGroup().location]",
+      "name": "[variables('keyVault').name]",
+      "tags": {
+        "purpose": "secrets"
+      },
+      "properties": {
+        "tenantId": "[subscription().tenantId]",
+        "sku": {
+          "family": "A",
+          "name": "standard"
+        },
+        "accessPolicies": [
+        ],
+        "enableSoftDelete": true,
+        "enabledForTemplateDeployment": true,
+        "enablePurgeProtection": true,
+        "enableRbacAuthorization": true
+      }
+    },
+    {
+      "type": "Microsoft.Web/certificates",
+      "apiVersion": "2018-11-01",
+      "name": "[concat(variables('keyVault').name, '-', variables('appService').globalCertificateName)]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "keyVaultId": "[resourceId('Microsoft.KeyVault/vaults', variables('keyVault').name)]",
+        "keyVaultSecretName": "[variables('appService').globalCertificateName]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverFarms', variables('appService').name)]",
+        "password": ""
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyVault').name)]",
+        "[resourceId('Microsoft.Web/serverFarms', variables('appService').name)]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2020-06-01",
+      "location": "[resourceGroup().location]",
+      "name": "[variables('appService').services[copyIndex()].name]",
+      "tags": {
+        "purpose": "api"
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "serverFarmId": "[variables('appService').name]",
+        "httpsOnly": true,
+        "clientAffinityEnabled": false,
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('appService').services[copyIndex()].subdomain, '.jibberwock.com')]",
+            "sslState": "SniEnabled",
+            "thumbprint": "[reference(resourceId('Microsoft.Web/certificates', concat(variables('keyVault').name, '-', variables('appService').globalCertificateName))).Thumbprint]",
+            "hostType": "Standard"
+          },
+          {
+            "name": "[concat(variables('appService').services[copyIndex()].subdomain, '-dev.jibberwock.com')]",
+            "sslState": "SniEnabled",
+            "thumbprint": "[reference(resourceId('Microsoft.Web/certificates', concat(variables('keyVault').name, '-', variables('appService').globalCertificateName))).Thumbprint]",
+            "hostType": "Standard"
+          },
+          {
+            "name": "[concat(variables('appService').services[copyIndex()].subdomain, '-prd.jibberwock.com')]",
+            "sslState": "SniEnabled",
+            "thumbprint": "[reference(resourceId('Microsoft.Web/certificates', concat(variables('keyVault').name, '-', variables('appService').globalCertificateName))).Thumbprint]",
+            "hostType": "Standard"
+          }
+        ],
+        "siteConfig": {
+          "metadata": [
+            {
+              "name": "CURRENT_STACK",
+              "value": "dotnetcore"
+            }
+          ]
+        }
+      },
+      "resources": [
+        {
+          "type": "config",
+          "name": "web",
+          "apiVersion": "2020-06-01",
+          "properties": {
+            "http20Enabled": true,
+            "minTlsVersion": "1.2",
+            "ftpsState": "Disabled",
+            "requestTracingEnabled": true,
+            "httpLoggingEnabled": true,
+            "detailedErrorLoggingEnabled": true,
+            "alwaysOn": true,
+            "use32BitWorkerProcess": false,
+            "cors": {
+              "allowedOrigins": [
+                "https://jibberwock.com",
+                "https://admin.jibberwock.com",
+                "https://allert.jibberwock.com",
+                "https://www.jibberwock.com"
+              ],
+              "supportCredentials": true
+            }
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appService').services[copyIndex()].name)]"
+          ]
+        },
+        {
+          "type": "config",
+          "name": "appsettings",
+          "apiVersion": "2020-06-01",
+          "properties": {
+            "SensitiveSettingKeyVaultName": "[variables('keyVault').name]",
+            "APPINSIGHTSSETTINGS_TENANTID": "[subscription().tenantId]"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appService').services[copyIndex()].name)]"
+          ]
+        },
+        {
+          "type": "config",
+          "name": "authsettingsV2",
+          "apiVersion": "2020-06-01",
+          "properties": {
+            "platform": {
+              "enabled": true
+            },
+            "globalValidation": {
+              "requireAuthentication": false,
+              "unauthenticatedClientAction": "AllowAnonymous",
+              "redirectToProvider": "aad"
+            },
+            "identityProviders": {
+              "azureActiveDirectory": {
+                "enabled": true,
+                "registration": {
+                  "openIdIssuer": "[variables('appService').services[copyIndex()].easyAuth.issuerUrl]",
+                  "clientId": "[variables('appService').services[copyIndex()].easyAuth.clientId]"
+                },
+                "isAutoProvisioned": false
+              }
+            },
+            "login": {
+              "tokenStore": {
+                "enabled": true
+              }
+            }
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appService').services[copyIndex()].name)]"
+          ]
+        },
+        {
+          "type": "config",
+          "apiVersion": "2020-06-01",
+          "name": "slotconfignames",
+          "properties": {
+            "appSettingNames": [ "APPINSIGHTS_INSTRUMENTATIONKEY", "APPINSIGHTSSETTINGS_APPID" ],
+            "connectionStringNames": [ "ReadOnlySqlServer", "ReadWriteSqlServer" ]
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appService').services[copyIndex()].name)]",
+            "[resourceId('Microsoft.Insights/components', variables('applicationInsights').name)]"
+          ]
+        },
+        {
+          "type": "slots",
+          "apiVersion": "2020-06-01",
+          "name": "[parameters('environmentName')]",
+          "location": "[resourceGroup().location]",
+          "properties": {
+            "siteConfig": {
+              "metadata": [
+                {
+                  "name": "CURRENT_STACK",
+                  "value": "dotnetcore"
+                }
+              ]
+            }
+          },
+          "resources": [
+            {
+              "type": "config",
+              "apiVersion": "2020-06-01",
+              "name": "appsettings",
+              "properties": {
+                "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').InstrumentationKey]",
+                "APPINSIGHTSSETTINGS_APPID": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').AppId]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', variables('appService').services[copyIndex()].name, parameters('environmentName'))]",
+                "[resourceId('Microsoft.Insights/components', variables('applicationInsights').name)]"
+              ]
+            },
+            {
+              "type": "config",
+              "apiVersion": "2020-06-01",
+              "name": "connectionstrings",
+              "properties": {
+                "ReadOnlySqlServer": {
+                  "type": "SQLServer",
+                  "value": "[concat('Data Source=tcp:', reference(resourceId('Microsoft.Sql/servers/', variables('sqlServer').serverName)).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('sqlServer').database.name, ';ApplicationIntent=ReadOnly')]",
+                  "slotSetting": true
+                },
+                "ReadWriteSqlServer": {
+                  "type": "SQLServer",
+                  "value": "[concat('Data Source=tcp:', reference(resourceId('Microsoft.Sql/servers/', variables('sqlServer').serverName)).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('sqlServer').database.name, ';ApplicationIntent=ReadWrite')]",
+                  "slotSetting": true
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', variables('appService').services[copyIndex()].name, parameters('environmentName'))]",
+                "[resourceId('Microsoft.Insights/components', variables('applicationInsights').name)]",
+                "[resourceId('Microsoft.Sql/servers/', variables('sqlServer').serverName)]"
+              ]
+            },
+            {
+              "type": "config",
+              "apiVersion": "2020-06-01",
+              "name": "web",
+              "condition": "[equals(toLower(parameters('environmentName')), 'dev')]",
+              "properties": {
+                "cors": {
+                  "allowedOrigins": [
+                    "https://dev.jibberwock.com",
+                    "https://admin-dev.jibberwock.com",
+                    "https://allert-dev.jibberwock.com"
+                  ],
+                  "supportCredentials": true
+                },
+                "use32BitWorkerProcess": false
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', variables('appService').services[copyIndex()].name, parameters('environmentName'))]"
+              ]
+            }
+          ],
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appService').services[copyIndex()].name)]"
+          ]
+        }
+      ],
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverFarms', variables('appService').name)]",
+        "[resourceId('Microsoft.Web/certificates', concat(variables('keyVault').name, '-', variables('appService').globalCertificateName))]"
+      ],
+      "copy": {
+        "name": "webSitesCopy",
+        "count": "[length(variables('appService').services)]"
+      }
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02-preview",
+      "location": "[resourceGroup().location]",
+      "name": "[variables('applicationInsights').name]",
+      "properties": {
+      },
+      "tags": {
+        "purpose": "insights",
+        "environment": "[parameters('environmentName')]"
+      }
+    }
+  ],
+  "outputs": {}
+}
