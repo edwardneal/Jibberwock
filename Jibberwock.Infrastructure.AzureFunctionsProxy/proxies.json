@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json.schemastore.org/proxies",
+  "proxies": {
+    "root": {
+      "matchCondition": {
+        "route": "/{*all}"
+      },
+      "backendUri": "https://jibberwockroot.z33.web.core.windows.net/{all}",
+      "responseOverrides": {
+        "response.headers.X-Frame-Options": "SAMEORIGIN",
+        "response.headers.Content-Security-Policy": "script-src 'self' 'unsafe-inline' https://www.google-analytics.com https://www.googletagmanager.com https://ajax.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self'; upgrade-insecure-requests; block-all-mixed-content; report-uri https://jibberwock.report-uri.com/r/d/csp/enforce",
+        "response.headers.Referrer-Policy": "strict-origin-when-cross-origin",
+        "response.headers.Permissions-Policy": "navigation-override=(), accelerometer=(), autoplay=(), camera=(), geolocation=(), payment=(), usb=(), microphone=()",
+        "response.headers.Report-To": " {\\\"group\\\":\\\"default\\\",\\\"max_age\\\":31536000,\\\"endpoints\\\":[{\\\"url\\\":\\\"https://jibberwock.report-uri.com/a/d/g\\\"}],\\\"include_subdomains\\\":true} ",
+        "response.headers.NEL": " {\\\"report_to\\\":\\\"default\\\",\\\"max_age\\\":31536000,\\\"include_subdomains\\\":true} ",
+        "response.headers.Cache-Control": "public, max-age=31622400"
+      }
+    }
+  }
+}

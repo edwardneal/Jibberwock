@@ -5,6 +5,29 @@ VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "Jibberwock.Infrastructure.Azure", "Jibberwock.Infrastructure.Azure\Jibberwock.Infrastructure.Azure.deployproj", "{7B886B4D-FA08-425E-BABE-F59C9ED4D432}"
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "jibberwock.core.web", "jibberwock.core.web\", "{7299B3BD-D746-4EB5-ACBC-3DD9BC7AD3B6}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_64716"
+		Debug.AspNetCompiler.PhysicalPath = "jibberwock.core.web\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_64716\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_64716"
+		Release.AspNetCompiler.PhysicalPath = "jibberwock.core.web\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_64716\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "64716"
+		SlnRelativePath = "jibberwock.core.web\"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jibberwock.Infrastructure.AzureFunctionsProxy", "Jibberwock.Infrastructure.AzureFunctionsProxy\Jibberwock.Infrastructure.AzureFunctionsProxy.csproj", "{05292F48-A66B-4619-9FFC-61A0D8425784}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +38,14 @@ Global
 		{7B886B4D-FA08-425E-BABE-F59C9ED4D432}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B886B4D-FA08-425E-BABE-F59C9ED4D432}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B886B4D-FA08-425E-BABE-F59C9ED4D432}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7299B3BD-D746-4EB5-ACBC-3DD9BC7AD3B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7299B3BD-D746-4EB5-ACBC-3DD9BC7AD3B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7299B3BD-D746-4EB5-ACBC-3DD9BC7AD3B6}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{7299B3BD-D746-4EB5-ACBC-3DD9BC7AD3B6}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{05292F48-A66B-4619-9FFC-61A0D8425784}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05292F48-A66B-4619-9FFC-61A0D8425784}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05292F48-A66B-4619-9FFC-61A0D8425784}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05292F48-A66B-4619-9FFC-61A0D8425784}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
