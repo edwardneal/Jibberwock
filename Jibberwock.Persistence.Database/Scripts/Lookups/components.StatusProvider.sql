@@ -4,4 +4,4 @@
 
 if 1 not in (select [Status_Provider_ID] from [components].[StatusProvider])
 	insert into [components].[StatusProvider] ([Status_Provider_ID], [Name])
-	values (1, 'Statuspage.io')
+	values (1, 'Atlassian Status')

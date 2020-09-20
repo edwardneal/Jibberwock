@@ -84,6 +84,9 @@
       ],
       "proxy": {
         "name": "[concat(toLower(variables('sharedName')), '-proxy-', parameters('environmentName'))]"
+      },
+      "background": {
+        "name": "[concat(toLower(variables('sharedName')), '-background-', parameters('environmentName'))]"
       }
     },
     "applicationInsights": {
@@ -530,6 +533,86 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverFarms', variables('appService').name)]",
         "[resourceId('Microsoft.Web/certificates', concat(variables('keyVault').name, '-', variables('appService').globalCertificateName))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2020-06-01",
+      "location": "[resourceGroup().location]",
+      "name": "[variables('appService').background.name]",
+      "kind": "functionapp",
+      "tags": {
+        "purpose": "background-processing"
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverFarms', variables('appService').name)]"
+      },
+      "resources": [
+        {
+          "type": "config",
+          "name": "web",
+          "apiVersion": "2020-06-01",
+          "properties": {
+            "http20Enabled": true,
+            "minTlsVersion": "1.2",
+            "ftpsState": "Disabled",
+            "requestTracingEnabled": true,
+            "httpLoggingEnabled": true,
+            "detailedErrorLoggingEnabled": true,
+            "alwaysOn": true,
+            "use32BitWorkerProcess": false
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appService').background.name)]"
+          ]
+        },
+        {
+          "type": "config",
+          "name": "appsettings",
+          "apiVersion": "2020-06-01",
+          "properties": {
+            "FUNCTIONS_EXTENSION_VERSION": "~3",
+            "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+            "SensitiveSettingKeyVaultName": "[variables('keyVault').name]",
+            "APPINSIGHTSSETTINGS_TENANTID": "[subscription().tenantId]",
+            "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').InstrumentationKey]",
+            "APPINSIGHTSSETTINGS_APPID": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').AppId]",
+            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(variables('sharedName')), 'root;AccountKey=', listKeys(concat(toLower(variables('sharedName')), 'root'), '2019-06-01').keys[0].value)]",
+            "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(variables('sharedName')), 'root;AccountKey=', listKeys(concat(toLower(variables('sharedName')), 'root'), '2019-06-01').keys[0].value)]",
+            "WEBSITE_CONTENTSHARE": "[variables('appService').background.name]"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appService').background.name)]",
+            "[resourceId('Microsoft.Storage/storageAccounts', concat(toLower(variables('sharedName')), 'root'))]",
+            "[resourceId('Microsoft.Insights/components', variables('applicationInsights').name)]"
+          ]
+        },
+        {
+          "type": "config",
+          "apiVersion": "2020-06-01",
+          "name": "connectionstrings",
+          "properties": {
+            "ReadOnlySqlServer": {
+              "type": "SQLServer",
+              "value": "[concat('Data Source=tcp:', reference(resourceId('Microsoft.Sql/servers/', variables('sqlServer').serverName)).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('sqlServer').database.name, ';ApplicationIntent=ReadOnly')]"
+            },
+            "ReadWriteSqlServer": {
+              "type": "SQLServer",
+              "value": "[concat('Data Source=tcp:', reference(resourceId('Microsoft.Sql/servers/', variables('sqlServer').serverName)).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('sqlServer').database.name, ';ApplicationIntent=ReadWrite')]"
+            }
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appService').background.name)]",
+            "[resourceId('Microsoft.Insights/components', variables('applicationInsights').name)]",
+            "[resourceId('Microsoft.Sql/servers/', variables('sqlServer').serverName)]"
+          ]
+        }
+      ],
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverFarms', variables('appService').name)]"
       ]
     },
     {

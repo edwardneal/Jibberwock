@@ -72,9 +72,9 @@
     <Build Include="components\usp_GetByStatusProvider.sql" />
     <Build Include="_permissions\BackgroundProcessing.sql" />
     <Build Include="_permissions\CoreAPI.sql" />
-    <Build Include="Scripts\Lookups\components.Purpose.sql" />
-    <Build Include="Scripts\Lookups\components.StatusProvider.sql" />
-    <Build Include="Scripts\StaticData\components.ExternalComponent.sql" />
+    <None Include="Scripts\Lookups\components.Purpose.sql" />
+    <None Include="Scripts\Lookups\components.StatusProvider.sql" />
+    <None Include="Scripts\StaticData\components.ExternalComponent.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
