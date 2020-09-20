@@ -1,5 +1,5 @@
 ﻿CREATE ROLE [CoreAPI]
 GO
 
-GRANT EXECUTE ON [components].[usp_GetByStatusProvider] TO [CoreAPI]
+GRANT EXECUTE ON [components].[usp_GetByPurpose] TO [CoreAPI]
 GO

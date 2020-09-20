@@ -28,7 +28,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "jibberwock.core.web", "jibb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jibberwock.Infrastructure.AzureFunctionsProxy", "Jibberwock.Infrastructure.AzureFunctionsProxy\Jibberwock.Infrastructure.AzureFunctionsProxy.csproj", "{05292F48-A66B-4619-9FFC-61A0D8425784}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jibberwock.Core.API", "Jibberwock.Core.API\Jibberwock.Core.API.csproj", "{BF73C957-081C-427D-928F-92494A42D2DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jibberwock.Core.API", "Jibberwock.Core.API\Jibberwock.Core.API.csproj", "{BF73C957-081C-427D-928F-92494A42D2DA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core (Website, API, Background Tasks)", "Core (Website, API, Background Tasks)", "{C79CDD11-4EB7-48E8-80ED-27C6AA439FD9}"
 EndProject
@@ -38,7 +38,11 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Jibberwock.Persistence.Data
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence", "{28D85004-FBBF-462C-8B18-DE1E75F2B53A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jibberwock.Core.Background", "Jibberwock.Core.Background\Jibberwock.Core.Background.csproj", "{0780ACAD-093A-4D88-8F1A-F77510299CB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jibberwock.Core.Background", "Jibberwock.Core.Background\Jibberwock.Core.Background.csproj", "{0780ACAD-093A-4D88-8F1A-F77510299CB7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jibberwock.DataModels", "Jibberwock.DataModels\Jibberwock.DataModels.csproj", "{5A6A9ECD-92E2-490B-BBC8-835E95F50C55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jibberwock.Persistence.DataAccess", "Jibberwock.Persistence.DataAccess\Jibberwock.Persistence.DataAccess.csproj", "{CD936F82-F664-48DE-8C21-7D0D8FE79522}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +76,14 @@ Global
 		{0780ACAD-093A-4D88-8F1A-F77510299CB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0780ACAD-093A-4D88-8F1A-F77510299CB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0780ACAD-093A-4D88-8F1A-F77510299CB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A6A9ECD-92E2-490B-BBC8-835E95F50C55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A6A9ECD-92E2-490B-BBC8-835E95F50C55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A6A9ECD-92E2-490B-BBC8-835E95F50C55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A6A9ECD-92E2-490B-BBC8-835E95F50C55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD936F82-F664-48DE-8C21-7D0D8FE79522}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD936F82-F664-48DE-8C21-7D0D8FE79522}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD936F82-F664-48DE-8C21-7D0D8FE79522}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD936F82-F664-48DE-8C21-7D0D8FE79522}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +95,8 @@ Global
 		{BF73C957-081C-427D-928F-92494A42D2DA} = {C79CDD11-4EB7-48E8-80ED-27C6AA439FD9}
 		{ED466F08-C402-4EE7-B347-AC89EB5EF6C3} = {28D85004-FBBF-462C-8B18-DE1E75F2B53A}
 		{0780ACAD-093A-4D88-8F1A-F77510299CB7} = {C79CDD11-4EB7-48E8-80ED-27C6AA439FD9}
+		{5A6A9ECD-92E2-490B-BBC8-835E95F50C55} = {28D85004-FBBF-462C-8B18-DE1E75F2B53A}
+		{CD936F82-F664-48DE-8C21-7D0D8FE79522} = {28D85004-FBBF-462C-8B18-DE1E75F2B53A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {380281A3-7275-419E-A9E3-101B6DB5DA5C}

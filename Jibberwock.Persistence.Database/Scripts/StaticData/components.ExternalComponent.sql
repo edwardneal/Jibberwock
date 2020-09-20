@@ -6,8 +6,15 @@
 	)
 
 insert into @externalComponents (External_ID, Purpose, Status_Provider)
-	-- SendGrid, monitored by Statuspage.io
-values ('3tgl2vf85cht.dcvwpwy7361c', 'EmailTrackingWebHooks', 1)
+	-- SendGrid, monitored by Atlassian Status
+values ('3tgl2vf85cht.dcvwpwy7361c', 'EmailTrackingWebHooks', 1),
+	-- Cloudflare, monitored by Atlassian Status
+	('yh6f0r4529hb.kn2xkt469vyh', 'DomainRegistrar', 1),
+	('yh6f0r4529hb.5wnz34mhfhrk', 'ContentDistributionNetwork', 1),
+	('yh6f0r4529hb.shcqh0p22750', 'Dns', 1),
+	('yh6f0r4529hb.dp8ppfycqxcs', 'Dns', 1),
+	-- Github, monitored by Atlassian Status
+	('kctbh9vrtdwd.8l4ygp009s5s', 'ContinuousIntegration', 1)
 
 insert into [components].[ExternalComponent] (External_ID, Purpose_ID)
 	select ec.External_ID, p.Purpose_ID

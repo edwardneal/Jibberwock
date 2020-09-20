@@ -1,7 +1,11 @@
 ﻿declare @componentPurposes as table ( [Name] nvarchar(max) )
 
 insert into @componentPurposes ([Name])
-values ('EmailTrackingWebHooks')
+values ('EmailTrackingWebHooks'),
+	('DomainRegistrar'),
+	('ContentDistributionNetwork'),
+	('Dns'),
+	('ContinuousIntegration')
 
 insert into [components].[Purpose] ([Name])
 	select [Name]
