@@ -4,13 +4,13 @@ module.exports = {
     ],
     "productionSourceMap": false,
     "configureWebpack": {
-        "output": {
+        /*"output": {
             "filename": 'js/[name]-[hash].js',
             "chunkFilename": 'js/[name]-[hash].js'
-        }
+        }*/
     },
     "integrity": true,
-    "pages": {
+    /*"pages": {
         "index": {
             entry: 'src/main.js',
             title: 'Homepage - Jibberwock',
@@ -46,5 +46,5 @@ module.exports = {
             pageDescription: 'Jibberwock is a site to display a number of open-source projects.',
             childPath: '/privacy'
         }
-    }
+    }*/
 }

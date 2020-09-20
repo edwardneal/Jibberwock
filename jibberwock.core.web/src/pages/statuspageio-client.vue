@@ -125,11 +125,19 @@ await client.RefreshAsync();
 </template>
 
 <script>
-    import statusPages from '@/plugins/status-pages.js';
+    import statusPages from '@/static-data/status-pages.js';
 
     export default {
         name: 'StatusPageIOClient',
         title: 'statuspage.io Client - Jibberwock',
+        head: {
+            title: 'statuspage.io Client - Jibberwock',
+            meta: [
+                { hid: 'description', name: 'description', content: 'The statuspage.io client allows .NET and PowerShell clients to access data from a public statuspage.io site.' },
+                { hid: 'og-title', property: 'og:title', content: 'statuspage.io Client - Jibberwock' },
+                { hid: 'og-url', property: 'og:url', content: 'https://www.jibberwock.com/statuspageio-client' },
+            ]
+        },
 
         data: () => ({
             statusPages: statusPages

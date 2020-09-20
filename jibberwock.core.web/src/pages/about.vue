@@ -5,10 +5,10 @@
                 <h1 class="text-h4 font-weight-light">About</h1>
                 <p>
                     Jibberwock is a site to display a number of open-source projects, both completed and in-progress.
-                    <router-link to="/allert">Allert</router-link> is a cloud alerting engine which runs user scripts against input to determine whether or not an alert has occurred.
-                    A <router-link to="/statuspageio-client">statuspage.io client</router-link> provides a way for .NET applications and PowerShell scripts to access
+                    <nuxt-link to="/allert">Allert</nuxt-link> is a cloud alerting engine which runs user scripts against input to determine whether or not an alert has occurred.
+                    A <nuxt-link to="/statuspageio-client">statuspage.io client</nuxt-link> provides a way for .NET applications and PowerShell scripts to access
                     any <a href="https://www.atlassian.com/software/statuspage" target="_blank" rel="noopener">statuspage.io</a> (aka Atlassian Statuspage) pages to find their status and historical outages.
-                    <router-link to="/proxyvirt">ProxyVirt</router-link> is an Azure IoT Hub Edge Module which acts as a standard SOCKS proxy, but dynamically determines a path to the destination server.
+                    <nuxt-link to="/proxyvirt">ProxyVirt</nuxt-link> is an Azure IoT Hub Edge Module which acts as a standard SOCKS proxy, but dynamically determines a path to the destination server.
                 </p>
                 <h1 class="text-h4 font-weight-light">Privacy</h1>
                 <p>Your privacy is important to us, and will be respected regarding any information we may collect from you across our website and other sites we own and operate.</p>
@@ -30,8 +30,14 @@
 
 <script>
     export default {
-        name: 'Privacy',
-        title: 'Privacy - Jibberwock',
+        head: {
+            title: 'Privacy - Jibberwock',
+            meta: [
+                { hid: 'description', name: 'description', content: 'Jibberwock is a site to display a number of open-source projects.' },
+                { hid: 'og-title', property: 'og:title', content: 'Privacy - Jibberwock' },
+                { hid: 'og-url', property: 'og:url', content: 'https://www.jibberwock.com/privacy' },
+            ]
+        },
 
         data: () => ({
         })

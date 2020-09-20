@@ -77,8 +77,14 @@
 
 <script>
     export default {
-        name: 'ProxyVirt',
-        title: 'ProxyVirt - Jibberwock',
+        head: {
+            title: 'ProxyVirt - Jibberwock',
+            meta: [
+                { hid: 'description', name: 'description', content: 'ProxyVirt virtualises a standard web proxy, allowing client traffic to be dynamically routed between networks.' },
+                { hid: 'og-title', property: 'og:title', content: 'ProxyVirt - Jibberwock' },
+                { hid: 'og-url', property: 'og:url', content: 'https://www.jibberwock.com/proxyvirt' },
+            ]
+        },
 
         data: () => ({
         })

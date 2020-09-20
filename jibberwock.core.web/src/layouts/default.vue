@@ -6,11 +6,11 @@
                     <v-toolbar-title class="text-h5 text--secondary">Jibberwock</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-toolbar-items class="text-h5 text--secondary">
-                        <router-link to="/" v-slot="{ href, route, navigate }">
+                        <nuxt-link to="/" v-slot="{ href, route, navigate }">
                             <v-btn text @click="navigate" :href="href" class="text-capitalize">
                                 <span>Home</span>
                             </v-btn>
-                        </router-link>
+                        </nuxt-link>
                         <v-divider class="mx-4" inset vertical></v-divider>
                         <v-menu v-model="productsDropdownVisible" offset-y auto>
                             <template v-slot:activator="{ on }">
@@ -20,18 +20,18 @@
                             </template>
                             <v-list>
                                 <v-list-item v-for="product in products" :key="product.name" link class="text-justify">
-                                    <router-link :to="product.url" v-slot="{ href, route, navigate }">
+                                    <nuxt-link :to="product.url" v-slot="{ href, route, navigate }">
                                         <v-list-item-title @click="navigate" class="text-h6 text--secondary">{{ product.name }}</v-list-item-title>
-                                    </router-link>
+                                    </nuxt-link>
                                 </v-list-item>
                             </v-list>
                         </v-menu>
                         <v-divider class="mx-4" inset vertical></v-divider>
-                        <router-link to="/about" v-slot="{ href, route, navigate }">
+                        <nuxt-link to="/about" v-slot="{ href, route, navigate }">
                             <v-btn text @click="navigate" :href="href" class="text-capitalize">
                                 <span class="mr-2">Privacy &amp; About</span>
                             </v-btn>
-                        </router-link>
+                        </nuxt-link>
                     </v-toolbar-items>
                     <v-spacer></v-spacer>
                     <v-toolbar-items>
@@ -42,7 +42,7 @@
                 </v-app-bar>
             </v-card>
             <v-container flat id="scroll-content" class="overflow-y-auto" fill-height fluid>
-                <router-view />
+                <nuxt />
             </v-container>
             <transition duration="0">
                 <v-banner icon="mdi-lock" color="info lighten-2" min-height="64" style="bottom: 0px; left: 0px; position: fixed; width: 100%; z-index: 9999" v-model="showGdprBanner">
@@ -81,14 +81,17 @@
 <script>
     const consentCookieName = 'GDPR-ACCEPTED';
 
-    import products from '@/plugins/products.js';
+    import products from '@/static-data/products.js';
 
     function evaluateGdprTelemetry(vueInstance) {
-        vueInstance.showGdprBanner = !(vueInstance.$cookies.isKey(consentCookieName) && vueInstance.$cookies.get(consentCookieName))
+        vueInstance.showGdprBanner = ! vueInstance.$cookies.get(consentCookieName);
 
         if (!vueInstance.showGdprBanner) {
             vueInstance.$appInsights.config.disableTelemetry = false;
-            vueInstance.$gtag.optIn();
+            setTimeout(() => {
+                vueInstance.$ga.enable();
+                vueInstance.$ga.page(vueInstance.$route.fullPath);
+            }, 200);
         }
     }
 
@@ -102,16 +105,17 @@
         }),
 
         mounted() {
-            // Update the Google Analytics configuration to make sure that the cookies comply with Chrome's upcoming security changes
-            this.$gtag.config({
-                "cookie_flags": 'SameSite=None;Secure'
-            });
             evaluateGdprTelemetry(this);
         },
 
         methods: {
             acceptGdpr() {
-                this.$cookies.set(consentCookieName, '1', '1y', null, null, false);
+                this.$cookies.set(consentCookieName, true, {
+                    sameSite: true,
+                    secure: false,
+                    path: '/',
+                    maxAge: 60 * 60 * 24 * 30 * 12
+                });
                 evaluateGdprTelemetry(this);
             }
         }

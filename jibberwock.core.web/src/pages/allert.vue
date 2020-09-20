@@ -80,8 +80,14 @@
 
 <script>
     export default {
-        name: 'Allert',
-        title: 'Allert - Jibberwock',
+        head: {
+            title: 'Allert - Jibberwock',
+            meta: [
+                { hid: 'description', name: 'description', content: 'Jibberwock Allert is a cloud alerting engine which evaluates data from any source and runs user-specified rules to generate alerts.' },
+                { hid: 'og-title', property: 'og:title', content: 'Allert - Jibberwock' },
+                { hid: 'og-url', property: 'og:url', content: 'https://www.jibberwock.com/allert' },
+            ]
+        },
 
         data: () => ({
         })

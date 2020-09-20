@@ -3,21 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --mode production",
-    "report": "vue-cli-service build --report --mode production",
-    "lint": "vue-cli-service lint"
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "precommit": "npm run lint"
   },
   "dependencies": {
+    "@nuxtjs/applicationinsights": "^1.1.1",
+    "@nuxtjs/google-analytics": "^2.4.0",
+    "cookie-universal-nuxt": "^2.1.4",
     "core-js": "^3.6.5",
+    "mini-css-extract-plugin": "^0.11.2",
+    "nuxt": "^2.14.5",
     "vue": "^2.6.11",
-    "vue-application-insights": "^1.0.7",
     "vue-cookies": "^1.7.4",
-    "vue-gtag": "^1.9.1",
-    "vue-router": "^3.2.0",
     "vuetify": "^2.2.11"
   },
   "devDependencies": {
+    "@nuxtjs/vuetify": "^1.11.2",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-router": "^4.5.6",
