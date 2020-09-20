@@ -26,7 +26,19 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "jibberwock.core.web", "jibb
 		SlnRelativePath = "jibberwock.core.web\"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jibberwock.Infrastructure.AzureFunctionsProxy", "Jibberwock.Infrastructure.AzureFunctionsProxy\Jibberwock.Infrastructure.AzureFunctionsProxy.csproj", "{05292F48-A66B-4619-9FFC-61A0D8425784}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jibberwock.Infrastructure.AzureFunctionsProxy", "Jibberwock.Infrastructure.AzureFunctionsProxy\Jibberwock.Infrastructure.AzureFunctionsProxy.csproj", "{05292F48-A66B-4619-9FFC-61A0D8425784}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jibberwock.Core.API", "Jibberwock.Core.API\Jibberwock.Core.API.csproj", "{BF73C957-081C-427D-928F-92494A42D2DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jibberwock.Core.Background", "Jibberwock.Core.Background\Jibberwock.Core.Background.csproj", "{DA7C843A-C7C4-4B3E-B47D-1DB0CE4A224D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core (Website, API, Background Tasks)", "Core (Website, API, Background Tasks)", "{C79CDD11-4EB7-48E8-80ED-27C6AA439FD9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{996D03E9-7174-440D-BBD6-5A78E61CFC19}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Jibberwock.Persistence.Database", "Jibberwock.Persistence.Database\Jibberwock.Persistence.Database.sqlproj", "{ED466F08-C402-4EE7-B347-AC89EB5EF6C3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence", "{28D85004-FBBF-462C-8B18-DE1E75F2B53A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,9 +58,31 @@ Global
 		{05292F48-A66B-4619-9FFC-61A0D8425784}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05292F48-A66B-4619-9FFC-61A0D8425784}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05292F48-A66B-4619-9FFC-61A0D8425784}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF73C957-081C-427D-928F-92494A42D2DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF73C957-081C-427D-928F-92494A42D2DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF73C957-081C-427D-928F-92494A42D2DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF73C957-081C-427D-928F-92494A42D2DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA7C843A-C7C4-4B3E-B47D-1DB0CE4A224D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA7C843A-C7C4-4B3E-B47D-1DB0CE4A224D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA7C843A-C7C4-4B3E-B47D-1DB0CE4A224D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA7C843A-C7C4-4B3E-B47D-1DB0CE4A224D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED466F08-C402-4EE7-B347-AC89EB5EF6C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED466F08-C402-4EE7-B347-AC89EB5EF6C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED466F08-C402-4EE7-B347-AC89EB5EF6C3}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{ED466F08-C402-4EE7-B347-AC89EB5EF6C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED466F08-C402-4EE7-B347-AC89EB5EF6C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED466F08-C402-4EE7-B347-AC89EB5EF6C3}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7B886B4D-FA08-425E-BABE-F59C9ED4D432} = {996D03E9-7174-440D-BBD6-5A78E61CFC19}
+		{7299B3BD-D746-4EB5-ACBC-3DD9BC7AD3B6} = {C79CDD11-4EB7-48E8-80ED-27C6AA439FD9}
+		{05292F48-A66B-4619-9FFC-61A0D8425784} = {996D03E9-7174-440D-BBD6-5A78E61CFC19}
+		{BF73C957-081C-427D-928F-92494A42D2DA} = {C79CDD11-4EB7-48E8-80ED-27C6AA439FD9}
+		{DA7C843A-C7C4-4B3E-B47D-1DB0CE4A224D} = {C79CDD11-4EB7-48E8-80ED-27C6AA439FD9}
+		{ED466F08-C402-4EE7-B347-AC89EB5EF6C3} = {28D85004-FBBF-462C-8B18-DE1E75F2B53A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {380281A3-7275-419E-A9E3-101B6DB5DA5C}
