@@ -16,6 +16,8 @@ module.exports = {
 
             { name: 'twitter:card', content: 'summary' },
             { name: 'twitter:dnt', content: 'on' },
+            { name: 'twitter:image', content: 'https://www.jibberwock.com/images/favicons/android-chrome-512x512.png' },
+            { name: 'twitter:image:alt', content: 'Jibberwock logo' },
 
             { hid: 'description', name: 'description', content: 'Jibberwock is a site to display a number of open-source projects.' },
             { name: 'subject', content: 'Jibberwock' },
@@ -25,6 +27,7 @@ module.exports = {
             { property: 'og:site_name', content: 'Jibberwock' },
             { property: 'og:description', content: 'Jibberwock is a site to display a number of open-source projects.' },
             { hid: 'og-url', property: 'og:url', content: 'https://www.jibberwock.com' },
+            { name: 'og:image', content: 'https://www.jibberwock.com/images/favicons/android-chrome-512x512.png' },
             { property: 'og:type', content: 'website' },
 
             { name: 'apple-mobile-web-app-capable', content: 'yes' },
