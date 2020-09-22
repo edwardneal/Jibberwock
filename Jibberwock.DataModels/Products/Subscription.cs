@@ -1,4 +1,5 @@
-﻿using Jibberwock.DataModels.Tenants;
+﻿using Jibberwock.DataModels.Products.Configuration;
+using Jibberwock.DataModels.Tenants;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -39,6 +40,11 @@ namespace Jibberwock.DataModels.Products
         /// The <see cref="Tier"/> which this <see cref="Subscription"/> is subscribed to.
         /// </summary>
         public Tier ProductTier { get; set; }
+
+        /// <summary>
+        /// All <see cref="Product"/>-specific configuration for this subscription (typically, tenant-level settings.)
+        /// </summary>
+        public ProductConfigurationBase Configuration { get; set; }
 
         /// <summary>
         /// First date that this <see cref="Subscription"/> takes effect.
