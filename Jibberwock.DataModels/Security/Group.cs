@@ -29,6 +29,6 @@ namespace Jibberwock.DataModels.Security
         /// <summary>
         /// Members of this <see cref="Group"/>
         /// </summary>
-        public IEnumerable<User> Users { get; set; }
+        public IEnumerable<GroupMembership> Users { get; set; }
     }
 }
