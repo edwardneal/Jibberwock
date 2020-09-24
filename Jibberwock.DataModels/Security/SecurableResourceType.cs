@@ -23,12 +23,16 @@ namespace Jibberwock.DataModels.Security
         /// </summary>
         Product = 3,
         /// <summary>
+        /// This <see cref="SecurableResource"/> is a service.
+        /// </summary>
+        Service = 4,
+        /// <summary>
         /// This <see cref="SecurableResource"/> is an <see cref="Jibberwock.DataModels.Allert.AlertDefinition"/>.
         /// </summary>
-        Allert_AlertDefinition = 4,
+        Allert_AlertDefinition = 5,
         /// <summary>
         /// This <see cref="SecurableResource"/> is an <see cref="Jibberwock.DataModels.Allert.AlertDefinitionGroup"/>.
         /// </summary>
-        Allert_AlertDefinitionGroup = 5
+        Allert_AlertDefinitionGroup = 6
     }
 }

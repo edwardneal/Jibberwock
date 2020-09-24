@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 
 namespace Jibberwock.Admin.API
 {
@@ -11,5 +12,7 @@ namespace Jibberwock.Admin.API
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 
         public string Summary { get; set; }
+
+        public string[] HttpHeaders { get; set; }
     }
 }

@@ -41,6 +41,10 @@ namespace Jibberwock.DataModels.Security
         /// <summary>
         /// Create a new API key for a <see cref="Product"/>.
         /// </summary>
-        CreateApiKey = 8
+        CreateApiKey = 8,
+        /// <summary>
+        /// Create a new <see cref="Product"/>.
+        /// </summary>
+        CreateProduct = 9
     }
 }

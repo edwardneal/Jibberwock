@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -31,9 +32,18 @@ namespace Jibberwock.Admin.API.Controllers
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
+                Summary = Summaries[rng.Next(Summaries.Length)],
+                HttpHeaders = HttpContext.Request.Headers.Keys.Select(x => $"{x}: {string.Join("; ", HttpContext.Request.Headers[x].ToArray())}").ToArray()
             })
             .ToArray();
+        }
+
+        [Route("claims")]
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = "EasyAuth")]
+        public IActionResult GetClaims()
+        {
+            return Ok(User?.Claims.Select(x => new { x.Type, x.Value, x.Issuer, x.Properties }));
         }
     }
 }

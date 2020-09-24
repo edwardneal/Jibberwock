@@ -4,5 +4,14 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MaximeRouiller.Azure.AppService.EasyAuth" Version="1.0.0-ci141" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Jibberwock.DataModels\Jibberwock.DataModels.csproj" />
+    <ProjectReference Include="..\Jibberwock.Shared\Jibberwock.Shared.csproj" />
+  </ItemGroup>
+
 
 </Project>

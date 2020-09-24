@@ -30,13 +30,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jibberwock.Infrastructure.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jibberwock.Core.API", "Jibberwock.Core.API\Jibberwock.Core.API.csproj", "{BF73C957-081C-427D-928F-92494A42D2DA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core (Website, API, Background Tasks)", "Core (Website, API, Background Tasks)", "{C79CDD11-4EB7-48E8-80ED-27C6AA439FD9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Core (Website, API, Background Tasks)", "2. Core (Website, API, Background Tasks)", "{C79CDD11-4EB7-48E8-80ED-27C6AA439FD9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{996D03E9-7174-440D-BBD6-5A78E61CFC19}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. Infrastructure", "0. Infrastructure", "{996D03E9-7174-440D-BBD6-5A78E61CFC19}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Jibberwock.Persistence.Database", "Jibberwock.Persistence.Database\Jibberwock.Persistence.Database.sqlproj", "{ED466F08-C402-4EE7-B347-AC89EB5EF6C3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence", "{28D85004-FBBF-462C-8B18-DE1E75F2B53A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. Persistence", "0. Persistence", "{28D85004-FBBF-462C-8B18-DE1E75F2B53A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jibberwock.Core.Background", "Jibberwock.Core.Background\Jibberwock.Core.Background.csproj", "{0780ACAD-093A-4D88-8F1A-F77510299CB7}"
 EndProject
@@ -44,9 +44,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jibberwock.DataModels", "Ji
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jibberwock.Persistence.DataAccess", "Jibberwock.Persistence.DataAccess\Jibberwock.Persistence.DataAccess.csproj", "{CD936F82-F664-48DE-8C21-7D0D8FE79522}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Admin (Website, API, Web hooks)", "Admin (Website, API, Web hooks)", "{F3932D0F-E897-43EE-A14B-84D47F1516AF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Admin (Website, API, Web hooks)", "2. Admin (Website, API, Web hooks)", "{F3932D0F-E897-43EE-A14B-84D47F1516AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jibberwock.Admin.API", "Jibberwock.Admin.API\Jibberwock.Admin.API.csproj", "{BCF28AD3-8491-463B-815E-CE3C4155B915}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jibberwock.Admin.API", "Jibberwock.Admin.API\Jibberwock.Admin.API.csproj", "{BCF28AD3-8491-463B-815E-CE3C4155B915}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Shared", "1. Shared", "{678744E7-A38A-43B0-9803-279F4E466549}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jibberwock.Shared", "Jibberwock.Shared\Jibberwock.Shared.csproj", "{089EFAB4-03B0-4E35-9C5B-5F1A6309DC6B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -92,6 +96,10 @@ Global
 		{BCF28AD3-8491-463B-815E-CE3C4155B915}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCF28AD3-8491-463B-815E-CE3C4155B915}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCF28AD3-8491-463B-815E-CE3C4155B915}.Release|Any CPU.Build.0 = Release|Any CPU
+		{089EFAB4-03B0-4E35-9C5B-5F1A6309DC6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{089EFAB4-03B0-4E35-9C5B-5F1A6309DC6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{089EFAB4-03B0-4E35-9C5B-5F1A6309DC6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{089EFAB4-03B0-4E35-9C5B-5F1A6309DC6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,6 +114,7 @@ Global
 		{5A6A9ECD-92E2-490B-BBC8-835E95F50C55} = {28D85004-FBBF-462C-8B18-DE1E75F2B53A}
 		{CD936F82-F664-48DE-8C21-7D0D8FE79522} = {28D85004-FBBF-462C-8B18-DE1E75F2B53A}
 		{BCF28AD3-8491-463B-815E-CE3C4155B915} = {F3932D0F-E897-43EE-A14B-84D47F1516AF}
+		{089EFAB4-03B0-4E35-9C5B-5F1A6309DC6B} = {678744E7-A38A-43B0-9803-279F4E466549}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {380281A3-7275-419E-A9E3-101B6DB5DA5C}
