@@ -2,15 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Jibberwock.Persistence.DataAccess.DataSources;
+using Jibberwock.Shared.Http.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Jibberwock.Admin.API.Controllers.Authentication
 {
     [ApiController]
     [Route("auth/[controller]")]
-    public class RedirectController : ControllerBase
+    [Authorize]
+    public class RedirectController : JibberwockControllerBase
     {
+        public RedirectController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource) : base(loggerFactory, sqlServerDataSource) { }
+
         [Route("{type}")]
         [HttpGet]
         public ActionResult RedirectToUrl(string type)

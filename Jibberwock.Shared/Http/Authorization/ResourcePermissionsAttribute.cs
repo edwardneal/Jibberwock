@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Jibberwock.Core.Http.Authorization
+namespace Jibberwock.Shared.Http.Authorization
 {
     /// <summary>
     /// Applying this attribute to a parameter in a controller allows the authorization handler to determine which resources

@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>6c176ae1-1007-4e77-b1f5-285ace4beae7</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,7 +11,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Jibberwock.DataModels\Jibberwock.DataModels.csproj" />
+    <ProjectReference Include="..\Jibberwock.Persistence.DataAccess\Jibberwock.Persistence.DataAccess.csproj" />
     <ProjectReference Include="..\Jibberwock.Shared\Jibberwock.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="WebHooks\" />
   </ItemGroup>
 
 

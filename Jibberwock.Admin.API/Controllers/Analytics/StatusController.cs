@@ -2,17 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Jibberwock.Core.Http.Authorization;
+using Jibberwock.Shared.Http.Authorization;
 using Jibberwock.DataModels.Security;
+using Jibberwock.Persistence.DataAccess.DataSources;
+using Jibberwock.Shared.Http.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Jibberwock.Admin.API.Controllers.Analytics
 {
     [ApiController]
     [Route("[controller]")]
-    public class StatusController : ControllerBase
+    [Authorize]
+    public class StatusController : JibberwockControllerBase
     {
+        public StatusController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource) : base(loggerFactory, sqlServerDataSource) { }
+
         [Route("externalcomponents")]
         [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
         [HttpGet]
