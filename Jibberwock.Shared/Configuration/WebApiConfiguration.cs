@@ -18,5 +18,10 @@ namespace Jibberwock.Shared.Configuration
         /// Configuration for the service-level settings for permissions enforcement.
         /// </summary>
         public Authorization.GenericAuthorizationSettings Authorization { get; set; }
+
+        /// <summary>
+        /// Dictionary which maps a specific token to a URL. Used when redirecting from EasyAuth.
+        /// </summary>
+        public Dictionary<string, string> PermittedRedirects { get; set; }
     }
 }

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Jibberwock.Persistence.DataAccess.DataSources;
+using Jibberwock.Shared.Configuration;
 using Jibberwock.Shared.Http.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Jibberwock.Admin.API.Controllers.Authentication
 {
@@ -16,15 +18,42 @@ namespace Jibberwock.Admin.API.Controllers.Authentication
     [Authorize]
     public class RedirectController : JibberwockControllerBase
     {
-        public RedirectController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource) : base(loggerFactory, sqlServerDataSource) { }
+        private readonly WebApiConfiguration _configuration;
 
+        public RedirectController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource, IOptions<WebApiConfiguration> options)
+            : base(loggerFactory, sqlServerDataSource)
+        {
+            _configuration = options.Value;
+        }
+
+        /// <summary>
+        /// When used as a return URL from EasyAuth, redirects to one of a hardcoded set of URLs, as defined in static configuration.
+        /// </summary>
+        /// <param name="type">The type of the URL to go to.</param>
+        /// <returns>An <see cref="IActionResult"/> for a HTTP 302 to the correct URL.</returns>
         [Route("{type}")]
         [HttpGet]
-        public ActionResult RedirectToUrl(string type)
+        public IActionResult RedirectToUrl(string type)
         {
-            //create the user in the api database, if required. alternatively, shuffle that feature into a custom middleware to provide authentication/authorisation
-            //grab the item in Configuration.PermittedRedirects.{type}, combine it with any query string items and fragments, then redirect to the URL
-            return Redirect($"https://admin.jibberwock.com/?type={type}");
+            if (string.IsNullOrWhiteSpace(type))
+            {
+                ModelState.AddModelError("missing_type", "Redirection type is missing.");
+                return BadRequest(ModelState);
+            }
+            else if (! _configuration.PermittedRedirects.TryGetValue(type, out var redirectUrl))
+            {
+                ModelState.AddModelError("invalid_type", "Invalid redirection type.");
+                return BadRequest(ModelState);
+            }
+            else
+            {
+                var redirectUrlBuilder = new UriBuilder(redirectUrl)
+                {
+                    Query = HttpContext.Request.QueryString.ToUriComponent()
+                };
+
+                return Redirect(redirectUrlBuilder.Uri.ToString());
+            }
         }
     }
 }
