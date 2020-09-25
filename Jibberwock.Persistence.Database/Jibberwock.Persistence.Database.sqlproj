@@ -76,6 +76,7 @@
     <None Include="Scripts\Lookups\components.StatusProvider.sql" />
     <None Include="Scripts\StaticData\components.ExternalComponent.sql" />
     <Build Include="components\usp_UpdateStatus.sql" />
+    <Build Include="components\usp_ListAll.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

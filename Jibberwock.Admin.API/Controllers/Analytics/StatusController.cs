@@ -25,7 +25,10 @@ namespace Jibberwock.Admin.API.Controllers.Analytics
         [HttpGet]
         public async Task<IActionResult> GetExternalComponentStatuses()
         {
-            return Ok();
+            var listAllCommand = new Jibberwock.Persistence.DataAccess.Commands.ExternalComponents.ListAll(Logger);
+            var componentStatuses = await listAllCommand.Execute(SqlServerDataSource);
+
+            return Ok(componentStatuses);
         }
 
         [Route("exceptions")]
