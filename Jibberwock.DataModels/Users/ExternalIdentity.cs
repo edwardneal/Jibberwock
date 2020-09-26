@@ -13,7 +13,7 @@ namespace Jibberwock.DataModels.Users
         /// <summary>
         /// The unique internal reference for this <see cref="ExternalIdentity"/>.
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// This is the provider-specific external identifier.

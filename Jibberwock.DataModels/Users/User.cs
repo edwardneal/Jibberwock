@@ -12,7 +12,7 @@ namespace Jibberwock.DataModels.Users
         /// <summary>
         /// The unique internal reference for this <see cref="User"/>.
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// This <see cref="User"/>'s name according to the authentication source.

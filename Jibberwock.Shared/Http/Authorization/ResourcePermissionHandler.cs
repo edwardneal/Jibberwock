@@ -37,7 +37,7 @@ namespace Jibberwock.Shared.Http.Authorization
 
         public async Task HandleAsync(AuthorizationHandlerContext context)
         {
-            _logger.LogDebug($"Processing authorization handler for path \"{_httpContext?.Request?.Path ?? "(unknown)"}\"");
+            _logger.LogDebug($"Processing authorization handler for path \"{_httpContext?.Request?.Path ?? "(unknown)"}\".");
 
             var endpoint = context.Resource as RouteEndpoint;
             var controllerContext = endpoint.Metadata.OfType<ControllerActionDescriptor>().FirstOrDefault();

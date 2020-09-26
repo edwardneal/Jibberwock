@@ -61,6 +61,7 @@
     <Folder Include="Scripts" />
     <Folder Include="Scripts\Lookups" />
     <Folder Include="Scripts\StaticData" />
+    <Folder Include="security" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="components\_schema.sql" />
@@ -77,8 +78,19 @@
     <None Include="Scripts\StaticData\components.ExternalComponent.sql" />
     <Build Include="components\usp_UpdateStatus.sql" />
     <Build Include="components\usp_ListAll.sql" />
+    <Build Include="security\_schema.sql" />
+    <Build Include="security\User.sql" />
+    <Build Include="security\ExternalIdentity.sql" />
+    <Build Include="security\ExternalIdentityProvider.sql" />
+    <Build Include="security\usp_GetUserByIdentifier.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="Jibberwock.Persistence.Database.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Scripts\Lookups\security.ExternalIdentityProvider.sql" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="e055b183-07d3-4825-bae8-6cb0d1d9b6e6" ChangeDateTime="09/26/2020 13:51:59">
+    <Property Name="ElementName" Value="[security].[User].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[security].[User]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="User_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="0561dd41-a45e-42dd-9922-5ad2ea270370" ChangeDateTime="09/26/2020 16:14:10">
+    <Property Name="ElementName" Value="[security].[ExternalIdentity].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[security].[ExternalIdentity]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="External_Identity_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="81ef3f08-a2a5-4678-87bf-618b33f5b763" ChangeDateTime="09/26/2020 16:16:50">
+    <Property Name="ElementName" Value="[security].[ExternalIdentityProvider].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[security].[ExternalIdentityProvider]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Provider_ID" />
+  </Operation>
+</Operations>

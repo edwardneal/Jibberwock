@@ -36,8 +36,9 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
 
         protected override async Task<bool> OnExecute(IReadableDataSource dataSource)
         {
-            if (User.Id == Guid.Empty)
-                throw new ArgumentNullException("User Id must be specified.");
+            // A User Id of zero is anonymous and has no permissions
+            if (User.Id == 0)
+                return false;
 
             throw new NotImplementedException();
         }
