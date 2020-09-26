@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Jibberwock.Shared.Configuration;
 
 namespace Jibberwock.Admin.API.Controllers.Products
 {
@@ -18,7 +20,7 @@ namespace Jibberwock.Admin.API.Controllers.Products
     [Authorize]
     public class ProductController : JibberwockControllerBase
     {
-        public ProductController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource) : base(loggerFactory, sqlServerDataSource) { }
+        public ProductController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource, IOptions<WebApiConfiguration> options) : base(loggerFactory, sqlServerDataSource, options) { }
 
         [Route("")]
         [HttpGet]

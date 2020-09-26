@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Jibberwock.Shared.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Jibberwock.Admin.API.Controllers.Analytics
 {
@@ -18,7 +20,7 @@ namespace Jibberwock.Admin.API.Controllers.Analytics
     [Authorize]
     public class StatusController : JibberwockControllerBase
     {
-        public StatusController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource) : base(loggerFactory, sqlServerDataSource) { }
+        public StatusController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource, IOptions<WebApiConfiguration> options) : base(loggerFactory, sqlServerDataSource, options) { }
 
         [Route("externalcomponents")]
         [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
@@ -50,9 +52,9 @@ namespace Jibberwock.Admin.API.Controllers.Analytics
         [Route("report")]
         [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
         [HttpGet]
-        public async Task<IActionResult> RedirectToReport()
+        public IActionResult RedirectToReport()
         {
-            return Ok();
+            return Redirect(WebApiConfiguration.PermittedRedirects["status_report"]);
         }
     }
 }

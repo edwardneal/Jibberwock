@@ -9,6 +9,8 @@ using Jibberwock.Shared.Http.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Jibberwock.Shared.Configuration;
 
 namespace Jibberwock.Admin.API.Controllers.Tenants
 {
@@ -16,7 +18,7 @@ namespace Jibberwock.Admin.API.Controllers.Tenants
     [Route("[controller]")]
     public class OrganisationController : JibberwockControllerBase
     {
-        public OrganisationController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource) : base(loggerFactory, sqlServerDataSource) { }
+        public OrganisationController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource, IOptions<WebApiConfiguration> options) : base(loggerFactory, sqlServerDataSource, options) { }
 
         [Route("")]
         [HttpGet]

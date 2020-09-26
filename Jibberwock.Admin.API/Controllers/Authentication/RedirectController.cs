@@ -18,13 +18,7 @@ namespace Jibberwock.Admin.API.Controllers.Authentication
     [Authorize]
     public class RedirectController : JibberwockControllerBase
     {
-        private readonly WebApiConfiguration _configuration;
-
-        public RedirectController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource, IOptions<WebApiConfiguration> options)
-            : base(loggerFactory, sqlServerDataSource)
-        {
-            _configuration = options.Value;
-        }
+        public RedirectController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource, IOptions<WebApiConfiguration> options) : base(loggerFactory, sqlServerDataSource, options) { }
 
         /// <summary>
         /// When used as a return URL from EasyAuth, redirects to one of a hardcoded set of URLs, as defined in static configuration.
@@ -40,7 +34,7 @@ namespace Jibberwock.Admin.API.Controllers.Authentication
                 ModelState.AddModelError("missing_type", "Redirection type is missing.");
                 return BadRequest(ModelState);
             }
-            else if (! _configuration.PermittedRedirects.TryGetValue(type, out var redirectUrl))
+            else if (! WebApiConfiguration.PermittedRedirects.TryGetValue(type, out var redirectUrl))
             {
                 ModelState.AddModelError("invalid_type", "Invalid redirection type.");
                 return BadRequest(ModelState);

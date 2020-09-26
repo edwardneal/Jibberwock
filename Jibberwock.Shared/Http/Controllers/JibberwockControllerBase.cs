@@ -1,6 +1,8 @@
 ﻿using Jibberwock.Persistence.DataAccess.DataSources;
+using Jibberwock.Shared.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -29,16 +31,23 @@ namespace Jibberwock.Shared.Http.Controllers
         protected ILogger Logger { get; private set; }
 
         /// <summary>
+        /// The web API's configuration.
+        /// </summary>
+        protected WebApiConfiguration WebApiConfiguration { get; private set; }
+
+        /// <summary>
         /// Creates a new instance of the <see cref="JibberwockControllerBase"/> class.
         /// </summary>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="sqlServerDataSource">The SQL Server data source.</param>
-        protected JibberwockControllerBase(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource)
+        /// <param name="options">The web API configuration.</param>
+        protected JibberwockControllerBase(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource, IOptions<WebApiConfiguration> options)
             : base()
         {
             SqlServerDataSource = sqlServerDataSource;
             LoggerFactory = loggerFactory;
             Logger = LoggerFactory.CreateLogger(GetType());
+            WebApiConfiguration = options.Value;
         }
     }
 }

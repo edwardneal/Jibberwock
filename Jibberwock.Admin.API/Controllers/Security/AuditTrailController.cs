@@ -9,6 +9,8 @@ using Jibberwock.Shared.Http.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Jibberwock.Shared.Configuration;
 
 namespace Jibberwock.Admin.API.Controllers.Security
 {
@@ -16,7 +18,7 @@ namespace Jibberwock.Admin.API.Controllers.Security
     [Route("[controller]")]
     public class AuditTrailController : JibberwockControllerBase
     {
-        public AuditTrailController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource) : base(loggerFactory, sqlServerDataSource) { }
+        public AuditTrailController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource, IOptions<WebApiConfiguration> options) : base(loggerFactory, sqlServerDataSource, options) { }
 
         [Route("")]
         [HttpGet]
