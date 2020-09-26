@@ -13,5 +13,7 @@ Post-Deployment Script Template
 :r .\Lookups\components.Purpose.sql
 :r .\Lookups\components.StatusProvider.sql
 :r .\Lookups\security.ExternalIdentityProvider.sql
+:r .\Lookups\security.SecurableResourceType.sql
 
 :r .\StaticData\components.ExternalComponent.sql
+:r .\StaticData\core.Service.sql

@@ -62,6 +62,8 @@
     <Folder Include="Scripts\Lookups" />
     <Folder Include="Scripts\StaticData" />
     <Folder Include="security" />
+    <Folder Include="tenants" />
+    <Folder Include="core" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="components\_schema.sql" />
@@ -83,6 +85,15 @@
     <Build Include="security\ExternalIdentity.sql" />
     <Build Include="security\ExternalIdentityProvider.sql" />
     <Build Include="security\usp_GetUserByIdentifier.sql" />
+    <Build Include="tenants\Contact.sql" />
+    <Build Include="tenants\_schema.sql" />
+    <Build Include="tenants\Tenant.sql" />
+    <Build Include="security\SecurityGroup.sql" />
+    <Build Include="security\SecurityGroupMembership.sql" />
+    <Build Include="security\SecurableResource.sql" />
+    <Build Include="security\SecurableResourceType.sql" />
+    <Build Include="core\_schema.sql" />
+    <Build Include="core\Service.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
@@ -92,5 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\Lookups\security.ExternalIdentityProvider.sql" />
+    <None Include="Scripts\Lookups\security.SecurableResourceType.sql" />
+    <None Include="Scripts\StaticData\core.Service.sql" />
   </ItemGroup>
 </Project>

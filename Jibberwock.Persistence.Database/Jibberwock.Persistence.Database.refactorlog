@@ -21,4 +21,67 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Provider_ID" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="d3074bcf-b9d9-497a-81e8-6bff7a12b972" ChangeDateTime="09/26/2020 20:00:58">
+    <Property Name="ElementName" Value="[tenants].[Contact].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[tenants].[Contact]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Contact_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="a4f14f81-c63b-4869-82c5-c300ac0cc06e" ChangeDateTime="09/26/2020 20:02:41">
+    <Property Name="ElementName" Value="[tenants].[Tenant].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[tenants].[Tenant]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Tenant_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1c20d30a-20b5-4843-93f2-bea6467c2f1e" ChangeDateTime="09/26/2020 20:04:50">
+    <Property Name="ElementName" Value="[security].[SecurityGroup].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[security].[SecurityGroup]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Security_Group_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="c96406b0-21b9-427b-a912-d5c297a253c8" ChangeDateTime="09/26/2020 20:05:29">
+    <Property Name="ElementName" Value="[security].[SecurityGroup].[Parent_Tenant_ID]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[security].[SecurityGroup]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Limiting_Tenant_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="4193a7d7-795a-49d7-9966-8901310728d4" ChangeDateTime="09/26/2020 20:06:43">
+    <Property Name="ElementName" Value="[security].[SecurityGroupMembership].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[security].[SecurityGroupMembership]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Security_Group_Membership_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="edda6365-861e-4d13-8ef4-7d221d126b2a" ChangeDateTime="09/26/2020 20:09:18">
+    <Property Name="ElementName" Value="[security].[SecurableResource].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[security].[SecurableResource]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Securable_Resource_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="bc89b371-1782-4cfd-a8fc-b77eb4b404b4" ChangeDateTime="09/26/2020 20:10:14">
+    <Property Name="ElementName" Value="[dbo].[SecurableResourceType].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[SecurableResourceType]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Securable_Resource_Type_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="c433ffcb-efe6-4765-ae88-40fdd082dd42" ChangeDateTime="09/26/2020 20:12:32">
+    <Property Name="ElementName" Value="[security].[SecurableResourceType].[Description]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[security].[SecurableResourceType]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Name" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="7578e2c1-95dc-4e74-8bfb-716651ce844d" ChangeDateTime="09/26/2020 22:08:26">
+    <Property Name="ElementName" Value="[core].[Service].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[core].[Service]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Service_ID" />
+  </Operation>
 </Operations>

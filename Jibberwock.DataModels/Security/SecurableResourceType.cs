@@ -11,19 +11,19 @@ namespace Jibberwock.DataModels.Security
     public enum SecurableResourceType
     {
         /// <summary>
-        /// This <see cref="SecurableResource"/> is a <see cref="Tenant"/>.
+        /// This <see cref="SecurableResource"/> is a <see cref="Jibberwock.DataModels.Tenants.Tenant"/>.
         /// </summary>
         Tenant = 1,
         /// <summary>
-        /// This <see cref="SecurableResource"/> is a <see cref="ApiKey"/>.
+        /// This <see cref="SecurableResource"/> is a <see cref="Jibberwock.DataModels.Tenants.ApiKey"/>.
         /// </summary>
         ApiKey = 2,
         /// <summary>
-        /// This <see cref="SecurableResource"/> is a <see cref="Product"/>.
+        /// This <see cref="SecurableResource"/> is a <see cref="Jibberwock.DataModels.Products.Product"/>.
         /// </summary>
         Product = 3,
         /// <summary>
-        /// This <see cref="SecurableResource"/> is a service.
+        /// This <see cref="SecurableResource"/> is a <see cref="Jibberwock.DataModels.Core.Service"/>.
         /// </summary>
         Service = 4,
         /// <summary>

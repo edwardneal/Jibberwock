@@ -18,7 +18,7 @@ namespace Jibberwock.DataModels.Security
         /// Describes a quasi-friendly identifier for this resource.
         /// </summary>
         /// <remarks>
-        /// Although this should be treated and compared as a string, it will usually be in the format {Type:3 characters}-{incrementing id}
+        /// Although this should be treated and compared as a string, it will usually be in the format {Type:5 characters}-{incrementing 6-digit id}
         /// </remarks>
         public string ResourceIdentifier { get; set; }
     }
