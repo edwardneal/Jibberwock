@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Jibberwock.Shared.Configuration;
+using Jibberwock.Admin.API.ActionModels.Security;
+using Jibberwock.DataModels.Users;
 
 namespace Jibberwock.Admin.API.Controllers.Security
 {
@@ -25,24 +27,61 @@ namespace Jibberwock.Admin.API.Controllers.Security
         [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
         public async Task<IActionResult> GetUsersByName([FromQuery] string name)
         {
-            return Ok();
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                ModelState.AddModelError("invalid_filter", "Name filter must have a value.");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var getUsersCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.GetUsersByName(Logger, name);
+
+            return Ok(await getUsersCommand.Execute(SqlServerDataSource));
         }
 
-        [Route("{id}")]
+        [Route("{id:int}")]
         [HttpGet]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
-        public async Task<IActionResult> GetUserById([FromQuery] long id)
+        public async Task<IActionResult> GetUserById([FromRoute] long id)
         {
-            return Ok();
+            if (id == 0)
+            {
+                ModelState.AddModelError("invalid_id", "User ID must be specified.");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var getSingleUserCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.GetUserById(Logger, id);
+
+            return Ok(await getSingleUserCommand.Execute(SqlServerDataSource));
         }
 
         [Route("{id}")]
         [HttpPut]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Change)]
-        public async Task<IActionResult> ControlUserAccess([FromRoute] long id, [FromBody] object accessChangeSettings)
+        public async Task<IActionResult> ControlUserAccess([FromRoute] long id, [FromBody] UserAccessChangeSetting accessChangeSetting)
         {
-            // enables or disables access
-            return Ok();
+            if (id == 0)
+            { ModelState.AddModelError("invalid_id", "User ID must be specified."); }
+            if (accessChangeSetting == null)
+            { ModelState.AddModelError("missing_body", "Unable to locate a body for this API call"); }
+            
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var requestedState = new User() { Id = id, Enabled = accessChangeSetting.Enabled };
+            var controlUserAccessCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.ControlUserAccess(Logger, requestedState);
+
+            var controlSuccessful = await controlUserAccessCommand.Execute(SqlServerDataSource);
+
+            if (controlSuccessful)
+            { return Ok(requestedState); }
+            else
+            { return NotFound(); }
         }
 
         [Route("{id}/notifications")]

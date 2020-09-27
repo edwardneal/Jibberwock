@@ -103,6 +103,9 @@
     <Build Include="products\Characteristic.sql" />
     <Build Include="security\WellKnownGroupType.sql" />
     <Build Include="security\WellKnownGroup.sql" />
+    <Build Include="security\usp_GetUsersByName.sql" />
+    <Build Include="security\usp_GetUserById.sql" />
+    <Build Include="security\usp_ControlUserAccess.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

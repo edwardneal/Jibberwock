@@ -15,3 +15,12 @@ GO
 
 GRANT EXECUTE ON TYPE::[security].[udt_SecurableResourcePermissionCheck] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [security].[usp_GetUsersByName] TO [CoreAPI]
+GO
+
+GRANT EXECUTE ON [security].[usp_GetUserById] TO [CoreAPI]
+GO
+
+GRANT EXECUTE ON [security].[usp_ControlUserAccess] TO [CoreAPI]
+GO
