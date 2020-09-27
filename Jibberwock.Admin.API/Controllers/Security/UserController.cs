@@ -22,8 +22,15 @@ namespace Jibberwock.Admin.API.Controllers.Security
     {
         public UserController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource, IOptions<WebApiConfiguration> options) : base(loggerFactory, sqlServerDataSource, options) { }
 
+        /// <summary>
+        /// Gets all users with a name matching a pattern.
+        /// </summary>
+        /// <param name="name">The pattern to match names against.</param>
+        /// <response code="200" nullable="false">The retrieved set of <see cref="User"/> objects.</response>
+        /// <response code="400" nullable="false">Unable to perform the search, see response for details.</response>
         [Route("")]
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<User>), StatusCodes.Status200OK)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
         public async Task<IActionResult> GetUsersByName([FromQuery] string name)
         {
@@ -41,8 +48,16 @@ namespace Jibberwock.Admin.API.Controllers.Security
             return Ok(await getUsersCommand.Execute(SqlServerDataSource));
         }
 
+        /// <summary>
+        /// Gets a specific <see cref="User"/> by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="User"/> to retrieve.</param>
+        /// <response code="200" nullable="false">The retrieved <see cref="User"/> object.</response>
+        /// <response code="400" nullable="false">Unable to get the <see cref="User"/>, see response for details.</response>
+        /// <response code="404" nullable="false">A <see cref="User"/> with the provided ID does not exist.</response>
         [Route("{id:int}")]
         [HttpGet]
+        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
         public async Task<IActionResult> GetUserById([FromRoute] long id)
         {
@@ -56,12 +71,25 @@ namespace Jibberwock.Admin.API.Controllers.Security
             }
 
             var getSingleUserCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.GetUserById(Logger, id);
+            var singleUser = await getSingleUserCommand.Execute(SqlServerDataSource);
 
-            return Ok(await getSingleUserCommand.Execute(SqlServerDataSource));
+            if (singleUser == null)
+            { return NotFound(); }
+            else
+            { return Ok(singleUser); }
         }
 
+        /// <summary>
+        /// Enables or disables a specific <see cref="User"/> by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="User"/> to enable or disable.</param>
+        /// <param name="accessChangeSetting">The <see cref="User"/> properties to change.</param>
+        /// <response code="200" nullable="false">The updated <see cref="User"/> object.</response>
+        /// <response code="400" nullable="false">Unable to update the user, see response for details.</response>
+        /// <response code="404" nullable="false">A <see cref="User"/> with the provided ID does not exist.</response>
         [Route("{id}")]
         [HttpPut]
+        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Change)]
         public async Task<IActionResult> ControlUserAccess([FromRoute] long id, [FromBody] UserAccessChangeSetting accessChangeSetting)
         {
@@ -75,7 +103,7 @@ namespace Jibberwock.Admin.API.Controllers.Security
 
             var requestedState = new User() { Id = id, Enabled = accessChangeSetting.Enabled };
             var controlUserAccessCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.ControlUserAccess(Logger, requestedState);
-
+            
             var controlSuccessful = await controlUserAccessCommand.Execute(SqlServerDataSource);
 
             if (controlSuccessful)

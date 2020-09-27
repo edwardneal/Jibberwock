@@ -24,7 +24,7 @@ namespace Jibberwock.Admin.API.Controllers.Authentication
         /// When used as a return URL from EasyAuth, redirects to one of a hardcoded set of URLs, as defined in static configuration.
         /// </summary>
         /// <param name="type">The type of the URL to go to.</param>
-        /// <returns>An <see cref="IActionResult"/> for a HTTP 302 to the correct URL.</returns>
+        /// <response code="302" nullable="false">A redirect to the correct URL.</response>
         [Route("{type}")]
         [HttpGet]
         public IActionResult RedirectToUrl(string type)
