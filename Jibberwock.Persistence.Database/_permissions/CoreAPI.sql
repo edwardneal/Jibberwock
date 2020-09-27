@@ -9,3 +9,9 @@ GO
 
 GRANT EXECUTE ON [security].[usp_GetUserByIdentifier] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [security].[usp_CheckUserPermissions] TO [CoreAPI]
+GO
+
+GRANT EXECUTE ON TYPE::[security].[udt_SecurableResourcePermissionCheck] TO [CoreAPI]
+GO
