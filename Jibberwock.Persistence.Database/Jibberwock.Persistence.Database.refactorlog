@@ -84,4 +84,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Service_ID" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="4394b801-3cb5-4c4c-b23b-ee8c6d405d9e" ChangeDateTime="09/27/2020 14:14:59">
+    <Property Name="ElementName" Value="[dbo].[Permission].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Permission]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Permission_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="2277c49c-40ee-4908-8989-e69b06f0b6ff" ChangeDateTime="09/27/2020 14:16:47">
+    <Property Name="ElementName" Value="[security].[AccessControlEntry].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[security].[AccessControlEntry]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Access_Control_Entry_ID" />
+  </Operation>
 </Operations>

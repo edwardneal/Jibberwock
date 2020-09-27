@@ -13,7 +13,7 @@ namespace Jibberwock.DataModels.Security
         /// <summary>
         /// The unique internal reference for this <see cref="AccessControlEntry"/>.
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// The <see cref="Group"/> which should be given these <see cref="Permission"/>s

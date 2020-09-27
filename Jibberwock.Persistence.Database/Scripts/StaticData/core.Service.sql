@@ -10,14 +10,16 @@ insert into @services (Service_ID, [Name], [Url], Securable_Resource_Identifier)
 values (1, 'Jibberwock Admin Portal', 'https://admin.jibberwock.com', 'SVC-000001'),
 	(2, 'Allert', 'https://allert.jibberwock.com', 'SVC-000002')
 
-insert into [security].[SecurableResource] ([Type_ID], [Identifier])
-	select 4, Securable_Resource_Identifier
+set identity_insert [security].[SecurableResource] on
+insert into [security].[SecurableResource] (Securable_Resource_ID, [Type_ID], [Identifier])
+	select Service_ID, 4, Securable_Resource_Identifier
 	from @services
 	where Securable_Resource_Identifier not in
 		(select [Identifier] from [security].[SecurableResource])
+set identity_insert [security].[SecurableResource] on
 
-insert into core.[Service] (Service_ID, Securable_Resource_ID, [Name], [Url])
-	select svc.Service_ID, sr.Securable_Resource_ID, svc.[Name], svc.[Url]
+insert into core.[Service] (Service_ID, [Name], [Url])
+	select sr.Securable_Resource_ID, svc.[Name], svc.[Url]
 	from @services as svc
 	inner join [security].[SecurableResource] as sr
 		on (sr.Identifier = svc.Securable_Resource_Identifier)

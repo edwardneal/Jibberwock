@@ -13,10 +13,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
         /// <summary>
         /// The ID of the <see cref="SecurableResource"/> to check.
         /// </summary>
-        /// <remarks>
-        /// This might be either a <see cref="Guid"/> or an <see cref="int"/>, depending on the resource type.
-        /// </remarks>
-        public object ResourceId { get; set; }
+        public long ResourceId { get; set; }
 
         /// <summary>
         /// The type of the <see cref="SecurableResource"/> to check.

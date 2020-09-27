@@ -61,7 +61,7 @@ namespace Jibberwock.Shared.Http.Authorization
                     resourcePermissionChecks.Add(new Persistence.DataAccess.Commands.Security.ResourcePermissionCheck()
                     {
                         PermissionsRequired = rpa.PermissionsRequired,
-                        ResourceId = _configuration.Authorization.DefaultServiceGuid,
+                        ResourceId = _configuration.Authorization.DefaultServiceId,
                         ResourceType = rpa.ResourceType
                     });
                 }
@@ -74,14 +74,14 @@ namespace Jibberwock.Shared.Http.Authorization
                                         .OfType<ResourcePermissionsAttribute>()
                                       from attr in attrs
                                       select new
-                                      { ResourceId = _httpContext.GetRouteValue(param.Name), PermissionsAttribute = attr };
+                                      { ResourceId = Convert.ChangeType(_httpContext.GetRouteValue(param.Name), param.ParameterType), PermissionsAttribute = attr };
             
             foreach (var rpa in parameterAttributes)
             {
                 resourcePermissionChecks.Add(new Persistence.DataAccess.Commands.Security.ResourcePermissionCheck()
                 {
                     PermissionsRequired = rpa.PermissionsAttribute.PermissionsRequired,
-                    ResourceId = rpa.ResourceId,
+                    ResourceId = (long)rpa.ResourceId,
                     ResourceType = rpa.PermissionsAttribute.ResourceType
                 });
             }
@@ -102,6 +102,10 @@ namespace Jibberwock.Shared.Http.Authorization
                     _logger.LogInformation("Jibberwock permissions checks failed for this user on this route.");
                     context.Fail();
                     return;
+                }
+                else
+                {
+                    _logger.LogInformation("Jibberwock permissions checks passed for this user on this route.");
                 }
             }
 

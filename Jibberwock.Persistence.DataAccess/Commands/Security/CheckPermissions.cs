@@ -1,9 +1,14 @@
-﻿using Jibberwock.DataModels.Users;
+﻿using Dapper;
+using Jibberwock.DataModels.Users;
 using Jibberwock.Persistence.DataAccess.DataSources;
+using Jibberwock.Persistence.DataAccess.TableTypes.Security;
+using Jibberwock.Persistence.DataAccess.Utility;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,7 +45,17 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
             if (User.Id == 0)
                 return false;
 
-            throw new NotImplementedException();
+            var databaseConnection = await dataSource.GetDbConnection();
+            var permissionListRecords = (from pc in PermissionChecks
+                                         from perm in pc.PermissionsRequired
+                                         select new SecurableResourcePermissionCheck((long)pc.ResourceId, pc.ResourceType, perm))
+                                         .AsTableValuedParameter("security.udt_SecurableResourcePermissionCheck");
+
+            var hasPermissions = await databaseConnection.ExecuteScalarAsync<bool>("security.usp_CheckUserPermissions",
+                new { User_ID = User.Id, Permission_Checks = permissionListRecords },
+                commandType: System.Data.CommandType.StoredProcedure, commandTimeout: 30);
+
+            return hasPermissions;
         }
     }
 }

@@ -94,6 +94,10 @@
     <Build Include="security\SecurableResourceType.sql" />
     <Build Include="core\_schema.sql" />
     <Build Include="core\Service.sql" />
+    <Build Include="security\udt_SecurableResourcePermissionCheck.sql" />
+    <Build Include="security\usp_CheckUserPermissions.sql" />
+    <Build Include="security\Permission.sql" />
+    <Build Include="security\AccessControlEntry.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
@@ -105,5 +109,6 @@
     <None Include="Scripts\Lookups\security.ExternalIdentityProvider.sql" />
     <None Include="Scripts\Lookups\security.SecurableResourceType.sql" />
     <None Include="Scripts\StaticData\core.Service.sql" />
+    <None Include="Scripts\Lookups\security.Permission.sql" />
   </ItemGroup>
 </Project>

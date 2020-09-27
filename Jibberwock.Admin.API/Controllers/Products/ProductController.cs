@@ -30,9 +30,9 @@ namespace Jibberwock.Admin.API.Controllers.Products
             return Ok();
         }
 
-        [Route("{id}")]
+        [Route("{id:int}")]
         [HttpPut]
-        public async Task<IActionResult> UpdateProduct([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] string id, [FromBody] object updatedProduct)
+        public async Task<IActionResult> UpdateProduct([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromBody] object updatedProduct)
         {
             return Ok();
         }
@@ -45,30 +45,30 @@ namespace Jibberwock.Admin.API.Controllers.Products
             return Ok();
         }
 
-        [Route("{id}/plans")]
+        [Route("{id:int}/plans")]
         [HttpGet]
-        public async Task<IActionResult> GetProductPlans([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Read)] string id, [FromQuery] bool includeHiddenPlans)
+        public async Task<IActionResult> GetProductPlans([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Read)] long id, [FromQuery] bool includeHiddenPlans)
         {
             return Ok();
         }
 
-        [Route("{id}/plans/{planId}")]
+        [Route("{id:int}/plans/{planId:int}")]
         [HttpGet]
-        public async Task<IActionResult> GetProductPlan([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Read)] string id, [FromRoute] string planId, [FromQuery] bool includeHiddenPlans)
+        public async Task<IActionResult> GetProductPlan([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Read)] long id, [FromRoute] long planId, [FromQuery] bool includeHiddenPlans)
         {
             return Ok();
         }
 
-        [Route("{id}/plans/{planId}")]
+        [Route("{id:int}/plans/{planId:int}")]
         [HttpPut]
-        public async Task<IActionResult> UpdateProductPlan([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] string id, [FromRoute] string planId, [FromBody] object updatedProduct)
+        public async Task<IActionResult> UpdateProductPlan([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromRoute] long planId, [FromBody] object updatedProduct)
         {
             return Ok();
         }
 
-        [Route("{id}/plans")]
+        [Route("{id:int}/plans")]
         [HttpPost]
-        public async Task<IActionResult> CreateProductPlan([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] string id, [FromBody] object productPlan)
+        public async Task<IActionResult> CreateProductPlan([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromBody] object productPlan)
         {
             return Ok();
         }
