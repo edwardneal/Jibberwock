@@ -101,6 +101,8 @@
     <Build Include="security\AccessControlEntry.sql" />
     <Build Include="products\_schema.sql" />
     <Build Include="products\Characteristic.sql" />
+    <Build Include="security\WellKnownGroupType.sql" />
+    <Build Include="security\WellKnownGroup.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
@@ -113,5 +115,7 @@
     <None Include="Scripts\Lookups\security.SecurableResourceType.sql" />
     <None Include="Scripts\StaticData\core.Service.sql" />
     <None Include="Scripts\Lookups\security.Permission.sql" />
+    <None Include="Scripts\StaticData\security.SecurityGroup.sql" />
+    <None Include="Scripts\Lookups\security.WellKnownGroupType.sql" />
   </ItemGroup>
 </Project>

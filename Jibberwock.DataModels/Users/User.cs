@@ -25,6 +25,11 @@ namespace Jibberwock.DataModels.Users
         public string EmailAddress { get; set; }
 
         /// <summary>
+        /// If set to <c>false</c>, this <see cref="User"/> is unable to exercise any permissions.
+        /// </summary>
+        public bool Enabled { get; set; }
+
+        /// <summary>
         /// The external accounts which map to this unique Jibberwock <see cref="User"/>.
         /// </summary>
         public IEnumerable<ExternalIdentity> ExternalIdentities { get; set; }

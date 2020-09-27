@@ -18,7 +18,10 @@ BEGIN
 		from [security].[SecurityGroupMembership] as sgm
 		inner join [security].[AccessControlEntry] as ace
 			on (ace.Security_Group_ID = sgm.Security_Group_ID)
-		where sgm.[User_ID] = @User_ID
+		inner join [security].[User] as usr
+			on (usr.[User_ID] = sgm.[User_ID])
+		where usr.[User_ID] = @User_ID
+			and usr.[Enabled] = 1
 			and sgm.[Enabled] = 1
 	)
 	-- Now, look for anything in Permission_Checks which doesn't exist in the above table

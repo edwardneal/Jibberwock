@@ -105,4 +105,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Characteristic_ID" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="aaa43c87-093f-4232-bd9d-84040cbd4a94" ChangeDateTime="09/27/2020 18:41:58">
+    <Property Name="ElementName" Value="[dbo].[WellKnownGroupType].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[WellKnownGroupType]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Well_Known_Group_Type_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="43d135af-b9a6-403b-9c13-93df896f3522" ChangeDateTime="09/27/2020 19:02:45">
+    <Property Name="ElementName" Value="[security].[WellKnownGroup].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[security].[WellKnownGroup]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Well_Known_Group_ID" />
+  </Operation>
 </Operations>

@@ -29,9 +29,17 @@ namespace Jibberwock.Admin.API.Controllers.Security
         }
 
         [Route("{id}")]
+        [HttpGet]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
+        public async Task<IActionResult> GetUserById([FromQuery] long id)
+        {
+            return Ok();
+        }
+
+        [Route("{id}")]
         [HttpPut]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Change)]
-        public async Task<IActionResult> ControlUserAccess([FromRoute] string id, [FromBody] object accessChangeSettings)
+        public async Task<IActionResult> ControlUserAccess([FromRoute] long id, [FromBody] object accessChangeSettings)
         {
             // enables or disables access
             return Ok();
