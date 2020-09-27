@@ -64,6 +64,7 @@
     <Folder Include="security" />
     <Folder Include="tenants" />
     <Folder Include="core" />
+    <Folder Include="products" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="components\_schema.sql" />
@@ -98,6 +99,8 @@
     <Build Include="security\usp_CheckUserPermissions.sql" />
     <Build Include="security\Permission.sql" />
     <Build Include="security\AccessControlEntry.sql" />
+    <Build Include="products\_schema.sql" />
+    <Build Include="products\Characteristic.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

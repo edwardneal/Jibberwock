@@ -16,7 +16,7 @@ insert into [security].[SecurableResource] (Securable_Resource_ID, [Type_ID], [I
 	from @services
 	where Securable_Resource_Identifier not in
 		(select [Identifier] from [security].[SecurableResource])
-set identity_insert [security].[SecurableResource] on
+set identity_insert [security].[SecurableResource] off
 
 insert into core.[Service] (Service_ID, [Name], [Url])
 	select sr.Securable_Resource_ID, svc.[Name], svc.[Url]

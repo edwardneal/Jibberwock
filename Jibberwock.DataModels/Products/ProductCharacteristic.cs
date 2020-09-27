@@ -12,7 +12,7 @@ namespace Jibberwock.DataModels.Products
         /// <summary>
         /// A unique identifier for this <see cref="ProductCharacteristic"/>.
         /// </summary>
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// The friendly name of this <see cref="ProductCharacteristic"/>.
