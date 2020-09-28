@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Jibberwock.Persistence.DataAccess.DataSources;
 using Jibberwock.Shared.Configuration;
+using Jibberwock.Shared.Http;
 using Jibberwock.Shared.Http.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -27,16 +29,17 @@ namespace Jibberwock.Admin.API.Controllers.Authentication
         /// <response code="302" nullable="false">A redirect to the correct URL.</response>
         [Route("{type}")]
         [HttpGet]
-        public IActionResult RedirectToUrl(string type)
+        [ProducesResponseType(StatusCodes.Status302Found)]
+        public IActionResult RedirectToUrl([FromRoute, BindRequired] string type)
         {
             if (string.IsNullOrWhiteSpace(type))
             {
-                ModelState.AddModelError("missing_type", "Redirection type is missing.");
+                ModelState.AddModelError(ErrorResponses.MissingRedirectionType, string.Empty);
                 return BadRequest(ModelState);
             }
             else if (! WebApiConfiguration.PermittedRedirects.TryGetValue(type, out var redirectUrl))
             {
-                ModelState.AddModelError("invalid_type", "Invalid redirection type.");
+                ModelState.AddModelError(ErrorResponses.InvalidRedirectionType, string.Empty);
                 return BadRequest(ModelState);
             }
             else

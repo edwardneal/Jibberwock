@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using Jibberwock.Shared.Configuration;
 using Jibberwock.Admin.API.ActionModels.Security;
 using Jibberwock.DataModels.Users;
+using Jibberwock.Shared.Http;
 
 namespace Jibberwock.Admin.API.Controllers.Security
 {
@@ -31,12 +32,13 @@ namespace Jibberwock.Admin.API.Controllers.Security
         [Route("")]
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<User>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
         public async Task<IActionResult> GetUsersByName([FromQuery] string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                ModelState.AddModelError("invalid_filter", "Name filter must have a value.");
+                ModelState.AddModelError(ErrorResponses.InvalidFilter, string.Empty);
             }
             if (!ModelState.IsValid)
             {
@@ -58,12 +60,14 @@ namespace Jibberwock.Admin.API.Controllers.Security
         [Route("{id:int}")]
         [HttpGet]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
         public async Task<IActionResult> GetUserById([FromRoute] long id)
         {
             if (id == 0)
             {
-                ModelState.AddModelError("invalid_id", "User ID must be specified.");
+                ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty);
             }
             if (!ModelState.IsValid)
             {
@@ -90,13 +94,15 @@ namespace Jibberwock.Admin.API.Controllers.Security
         [Route("{id}")]
         [HttpPut]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Change)]
-        public async Task<IActionResult> ControlUserAccess([FromRoute] long id, [FromBody] UserAccessChangeSetting accessChangeSetting)
+        public async Task<IActionResult> ControlUserAccess([FromRoute] long id, [FromBody, Bind(nameof(UserAccessChangeSetting.Enabled))] UserAccessChangeSetting accessChangeSetting)
         {
             if (id == 0)
-            { ModelState.AddModelError("invalid_id", "User ID must be specified."); }
+            { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
             if (accessChangeSetting == null)
-            { ModelState.AddModelError("missing_body", "Unable to locate a body for this API call"); }
+            { ModelState.AddModelError(ErrorResponses.MissingBody, string.Empty); }
             
             if (!ModelState.IsValid)
             { return BadRequest(ModelState); }
