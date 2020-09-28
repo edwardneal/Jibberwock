@@ -106,6 +106,9 @@
     <Build Include="security\usp_GetUsersByName.sql" />
     <Build Include="security\usp_GetUserById.sql" />
     <Build Include="security\usp_ControlUserAccess.sql" />
+    <Build Include="security\AuditTrail.sql" />
+    <Build Include="security\AuditTrailType.sql" />
+    <Build Include="security\usp_CreateAuditTrailEntry.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
@@ -120,5 +123,6 @@
     <None Include="Scripts\Lookups\security.Permission.sql" />
     <None Include="Scripts\StaticData\security.SecurityGroup.sql" />
     <None Include="Scripts\Lookups\security.WellKnownGroupType.sql" />
+    <None Include="Scripts\Lookups\security.AuditTrailType.sql" />
   </ItemGroup>
 </Project>

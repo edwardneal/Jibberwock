@@ -24,3 +24,6 @@ GO
 
 GRANT EXECUTE ON [security].[usp_ControlUserAccess] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [security].[usp_CreateAuditTrailEntry] TO [CoreAPI]
+GO

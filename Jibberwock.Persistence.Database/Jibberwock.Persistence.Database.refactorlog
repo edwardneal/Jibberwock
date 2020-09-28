@@ -119,4 +119,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Well_Known_Group_ID" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="21640b94-df9c-48e5-9fbf-4467bebe92b6" ChangeDateTime="09/28/2020 22:40:08">
+    <Property Name="ElementName" Value="[dbo].[AuditTrail].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[AuditTrail]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Audit_Trail_ID" />
+  </Operation>
 </Operations>
