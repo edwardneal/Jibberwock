@@ -53,7 +53,7 @@ namespace Jibberwock.DataModels.Security.Audit
         public AuditTrailEntryType Type { get; set; }
 
         /// <summary>
-        /// An optional user-defined comment describing this the reason for this action.
+        /// An optional user-defined comment describing the reason for this action.
         /// </summary>
         public string Comment { get; set; }
 

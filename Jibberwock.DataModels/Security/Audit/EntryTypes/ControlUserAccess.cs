@@ -11,10 +11,10 @@ namespace Jibberwock.DataModels.Security.Audit.EntryTypes
     /// </summary>
     public class ControlUserAccess : AuditTrailEntry
     {
-        public ControlUserAccess(bool enabled)
-            :base()
+        public ControlUserAccess()
+            : base()
         {
-            Enabled = enabled;
+            Type = AuditTrailEntryType.ControlUserAccess;
         }
 
         /// <summary>
