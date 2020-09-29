@@ -14,7 +14,7 @@ namespace Jibberwock.DataModels.Tenants
         /// <summary>
         /// The unique internal reference for this <see cref="Tenant"/>.
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// The preferred name of this <see cref="Tenant"/>. This will be the name which is displayed for a user when they log in.

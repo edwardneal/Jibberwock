@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Jibberwock.Shared.Configuration;
 using Microsoft.Extensions.Options;
+using Jibberwock.Shared.Http.Authentication;
 
 namespace Jibberwock.Admin.API.Controllers.Analytics
 {
@@ -20,7 +21,9 @@ namespace Jibberwock.Admin.API.Controllers.Analytics
     [Authorize]
     public class StatusController : JibberwockControllerBase
     {
-        public StatusController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource, IOptions<WebApiConfiguration> options) : base(loggerFactory, sqlServerDataSource, options) { }
+        public StatusController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource,
+            IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever) : base(loggerFactory, sqlServerDataSource, options, currentUserRetriever)
+        { }
 
         [Route("externalcomponents")]
         [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]

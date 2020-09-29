@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Jibberwock.Persistence.DataAccess.DataSources;
 using Jibberwock.Shared.Configuration;
 using Jibberwock.Shared.Http;
+using Jibberwock.Shared.Http.Authentication;
 using Jibberwock.Shared.Http.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,7 +21,9 @@ namespace Jibberwock.Admin.API.Controllers.Authentication
     [Authorize]
     public class RedirectController : JibberwockControllerBase
     {
-        public RedirectController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource, IOptions<WebApiConfiguration> options) : base(loggerFactory, sqlServerDataSource, options) { }
+        public RedirectController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource,
+            IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever) : base(loggerFactory, sqlServerDataSource, options, currentUserRetriever)
+        { }
 
         /// <summary>
         /// When used as a return URL from EasyAuth, redirects to one of a hardcoded set of URLs, as defined in static configuration.

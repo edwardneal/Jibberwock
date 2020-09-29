@@ -30,7 +30,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
             User = user;
         }
 
-        protected override async Task<bool> OnAuditedExecute(IReadWriteDataSource dataSource, IDbTransaction transaction, ref Jibberwock.DataModels.Security.Audit.EntryTypes.ControlUserAccess provisionalAuditTrailEntry)
+        protected override async Task<bool> OnAuditedExecute(IReadWriteDataSource dataSource, IDbTransaction transaction, Jibberwock.DataModels.Security.Audit.EntryTypes.ControlUserAccess provisionalAuditTrailEntry)
         {
             if (User.Id == 0)
                 throw new ArgumentOutOfRangeException(nameof(User), "User.Id must have a value");
@@ -39,7 +39,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
 
             var successfullyControlled = await databaseConnection.ExecuteScalarAsync<int>("security.usp_ControlUserAccess",
                 new { User_ID = User.Id, Enabled = User.Enabled },
-                commandType: System.Data.CommandType.StoredProcedure, commandTimeout: 30);
+                transaction: transaction, commandType: System.Data.CommandType.StoredProcedure, commandTimeout: 30);
 
             provisionalAuditTrailEntry.RelatedUser = User;
             provisionalAuditTrailEntry.Enabled = User.Enabled;

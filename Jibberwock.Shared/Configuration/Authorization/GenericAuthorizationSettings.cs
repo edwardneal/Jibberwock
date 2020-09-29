@@ -13,6 +13,6 @@ namespace Jibberwock.Shared.Configuration.Authorization
         /// <summary>
         /// The ID of this web API or product in the Jibberwock database. Used to manage permissions over the service as a whole.
         /// </summary>
-        public long DefaultServiceId { get; set; }
+        public int DefaultServiceId { get; set; }
     }
 }

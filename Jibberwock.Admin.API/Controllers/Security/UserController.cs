@@ -14,6 +14,7 @@ using Jibberwock.Shared.Configuration;
 using Jibberwock.Admin.API.ActionModels.Security;
 using Jibberwock.DataModels.Users;
 using Jibberwock.Shared.Http;
+using Jibberwock.Shared.Http.Authentication;
 
 namespace Jibberwock.Admin.API.Controllers.Security
 {
@@ -21,7 +22,9 @@ namespace Jibberwock.Admin.API.Controllers.Security
     [Route("[controller]")]
     public class UserController : JibberwockControllerBase
     {
-        public UserController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource, IOptions<WebApiConfiguration> options) : base(loggerFactory, sqlServerDataSource, options) { }
+        public UserController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource,
+            IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever) : base(loggerFactory, sqlServerDataSource, options, currentUserRetriever)
+        { }
 
         /// <summary>
         /// Gets all users with a name matching a pattern.
@@ -107,12 +110,13 @@ namespace Jibberwock.Admin.API.Controllers.Security
             if (!ModelState.IsValid)
             { return BadRequest(ModelState); }
 
+            var currentUser = await CurrentUserRetriever.GetCurrentUserAsync();
             var requestedState = new User() { Id = id, Enabled = accessChangeSetting.Enabled };
-            var controlUserAccessCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.ControlUserAccess(Logger, requestedState);
+            var controlUserAccessCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.ControlUserAccess(Logger, currentUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, null, requestedState);
             
             var controlSuccessful = await controlUserAccessCommand.Execute(SqlServerDataSource);
 
-            if (controlSuccessful)
+            if (controlSuccessful.Result)
             { return Ok(requestedState); }
             else
             { return NotFound(); }

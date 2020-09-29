@@ -50,7 +50,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Auditing
         /// </summary>
         public string Comment { get; set; }
 
-        protected abstract Task<TResult> OnAuditedExecute(IReadWriteDataSource dataSource, IDbTransaction transaction, ref TAuditTrailEntry provisionalAuditTrailEntry);
+        protected abstract Task<TResult> OnAuditedExecute(IReadWriteDataSource dataSource, IDbTransaction transaction, TAuditTrailEntry provisionalAuditTrailEntry);
 
         protected override async Task<AuditedCommandResult<TResult, TAuditTrailEntry>> OnExecute(IReadWriteDataSource dataSource)
         {
@@ -69,7 +69,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Auditing
                         Comment = Comment
                     };
                 // Provide a spot for the derived classes to execute their command as required, making any final tweaks to the audit trail entry
-                var result = await OnAuditedExecute(dataSource, dbTransaction, ref auditTrailEntry);
+                var result = await OnAuditedExecute(dataSource, dbTransaction, auditTrailEntry);
 
                 // Create the audit trail entry itself, updating our ID
                 auditTrailEntry.Id = await databaseConnection.ExecuteScalarAsync<long>("security.usp_CreateAuditTrailEntry",

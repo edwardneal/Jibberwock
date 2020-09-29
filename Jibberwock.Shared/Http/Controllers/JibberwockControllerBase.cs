@@ -1,5 +1,6 @@
 ﻿using Jibberwock.Persistence.DataAccess.DataSources;
 using Jibberwock.Shared.Configuration;
+using Jibberwock.Shared.Http.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -36,18 +37,24 @@ namespace Jibberwock.Shared.Http.Controllers
         protected WebApiConfiguration WebApiConfiguration { get; private set; }
 
         /// <summary>
+        /// A class capable of returning the currently logged-in user.
+        /// </summary>
+        protected ICurrentUserRetriever CurrentUserRetriever { get; private set; }
+
+        /// <summary>
         /// Creates a new instance of the <see cref="JibberwockControllerBase"/> class.
         /// </summary>
         /// <param name="loggerFactory">The logger factory.</param>
         /// <param name="sqlServerDataSource">The SQL Server data source.</param>
         /// <param name="options">The web API configuration.</param>
-        protected JibberwockControllerBase(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource, IOptions<WebApiConfiguration> options)
+        protected JibberwockControllerBase(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource, IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever)
             : base()
         {
             SqlServerDataSource = sqlServerDataSource;
             LoggerFactory = loggerFactory;
             Logger = LoggerFactory.CreateLogger(GetType());
             WebApiConfiguration = options.Value;
+            CurrentUserRetriever = currentUserRetriever;
         }
     }
 }
