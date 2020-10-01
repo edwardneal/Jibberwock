@@ -14,7 +14,7 @@ namespace Jibberwock.DataModels.Security.Audit.EntryTypes
         public ModifyProductCharacteristic()
             : base()
         {
-            Type = AuditTrailEntryType.DeleteProductCharacteristic;
+            Type = AuditTrailEntryType.ModifyProductCharacteristic;
         }
 
         /// <summary>

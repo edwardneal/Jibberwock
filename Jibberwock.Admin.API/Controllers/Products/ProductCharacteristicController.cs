@@ -16,6 +16,7 @@ using Jibberwock.Shared.Http.Authentication;
 using Jibberwock.Admin.API.ActionModels.Products;
 using Jibberwock.DataModels.Products;
 using Jibberwock.Shared.Http;
+using System.Net;
 
 namespace Jibberwock.Admin.API.Controllers.Products
 {
@@ -107,7 +108,7 @@ namespace Jibberwock.Admin.API.Controllers.Products
             var deleteSuccessful = await deleteCharacteristicCommand.Execute(SqlServerDataSource);
 
             if (deleteSuccessful.Result)
-            { return Ok(); }
+            { return StatusCode(StatusCodes.Status204NoContent); }
             else
             { return NotFound(); }
         }
