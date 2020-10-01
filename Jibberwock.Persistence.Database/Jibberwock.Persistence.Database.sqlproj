@@ -109,6 +109,10 @@
     <Build Include="security\AuditTrail.sql" />
     <Build Include="security\AuditTrailType.sql" />
     <Build Include="security\usp_CreateAuditTrailEntry.sql" />
+    <Build Include="products\usp_ListAllCharacteristics.sql" />
+    <Build Include="products\usp_UpdateCharacteristic.sql" />
+    <Build Include="products\usp_CreateCharacteristic.sql" />
+    <Build Include="products\usp_DeleteCharacteristic.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

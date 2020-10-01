@@ -27,3 +27,15 @@ GO
 
 GRANT EXECUTE ON [security].[usp_CreateAuditTrailEntry] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [products].[usp_ListAllCharacteristics] TO [CoreAPI]
+GO
+
+GRANT EXECUTE ON [products].[usp_UpdateCharacteristic] TO [CoreAPI]
+GO
+
+GRANT EXECUTE ON [products].[usp_CreateCharacteristic] TO [CoreAPI]
+GO
+
+GRANT EXECUTE ON [products].[usp_DeleteCharacteristic] TO [CoreAPI]
+GO
