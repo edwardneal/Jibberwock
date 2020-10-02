@@ -30,7 +30,12 @@ namespace Jibberwock.Admin.API.Controllers.Products
         [ResourcePermissions(SecurableResourceType.Product, Permission.Read)]
         public async Task<IActionResult> GetProducts([FromQuery] bool includeHiddenProducts)
         {
-            return Ok();
+            var currentUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            var listProductsCommand = new Jibberwock.Persistence.DataAccess.Commands.Products.ListProducts(Logger, currentUser, includeHiddenProducts);
+
+            var products = await listProductsCommand.Execute(SqlServerDataSource);
+
+            return Ok(products);
         }
 
         [Route("{id:int}")]

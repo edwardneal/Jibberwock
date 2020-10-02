@@ -118,6 +118,8 @@
     <Build Include="products\Tier.sql" />
     <Build Include="products\TierCharacteristicValue.sql" />
     <Build Include="products\CharacteristicValueType.sql" />
+    <Build Include="products\usp_ListProducts.sql" />
+    <Build Include="security\tvf_ListEffectivePermissions.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

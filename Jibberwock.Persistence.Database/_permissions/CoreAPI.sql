@@ -39,3 +39,6 @@ GO
 
 GRANT EXECUTE ON [products].[usp_DeleteCharacteristic] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [products].[usp_ListProducts] TO [CoreAPI]
+GO
