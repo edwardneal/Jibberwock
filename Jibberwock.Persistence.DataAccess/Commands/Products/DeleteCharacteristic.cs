@@ -18,7 +18,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Products
     /// <summary>
     /// Deletes a product characteristic.
     /// </summary>
-    public class DeleteCharacteristic : AuditingCommand<bool, Jibberwock.DataModels.Security.Audit.EntryTypes.DeleteProductCharacteristic>
+    public class DeleteCharacteristic : AuditingCommand<DeleteCharacteristicStatusCode, Jibberwock.DataModels.Security.Audit.EntryTypes.DeleteProductCharacteristic>
     {
         /// <summary>
         /// The product characteristic to delete.
@@ -32,14 +32,14 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Products
             ProductCharacteristic = characteristic;
         }
 
-        protected override async Task<bool> OnAuditedExecute(IReadWriteDataSource dataSource, IDbTransaction transaction, DeleteProductCharacteristic provisionalAuditTrailEntry)
+        protected override async Task<DeleteCharacteristicStatusCode> OnAuditedExecute(IReadWriteDataSource dataSource, IDbTransaction transaction, DeleteProductCharacteristic provisionalAuditTrailEntry)
         {
             if (ProductCharacteristic.Id == 0)
                 throw new ArgumentOutOfRangeException(nameof(ProductCharacteristic), "ProductCharacteristic.Id must have a value");
 
             var databaseConnection = await dataSource.GetDbConnection();
 
-            var deletedCharacteristic = await databaseConnection.ExecuteScalarAsync<bool>("products.usp_DeleteCharacteristic",
+            var deletedCharacteristic = await databaseConnection.ExecuteScalarAsync<DeleteCharacteristicStatusCode>("products.usp_DeleteCharacteristic",
                 new { Characteristic_ID = ProductCharacteristic.Id },
                 transaction: transaction, commandType: System.Data.CommandType.StoredProcedure, commandTimeout: 30);
 

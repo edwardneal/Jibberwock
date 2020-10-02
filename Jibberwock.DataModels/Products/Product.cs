@@ -13,7 +13,7 @@ namespace Jibberwock.DataModels.Products
         /// <summary>
         /// A unique identifier for this <see cref="Product"/>.
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// The friendly, public-facing name of this <see cref="Product"/>.
@@ -38,7 +38,7 @@ namespace Jibberwock.DataModels.Products
         /// <summary>
         /// All <see cref="ProductCharacteristic"/>s available to be linked to this <see cref="Product"/>'s billing tiers.
         /// </summary>
-        public IEnumerable<ProductCharacteristic> AvailableCharacteristics { get; set; }
+        public IEnumerable<ProductCharacteristic> ApplicableCharacteristics { get; set; }
 
         /// <summary>
         /// All available <see cref="Tier"/>s for this <see cref="Product"/>.

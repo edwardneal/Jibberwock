@@ -2,7 +2,8 @@
 	@Name nvarchar(128),
 	@Description nvarchar(256),
 	@Visible bit,
-	@Enabled bit
+	@Enabled bit,
+	@Value_Type_ID int
 AS
 BEGIN
 	set nocount on;
@@ -10,13 +11,13 @@ BEGIN
 
 	begin transaction
 	
-		insert into [products].[Characteristic] ([Name], [Description], Visible, [Enabled])
-		values (@Name, @Description, @Visible, @Enabled)
+		insert into [products].[Characteristic] ([Name], [Description], Visible, [Enabled], Value_Type_ID)
+		values (@Name, @Description, @Visible, @Enabled, @Value_Type_ID)
 
 		if @@ROWCOUNT = 0
 			throw 50001, 'record_not_inserted', 1;
 		else
-			select Characteristic_ID as Id, [Name], [Description], Visible, [Enabled]
+			select Characteristic_ID as Id, [Name], [Description], Visible, [Enabled], Value_Type_ID as ValueType
 			from [products].[Characteristic]
 			where Characteristic_ID = SCOPE_IDENTITY()
 

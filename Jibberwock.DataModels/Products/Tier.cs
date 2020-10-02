@@ -12,7 +12,7 @@ namespace Jibberwock.DataModels.Products
         /// <summary>
         /// A unique identifier for this <see cref="Tier"/>.
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// The unique identifier of this <see cref="Tier"/> in the external billing system.

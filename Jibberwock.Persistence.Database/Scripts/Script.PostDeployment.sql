@@ -12,6 +12,7 @@ Post-Deployment Script Template
 
 :r .\Lookups\components.Purpose.sql
 :r .\Lookups\components.StatusProvider.sql
+:r .\Lookups\products.CharacteristicValueType.sql
 :r .\Lookups\security.AuditTrailType.sql
 :r .\Lookups\security.ExternalIdentityProvider.sql
 :r .\Lookups\security.SecurableResourceType.sql

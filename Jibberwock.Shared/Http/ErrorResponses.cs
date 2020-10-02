@@ -29,5 +29,13 @@ namespace Jibberwock.Shared.Http
         /// The ID provided is missing or invalid.
         /// </summary>
         public const string InvalidId = "invalid_id";
+        /// <summary>
+        /// The product characteristic is associated with a tier.
+        /// </summary>
+        public const string AssociatedWithTier = "associated_with_tier";
+        /// <summary>
+        /// The product characteristic is associated with a product.
+        /// </summary>
+        public const string AssociatedWithProduct = "associated_with_product";
     }
 }

@@ -113,6 +113,11 @@
     <Build Include="products\usp_UpdateCharacteristic.sql" />
     <Build Include="products\usp_CreateCharacteristic.sql" />
     <Build Include="products\usp_DeleteCharacteristic.sql" />
+    <Build Include="products\Product.sql" />
+    <Build Include="products\ApplicableProductCharacteristic.sql" />
+    <Build Include="products\Tier.sql" />
+    <Build Include="products\TierCharacteristicValue.sql" />
+    <Build Include="products\CharacteristicValueType.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
@@ -128,5 +133,6 @@
     <None Include="Scripts\StaticData\security.SecurityGroup.sql" />
     <None Include="Scripts\Lookups\security.WellKnownGroupType.sql" />
     <None Include="Scripts\Lookups\security.AuditTrailType.sql" />
+    <None Include="Scripts\Lookups\products.CharacteristicValueType.sql" />
   </ItemGroup>
 </Project>

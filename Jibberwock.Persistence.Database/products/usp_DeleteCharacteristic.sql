@@ -5,15 +5,24 @@ BEGIN
 	set nocount on;
 	set xact_abort on;
 
-	begin transaction
-	
-		delete from [products].[Characteristic]
-		where Characteristic_ID = @Characteristic_ID;
+	declare @errorCode int = 0
 
-		if @@ROWCOUNT = 0
-			select cast(0 as bit) as Success
+	begin transaction
+
+		if exists (select 1 from [products].[TierCharacteristicValue] where Characteristic_ID = @Characteristic_ID)
+			set @errorCode = 1
+		else if exists (select 1 from [products].[ApplicableProductCharacteristic] where Characteristic_ID = @Characteristic_ID)
+			set @errorCode = 2
 		else
-			select cast(1 as bit) as Success
+		begin
+			delete from [products].[Characteristic]
+			where Characteristic_ID = @Characteristic_ID;
+
+			if @@ROWCOUNT = 0
+				set @errorCode = 3
+		end
+
+		select @errorCode as Result
 
 	commit transaction
 END

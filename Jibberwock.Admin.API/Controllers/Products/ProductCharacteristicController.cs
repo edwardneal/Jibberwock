@@ -107,10 +107,24 @@ namespace Jibberwock.Admin.API.Controllers.Products
 
             var deleteSuccessful = await deleteCharacteristicCommand.Execute(SqlServerDataSource);
 
-            if (deleteSuccessful.Result)
-            { return StatusCode(StatusCodes.Status204NoContent); }
-            else
-            { return NotFound(); }
+            switch (deleteSuccessful.Result)
+            {
+                case Persistence.DataAccess.Commands.Products.DeleteCharacteristicStatusCode.Success:
+                    return StatusCode(StatusCodes.Status204NoContent);
+                case Persistence.DataAccess.Commands.Products.DeleteCharacteristicStatusCode.AssociatedTier:
+                    ModelState.AddModelError(ErrorResponses.AssociatedWithTier, string.Empty);
+                    break;
+                case Persistence.DataAccess.Commands.Products.DeleteCharacteristicStatusCode.AssociatedProduct:
+                    ModelState.AddModelError(ErrorResponses.AssociatedWithProduct, string.Empty);
+                    break;
+                case Persistence.DataAccess.Commands.Products.DeleteCharacteristicStatusCode.Missing:
+                    return NotFound();
+                default:
+                    throw new ArgumentOutOfRangeException("This operation's return value was unexpected.");
+            }
+
+            // We've only reached this point if there's been an error in the model state
+            return BadRequest(ModelState);
         }
 
         /// <summary>

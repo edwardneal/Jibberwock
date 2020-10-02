@@ -5,6 +5,6 @@ BEGIN
 	set xact_abort on;
 	
 	select Characteristic_ID as Id, [Name], [Description],
-		Visible, [Enabled]
+		Visible, [Enabled], Value_Type_ID as ValueType
 	from [products].[Characteristic]
 END

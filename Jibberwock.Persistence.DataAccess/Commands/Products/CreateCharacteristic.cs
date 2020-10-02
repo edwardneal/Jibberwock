@@ -44,7 +44,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Products
             var resultantCharacteristic = await databaseConnection.QuerySingleAsync<ProductCharacteristic>("products.usp_CreateCharacteristic",
                 new { Name = ProductCharacteristic.Name, 
                 Description = ProductCharacteristic.Description, Visible = ProductCharacteristic.Visible,
-                Enabled = ProductCharacteristic.Enabled },
+                Enabled = ProductCharacteristic.Enabled, Value_Type_ID = ProductCharacteristic.ValueType },
                 transaction: transaction, commandType: System.Data.CommandType.StoredProcedure, commandTimeout: 30);
 
             ProductCharacteristic = resultantCharacteristic;

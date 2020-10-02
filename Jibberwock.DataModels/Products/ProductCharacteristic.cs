@@ -33,5 +33,10 @@ namespace Jibberwock.DataModels.Products
         /// Determines whether or not this <see cref="ProductCharacteristic"/> is available to add to billing tiers.
         /// </summary>
         public bool Enabled { get; set; }
+
+        /// <summary>
+        /// The type of values which this <see cref="ProductCharacteristic"/> can store when associated with a <see cref="Tier"/> using a <see cref="TierProductCharacteristic"/>.
+        /// </summary>
+        public ProductCharacteristicValueType ValueType { get; set; }
     }
 }

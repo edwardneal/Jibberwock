@@ -12,7 +12,7 @@ namespace Jibberwock.DataModels.Products
         /// <summary>
         /// A unique identifier for this <see cref="TierProductCharacteristic"/>.
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// The <see cref="Tier"/> which this <see cref="TierProductCharacteristic"/> is associated with.
@@ -28,7 +28,7 @@ namespace Jibberwock.DataModels.Products
         /// The value of this <see cref="ProductCharacteristic"/> for this <see cref="Tier"/>.
         /// </summary>
         /// <remarks>
-        /// This could have a handful of different values, but these will usually be <see cref="string"/>, <see cref="int"/> or <see cref="bool"/>.
+        /// This could have a handful of different values, but these will usually be <see cref="string"/>, <see cref="long"/> or <see cref="bool"/>.
         /// </remarks>
         public object CharacteristicValue { get; set; }
     }
