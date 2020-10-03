@@ -120,6 +120,9 @@
     <Build Include="products\CharacteristicValueType.sql" />
     <Build Include="products\usp_ListProducts.sql" />
     <Build Include="security\tvf_ListEffectivePermissions.sql" />
+    <Build Include="security\usp_CreateSecurableResource.sql" />
+    <Build Include="products\usp_CreateProduct.sql" />
+    <Build Include="security\udt_ProductCharacteristic.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

@@ -42,3 +42,9 @@ GO
 
 GRANT EXECUTE ON [products].[usp_ListProducts] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [products].[usp_CreateProduct] TO [CoreAPI]
+GO
+
+GRANT EXECUTE ON TYPE::[products].[udt_ProductCharacteristic] TO [CoreAPI]
+GO

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 
 namespace Jibberwock.DataModels.Security.Audit.EntryTypes
 {
@@ -16,6 +17,18 @@ namespace Jibberwock.DataModels.Security.Audit.EntryTypes
             Type = AuditTrailEntryType.DeleteProduct;
         }
 
-        public override string Metadata { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        /// <summary>
+        /// The state of the <see cref="Product"/> being deleted.
+        /// </summary>
+        public Product Product { get; set; }
+
+        public override string Metadata
+        {
+            get => JsonSerializer.Serialize(Product);
+            set
+            {
+                Product = JsonSerializer.Deserialize<Product>(value);
+            }
+        }
     }
 }

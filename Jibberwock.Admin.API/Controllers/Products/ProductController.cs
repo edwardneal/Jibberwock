@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Jibberwock.Shared.Http.Authorization;
+using Jibberwock.DataModels.Products;
 using Jibberwock.DataModels.Security;
 using Jibberwock.Persistence.DataAccess.DataSources;
 using Jibberwock.Shared.Http.Controllers;
@@ -13,6 +14,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Jibberwock.Shared.Configuration;
 using Jibberwock.Shared.Http.Authentication;
+using Jibberwock.Admin.API.ActionModels.Products;
+using Jibberwock.Shared.Http;
 
 namespace Jibberwock.Admin.API.Controllers.Products
 {
@@ -25,8 +28,14 @@ namespace Jibberwock.Admin.API.Controllers.Products
             IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever) : base(loggerFactory, sqlServerDataSource, options, currentUserRetriever)
         { }
 
+        /// <summary>
+        /// Gets all available products.
+        /// </summary>
+        /// <param name="includeHiddenProducts">If set to <c>true</c>, includes products with a Visible property of <c>false</c>.</param>
+        /// <response code="200" nullable="false">The retrieved set of <see cref="Product"/> objects.</response>
         [Route("")]
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
         [ResourcePermissions(SecurableResourceType.Product, Permission.Read)]
         public async Task<IActionResult> GetProducts([FromQuery] bool includeHiddenProducts)
         {
@@ -40,17 +49,47 @@ namespace Jibberwock.Admin.API.Controllers.Products
 
         [Route("{id:int}")]
         [HttpPut]
-        public async Task<IActionResult> UpdateProduct([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromBody] object updatedProduct)
+        public async Task<IActionResult> UpdateProduct([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromBody] ProductCreationOptions updatedProduct)
         {
             return Ok();
         }
 
+        /// <summary>
+        /// Creates a single product.
+        /// </summary>
+        /// <param name="product">The expected state of the identified <see cref="Product"/>.</param>
+        /// <response code="201" nullable="false">The <see cref="Product"/> object created.</response>
+        /// <response code="400" nullable="false">Unable to create the product, see response for details.</response>
         [Route("")]
         [HttpPost]
-        [ResourcePermissions(SecurableResourceType.Product, Permission.CreateProduct)]
-        public async Task<IActionResult> CreateProduct([FromBody] object product)
+        [ProducesResponseType(typeof(Product), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.CreateProduct)]
+        public async Task<IActionResult> CreateProduct([FromBody] ProductCreationOptions product)
         {
-            return Ok();
+            if (product == null)
+            { ModelState.AddModelError(ErrorResponses.MissingBody, string.Empty); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            product.ApplicableCharacteristicIDs = product.ApplicableCharacteristicIDs ?? Enumerable.Empty<int>();
+
+            var productModel = new Jibberwock.DataModels.Products.Product()
+            {
+                Name = product.Name,
+                Description = product.Description,
+                MoreInformationUrl = product.MoreInformationUrl,
+                Visible = product.Visible,
+                ApplicableCharacteristics = product.ApplicableCharacteristicIDs?.Select(i => new Jibberwock.DataModels.Products.ProductCharacteristic() { Id = i }).ToArray()
+            };
+
+            var currentUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            var createProductCommand = new Jibberwock.Persistence.DataAccess.Commands.Products.CreateProduct(Logger, currentUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, null, productModel);
+
+            var creationSuccessful = await createProductCommand.Execute(SqlServerDataSource);
+
+            return Created(string.Empty, creationSuccessful.Result);
         }
 
         [Route("{id:int}/plans")]

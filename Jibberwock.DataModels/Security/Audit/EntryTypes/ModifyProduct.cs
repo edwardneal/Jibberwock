@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 
 namespace Jibberwock.DataModels.Security.Audit.EntryTypes
 {
@@ -16,6 +17,26 @@ namespace Jibberwock.DataModels.Security.Audit.EntryTypes
             Type = AuditTrailEntryType.ModifyProduct;
         }
 
-        public override string Metadata { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        /// <summary>
+        /// The new state of the <see cref="Product"/> being modified or created.
+        /// </summary>
+        public Product Product { get; set; }
+
+        /// <summary>
+        /// If <c>true</c>, this <see cref="Product"/> is a new record.
+        /// </summary>
+        public bool NewProduct { get; set; }
+
+        public override string Metadata
+        {
+            get => JsonSerializer.Serialize(new { Product, NewProduct });
+            set
+            {
+                var jsonDoc = JsonDocument.Parse(value);
+
+                NewProduct = jsonDoc.RootElement.GetProperty(nameof(NewProduct)).GetBoolean();
+                Product = JsonSerializer.Deserialize<Product>(jsonDoc.RootElement.GetProperty(nameof(Product)).GetRawText());
+            }
+        }
     }
 }

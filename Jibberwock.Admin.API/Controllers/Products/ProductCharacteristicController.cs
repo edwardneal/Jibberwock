@@ -92,6 +92,9 @@ namespace Jibberwock.Admin.API.Controllers.Products
         /// <response code="404" nullable="false">A <see cref="ProductCharacteristic"/> with the provided ID does not exist.</response>
         [Route("{id:int}")]
         [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Delete)]
         public async Task<IActionResult> DeleteProductCharacteristic([FromRoute] int id)
         {
@@ -135,6 +138,8 @@ namespace Jibberwock.Admin.API.Controllers.Products
         /// <response code="400" nullable="false">Unable to create the product characteristic, see response for details.</response>
         [Route("")]
         [HttpPost]
+        [ProducesResponseType(typeof(ProductCharacteristic), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Change)]
         public async Task<IActionResult> CreateCharacteristic([FromBody] ProductCharacteristicChangeSetting characteristic)
         {
@@ -149,7 +154,8 @@ namespace Jibberwock.Admin.API.Controllers.Products
                 Name = characteristic.Name,
                 Description = characteristic.Description,
                 Enabled = characteristic.Enabled,
-                Visible = characteristic.Visible
+                Visible = characteristic.Visible,
+                ValueType = characteristic.ValueType
             };
             var currentUser = await CurrentUserRetriever.GetCurrentUserAsync();
             var createCharacteristicCommand = new Jibberwock.Persistence.DataAccess.Commands.Products.CreateCharacteristic(Logger, currentUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, null, charModel);

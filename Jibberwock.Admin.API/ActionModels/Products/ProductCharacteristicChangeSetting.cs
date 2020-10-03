@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Jibberwock.DataModels.Products;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,5 +31,10 @@ namespace Jibberwock.Admin.API.ActionModels.Products
         /// The enabled state of the product characteristic. If <c>false</c>, it will not be available to add to a billing tier.
         /// </summary>
         public bool Enabled { get; set; }
+
+        /// <summary>
+        /// The acceptable type of all values associated with this product characteristic.
+        /// </summary>
+        public ProductCharacteristicValueType ValueType { get; set; }
     }
 }
