@@ -37,7 +37,9 @@ BEGIN
 		select @serviceReadersGroup = [Security_Group_ID] from [security].[WellKnownGroup] where Securable_Resource_ID = @Service_ID and Well_Known_Group_Type_ID = 4
 
 		insert into [security].[AccessControlEntry] (Securable_Resource_ID, Security_Group_ID, Permission_ID) values (@productId, @serviceAdministratorsGroup, 1)
+		insert into [security].[AccessControlEntry] (Securable_Resource_ID, Security_Group_ID, Permission_ID) values (@productId, @serviceAdministratorsGroup, 2)
 		insert into [security].[AccessControlEntry] (Securable_Resource_ID, Security_Group_ID, Permission_ID) values (@productId, @productAdministratorsGroup, 1)
+		insert into [security].[AccessControlEntry] (Securable_Resource_ID, Security_Group_ID, Permission_ID) values (@productId, @productAdministratorsGroup, 2)
 		insert into [security].[AccessControlEntry] (Securable_Resource_ID, Security_Group_ID, Permission_ID) values (@productId, @serviceReadersGroup, 1)
 
 		select p.Product_ID as Id, p.[Name], p.[Description],

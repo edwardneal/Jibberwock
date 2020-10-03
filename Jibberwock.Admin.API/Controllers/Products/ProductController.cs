@@ -47,11 +47,47 @@ namespace Jibberwock.Admin.API.Controllers.Products
             return Ok(products);
         }
 
+        /// <summary>
+        /// Updates a single product.
+        /// </summary>
+        /// <param name="id">The ID of the product to update.</param>
+        /// <param name="updatedProduct">The desired state of the product.</param>
+        /// <response code="200" nullable="false">The <see cref="Product"/> object updated.</response>
+        /// <response code="400" nullable="false">Unable to update the product, see response for details.</response>
+        /// <response code="404" nullable="false">A <see cref="Product"/> with the provided ID does not exist.</response>
         [Route("{id:int}")]
+        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPut]
         public async Task<IActionResult> UpdateProduct([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromBody] ProductCreationOptions updatedProduct)
         {
-            return Ok();
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
+            if (updatedProduct == null)
+            { ModelState.AddModelError(ErrorResponses.MissingBody, string.Empty); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var prodModel = new Product()
+            {
+                Id = id,
+                Name = updatedProduct.Name,
+                Description = updatedProduct.Description,
+                MoreInformationUrl = updatedProduct.MoreInformationUrl,
+                Visible = updatedProduct.Visible,
+                ApplicableCharacteristics = updatedProduct.ApplicableCharacteristicIDs.Select(x => new ProductCharacteristic() { Id = x })
+            };
+            var currentUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            var updateProductCommand = new Jibberwock.Persistence.DataAccess.Commands.Products.UpdateProduct(Logger, currentUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, null, prodModel);
+
+            var updateSuccessful = await updateProductCommand.Execute(SqlServerDataSource);
+
+            if (updateSuccessful.Result != null)
+            { return Ok(updateSuccessful.Result); }
+            else
+            { return NotFound(); }
         }
 
         /// <summary>

@@ -48,3 +48,6 @@ GO
 
 GRANT EXECUTE ON TYPE::[products].[udt_ProductCharacteristic] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [products].[usp_UpdateProduct] TO [CoreAPI]
+GO

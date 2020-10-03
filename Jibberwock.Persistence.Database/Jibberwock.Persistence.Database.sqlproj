@@ -123,6 +123,7 @@
     <Build Include="security\usp_CreateSecurableResource.sql" />
     <Build Include="products\usp_CreateProduct.sql" />
     <Build Include="security\udt_ProductCharacteristic.sql" />
+    <Build Include="products\usp_UpdateProduct.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
