@@ -51,3 +51,6 @@ GO
 
 GRANT EXECUTE ON [products].[usp_UpdateProduct] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [products].[usp_ListProductTiers] TO [CoreAPI]
+GO

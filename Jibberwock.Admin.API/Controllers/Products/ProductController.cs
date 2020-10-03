@@ -52,7 +52,7 @@ namespace Jibberwock.Admin.API.Controllers.Products
         /// </summary>
         /// <param name="id">The ID of the product to update.</param>
         /// <param name="updatedProduct">The desired state of the product.</param>
-        /// <response code="200" nullable="false">The <see cref="Product"/> object updated.</response>
+        /// <response code="200" nullable="false">The updated <see cref="Product"/> object.</response>
         /// <response code="400" nullable="false">Unable to update the product, see response for details.</response>
         /// <response code="404" nullable="false">A <see cref="Product"/> with the provided ID does not exist.</response>
         [Route("{id:int}")]
@@ -94,7 +94,7 @@ namespace Jibberwock.Admin.API.Controllers.Products
         /// Creates a single product.
         /// </summary>
         /// <param name="product">The expected state of the identified <see cref="Product"/>.</param>
-        /// <response code="201" nullable="false">The <see cref="Product"/> object created.</response>
+        /// <response code="201" nullable="false">The created <see cref="Product"/> object.</response>
         /// <response code="400" nullable="false">Unable to create the product, see response for details.</response>
         [Route("")]
         [HttpPost]
@@ -109,7 +109,7 @@ namespace Jibberwock.Admin.API.Controllers.Products
             if (!ModelState.IsValid)
             { return BadRequest(ModelState); }
 
-            product.ApplicableCharacteristicIDs = product.ApplicableCharacteristicIDs ?? Enumerable.Empty<int>();
+            product.ApplicableCharacteristicIDs ??= Enumerable.Empty<int>();
 
             var productModel = new Jibberwock.DataModels.Products.Product()
             {
@@ -128,30 +128,75 @@ namespace Jibberwock.Admin.API.Controllers.Products
             return Created(string.Empty, creationSuccessful.Result);
         }
 
-        [Route("{id:int}/plans")]
+        /// <summary>
+        /// Gets all tiers for a specified product.
+        /// </summary>
+        /// <param name="id">The ID of the product.</param>
+        /// <param name="includeHiddenTiers">If set to <c>true</c>, includes tiers with a Visible property of <c>false</c>.</param>
+        /// <response code="200" nullable="false">The retrieved set of <see cref="Tier"/> objects.</response>
+        /// <response code="400" nullable="false">Unable to get the list of tiers, see response for details.</response>
+        [Route("{id:int}/tiers")]
         [HttpGet]
-        public async Task<IActionResult> GetProductPlans([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Read)] long id, [FromQuery] bool includeHiddenPlans)
+        [ProducesResponseType(typeof(IEnumerable<Tier>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetProductTiers([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Read)] long id, [FromQuery] bool includeHiddenTiers)
         {
-            return Ok();
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var currentUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            var listTiersCommand = new Jibberwock.Persistence.DataAccess.Commands.Products.ListTiers(Logger, currentUser, includeHiddenTiers);
+            var tiers = await listTiersCommand.Execute(SqlServerDataSource);
+
+            return Ok(tiers);
         }
 
-        [Route("{id:int}/plans/{planId:int}")]
+        /// <summary>
+        /// Gets a specific tier and its characteristics for a specified product.
+        /// </summary>
+        /// <param name="id">The ID of the product.</param>
+        /// <param name="planId">The ID of the tier</param>
+        /// <response code="200" nullable="false">The retrieved set of <see cref="Tier"/> objects.</response>
+        /// <response code="400" nullable="false">Unable to get the list of tiers, see response for details.</response>
+        /// <response code="404" nullable="false">A <see cref="Product"/> or <see cref="Tier"/> with the provided ID does not exist.</response>
+        [Route("{id:int}/tiers/{tierId:int}")]
         [HttpGet]
-        public async Task<IActionResult> GetProductPlan([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Read)] long id, [FromRoute] long planId, [FromQuery] bool includeHiddenPlans)
+        [ProducesResponseType(typeof(Tier), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetSingleProductTier([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Read)] long id, [FromRoute] long tierId)
         {
-            return Ok();
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
+            if (tierId == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var currentUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            var getTierCommand = new Jibberwock.Persistence.DataAccess.Commands.Products.GetTier(Logger, currentUser, new Tier() { Id = tierId, Product = new Product() { Id = id } });
+            var tier = await getTierCommand.Execute(SqlServerDataSource);
+
+            if (tier == null)
+            { return NotFound(); }
+            else
+            { return Ok(tier); }
         }
 
-        [Route("{id:int}/plans/{planId:int}")]
+        [Route("{id:int}/tiers/{tierId:int}")]
         [HttpPut]
-        public async Task<IActionResult> UpdateProductPlan([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromRoute] long planId, [FromBody] object updatedProduct)
+        public async Task<IActionResult> UpdateProductTier([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromRoute] long tierId, [FromBody] object updatedProduct)
         {
             return Ok();
         }
 
-        [Route("{id:int}/plans")]
+        [Route("{id:int}/tiers")]
         [HttpPost]
-        public async Task<IActionResult> CreateProductPlan([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromBody] object productPlan)
+        public async Task<IActionResult> CreateProductTier([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromBody] object productPlan)
         {
             return Ok();
         }

@@ -20,6 +20,11 @@ namespace Jibberwock.DataModels.Products
         public string ExternalId { get; set; }
 
         /// <summary>
+        /// The friendly name for this <see cref="Tier"/>.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
         /// The <see cref="Product"/> this <see cref="Tier"/> is associated with.
         /// </summary>
         public Product Product { get; set; }
