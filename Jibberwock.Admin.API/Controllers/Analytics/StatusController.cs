@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Jibberwock.Shared.Configuration;
 using Microsoft.Extensions.Options;
 using Jibberwock.Shared.Http.Authentication;
+using Jibberwock.DataModels.ExternalComponents;
 
 namespace Jibberwock.Admin.API.Controllers.Analytics
 {
@@ -25,9 +26,14 @@ namespace Jibberwock.Admin.API.Controllers.Analytics
             IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever) : base(loggerFactory, sqlServerDataSource, options, currentUserRetriever)
         { }
 
+        /// <summary>
+        /// Gets all external components and their status.
+        /// </summary>
+        /// <response code="200" nullable="false">The retrieved set of <see cref="ExternalComponent"/> objects.</response>
         [Route("externalcomponents")]
-        [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<ExternalComponent>), StatusCodes.Status200OK)]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
         public async Task<IActionResult> GetExternalComponentStatuses()
         {
             var listAllCommand = new Jibberwock.Persistence.DataAccess.Commands.ExternalComponents.ListAll(Logger);
@@ -37,24 +43,24 @@ namespace Jibberwock.Admin.API.Controllers.Analytics
         }
 
         [Route("exceptions")]
-        [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
         [HttpGet]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
         public async Task<IActionResult> GetExceptions()
         {
             return Ok();
         }
 
         [Route("analytics")]
-        [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
         [HttpGet]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
         public async Task<IActionResult> GetAnalytics()
         {
             return Ok();
         }
 
         [Route("report")]
-        [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
         [HttpGet]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
         public IActionResult RedirectToReport()
         {
             return Redirect(WebApiConfiguration.PermittedRedirects["status_report"]);
