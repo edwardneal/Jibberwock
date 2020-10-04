@@ -43,6 +43,7 @@ namespace Jibberwock.Admin.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<WebApiConfiguration>(Configuration.GetSection("Configuration"));
+            services.Configure<AppInsightsConfiguration>(Configuration.GetSection("AppInsightsSettings"));
             services.Configure<SqlServerDataSourceOptions>(o =>
                 {
                     o.ReadOnlyConnectionString = Configuration?.GetConnectionString("ReadOnlySqlServer");

@@ -14,6 +14,10 @@ using Jibberwock.Shared.Configuration;
 using Microsoft.Extensions.Options;
 using Jibberwock.Shared.Http.Authentication;
 using Jibberwock.DataModels.ExternalComponents;
+using Jibberwock.Shared.Http;
+using Jibberwock.Admin.API.ActionModels.Status;
+using Microsoft.Azure.ApplicationInsights;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Jibberwock.Admin.API.Controllers.Analytics
 {
@@ -22,9 +26,15 @@ namespace Jibberwock.Admin.API.Controllers.Analytics
     [Authorize]
     public class StatusController : JibberwockControllerBase
     {
+        private readonly AppInsightsConfiguration _appInsightsConfiguration;
+
         public StatusController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource,
-            IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever) : base(loggerFactory, sqlServerDataSource, options, currentUserRetriever)
-        { }
+            IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever,
+            IOptions<AppInsightsConfiguration> appInsightsOptions)
+            : base(loggerFactory, sqlServerDataSource, options, currentUserRetriever)
+        {
+            _appInsightsConfiguration = appInsightsOptions.Value;
+        }
 
         /// <summary>
         /// Gets all external components and their status.
@@ -42,12 +52,48 @@ namespace Jibberwock.Admin.API.Controllers.Analytics
             return Ok(componentStatuses);
         }
 
+        /// <summary>
+        /// Gets all exceptions in the last period of time.
+        /// </summary>
+        /// <response code="200" nullable="false">A <see cref="ServiceExceptionReport"/> containing a list of recent exceptions.</response>
         [Route("exceptions")]
         [HttpGet]
+        [ProducesResponseType(typeof(ServiceExceptionReport), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
         public async Task<IActionResult> GetExceptions()
         {
-            return Ok();
+            if (string.IsNullOrWhiteSpace(_appInsightsConfiguration.AppId))
+            { ModelState.AddModelError(ErrorResponses.MisconfiguredApplicationInsightsId, string.Empty); }
+            if (string.IsNullOrWhiteSpace(_appInsightsConfiguration.TenantId))
+            { ModelState.AddModelError(ErrorResponses.MisconfiguredApplicationInsightsTenant, string.Empty); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            using (var appInsightsClient = await Jibberwock.Shared.Telemetry.ApplicationInsightsDataClientFactory.CreateDataClientAsync(_appInsightsConfiguration.AppId, _appInsightsConfiguration.TenantId))
+            {
+                var aiExceptionList = await appInsightsClient.GetExceptionEventsAsync(_appInsightsConfiguration.ExceptionTimeRange, cancellationToken: HttpContext.RequestAborted);
+                var serviceExceptions = (from aiEx in aiExceptionList.Value
+                                         select new ServiceException()
+                                         {
+                                             Id = aiEx.Id,
+                                             Operation = aiEx?.Operation?.Name,
+                                             Timestamp = new DateTimeOffset(aiEx.Timestamp.Value, TimeSpan.Zero),
+                                             Type = aiEx?.Exception?.Type,
+                                             Message = string.IsNullOrWhiteSpace(aiEx?.Exception?.InnermostMessage)
+                                                ? aiEx?.Exception?.OuterMessage
+                                                : aiEx?.Exception?.InnermostMessage
+                                         }).OrderBy(e => e.Timestamp).ToArray();
+                var serviceReport = new ServiceExceptionReport()
+                {
+                    StartDate = DateTimeOffset.UtcNow - _appInsightsConfiguration.ExceptionTimeRange,
+                    EndDate = DateTimeOffset.UtcNow,
+                    Exceptions = serviceExceptions
+                };
+
+                return Ok(serviceReport);
+            }
         }
 
         [Route("analytics")]

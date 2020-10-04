@@ -45,5 +45,13 @@ namespace Jibberwock.Shared.Http
         /// The product characteristic value being specified is not valid according to the characteristic's data type.
         /// </summary>
         public const string InvalidCharacteristicValue = "invalid_characteristic_value";
+        /// <summary>
+        /// There is a server-side misconfiguration: the Application Insights AppID has not been specified.
+        /// </summary>
+        public const string MisconfiguredApplicationInsightsId = "invalid_appinsights_appid";
+        /// <summary>
+        /// There is a server-side misconfiguration: the Application Insights Tenant ID has not been specified.
+        /// </summary>
+        public const string MisconfiguredApplicationInsightsTenant = "invalid_appinsights_tenantid";
     }
 }
