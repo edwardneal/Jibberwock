@@ -57,7 +57,11 @@ namespace Jibberwock.Admin.API
                 .AddEasyAuthAuthentication(o => { });
             services.AddJibberwockSecurity();
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(opts =>
+                {
+                    opts.JsonSerializerOptions.Converters.Add(new Jibberwock.Shared.Http.JsonConverters.DictionaryConverter<Jibberwock.DataModels.Security.WellKnownGroupType, Jibberwock.DataModels.Security.Group>());
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

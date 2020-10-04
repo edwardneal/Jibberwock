@@ -40,13 +40,10 @@ namespace Jibberwock.Admin.API.Controllers.Security
         public async Task<IActionResult> GetUsersByName([FromQuery] string name)
         {
             if (string.IsNullOrWhiteSpace(name))
-            {
-                ModelState.AddModelError(ErrorResponses.InvalidFilter, string.Empty);
-            }
+            { ModelState.AddModelError(ErrorResponses.InvalidFilter, string.Empty); }
+
             if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            { return BadRequest(ModelState); }
 
             var getUsersCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.GetUsersByName(Logger, name);
 

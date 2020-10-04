@@ -34,7 +34,7 @@ namespace Jibberwock.DataModels.Tenants
         /// <summary>
         /// All "well-known <see cref="Group"/>s" for this <see cref="Tenant"/>. This provides a hard link to specific tenant-level groups.
         /// </summary>
-        public IReadOnlyDictionary<WellKnownGroupType, Group> WellKnownGroups { get; set; }
+        public Dictionary<WellKnownGroupType, Group> WellKnownGroups { get; set; }
 
         /// <summary>
         /// API keys available for any <see cref="Product"/>s which are part of this <see cref="Tenant"/>.

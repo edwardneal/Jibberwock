@@ -66,3 +66,6 @@ GO
 
 GRANT EXECUTE ON [products].[usp_UpdateProductTier] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [tenants].[usp_GetTenantsByName] TO [CoreAPI]
+GO
