@@ -58,8 +58,13 @@ namespace Jibberwock.Admin.API.Controllers.Analytics
             return Ok();
         }
 
+        /// <summary>
+        /// Redirects to the status reporting page.
+        /// </summary>
+        /// <response code="302" nullable="false">A redirect to the status reporting page.</response>
         [Route("report")]
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status302Found)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
         public IActionResult RedirectToReport()
         {
