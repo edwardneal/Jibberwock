@@ -161,7 +161,7 @@ namespace Jibberwock.Admin.API.Controllers.Products
         /// </summary>
         /// <param name="id">The ID of the product.</param>
         /// <param name="planId">The ID of the tier</param>
-        /// <response code="200" nullable="false">The retrieved set of <see cref="Tier"/> objects.</response>
+        /// <response code="200" nullable="false">The retrieved <see cref="Tier"/> object.</response>
         /// <response code="400" nullable="false">Unable to get the list of tiers, see response for details.</response>
         /// <response code="404" nullable="false">A <see cref="Product"/> or <see cref="Tier"/> with the provided ID does not exist.</response>
         [Route("{id:int}/tiers/{tierId:int}")]
@@ -189,9 +189,20 @@ namespace Jibberwock.Admin.API.Controllers.Products
             { return Ok(tier); }
         }
 
+        /// <summary>
+        /// Updates the details of a specific tier and its characteristics for a specified product.
+        /// </summary>
+        /// <param name="id">The ID of the product.</param>
+        /// <param name="planId">The ID of the tier</param>
+        /// <response code="200" nullable="false">The updated <see cref="Tier"/> object.</response>
+        /// <response code="400" nullable="false">Unable to update the tier, see response for details.</response>
+        /// <response code="404" nullable="false">A <see cref="Product"/> or <see cref="Tier"/> with the provided ID does not exist.</response>
         [Route("{id:int}/tiers/{tierId:int}")]
         [HttpPut]
-        public async Task<IActionResult> UpdateProductTier([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromRoute] long tierId, [FromBody] TierCreationOptions updatedProduct)
+        [ProducesResponseType(typeof(Tier), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateProductTier([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromRoute] long tierId, [FromBody] TierCreationOptions updatedTier)
         {
             if (id == 0)
             { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
@@ -201,7 +212,31 @@ namespace Jibberwock.Admin.API.Controllers.Products
             if (!ModelState.IsValid)
             { return BadRequest(ModelState); }
 
-            return Ok();
+            var suppliedCharacteristicValues = await parseProductCharacteristicsAsync(id, updatedTier.CharacteristicValues);
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var tierModel = new Tier()
+            {
+                Id = tierId,
+                Name = updatedTier.Name,
+                StartDate = updatedTier.StartDate,
+                EndDate = updatedTier.EndDate,
+                Product = new Product() { Id = id },
+                Visible = updatedTier.Visible,
+                Characteristics = suppliedCharacteristicValues
+            };
+
+            var currentUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            // Update the tier, then return it to the clients
+            var updateTierCommand = new Jibberwock.Persistence.DataAccess.Commands.Products.UpdateTier(Logger, currentUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, null, tierModel);
+            var auditedTierCreation = await updateTierCommand.Execute(SqlServerDataSource);
+
+            if (auditedTierCreation.Result != null)
+            { return Ok(auditedTierCreation.Result); }
+            else
+            { return NotFound(); }
         }
 
         /// <summary>

@@ -129,6 +129,7 @@
     <Build Include="products\usp_CreateProductTier.sql" />
     <Build Include="products\udt_ProductCharacteristic.sql" />
     <Build Include="products\udt_TierCharacteristicValue.sql" />
+    <Build Include="products\usp_UpdateProductTier.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
