@@ -37,5 +37,13 @@ namespace Jibberwock.Shared.Http
         /// The product characteristic is associated with a product.
         /// </summary>
         public const string AssociatedWithProduct = "associated_with_product";
+        /// <summary>
+        /// The product characteristic being referenced does not exist (or is not enabled.)
+        /// </summary>
+        public const string InvalidCharacteristic = "invalid_characteristic";
+        /// <summary>
+        /// The product characteristic value being specified is not valid according to the characteristic's data type.
+        /// </summary>
+        public const string InvalidCharacteristicValue = "invalid_characteristic_value";
     }
 }

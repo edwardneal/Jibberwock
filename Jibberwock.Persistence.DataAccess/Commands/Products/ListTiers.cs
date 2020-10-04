@@ -35,11 +35,12 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Products
         [Required]
         public User CurrentUser { get; set; }
 
-        public ListTiers(ILogger logger, User currentUser, bool includeHiddenTiers)
+        public ListTiers(ILogger logger, User currentUser, bool includeHiddenTiers, Product product)
             : base(logger)
         {
             CurrentUser = currentUser;
             IncludeHiddenTiers = includeHiddenTiers;
+            Product = product;
         }
 
         protected override async Task<IEnumerable<Tier>> OnExecute(IReadableDataSource dataSource)

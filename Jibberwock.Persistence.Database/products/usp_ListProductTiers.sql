@@ -15,7 +15,7 @@ BEGIN
 		where ep.Permission_ID = 1
 
 	select t.Tier_ID as Id, t.[Name], t.External_Identifier as ExternalId,
-		t.Visible, t.[Start_Date], t.End_Date
+		t.Visible, t.[Start_Date] as StartDate, t.End_Date as EndDate
 	from [products].[Tier] as t
 	where t.Product_ID = @Product_ID
 		and t.Product_ID in (select Securable_Resource_ID from @availableSecurableResources)

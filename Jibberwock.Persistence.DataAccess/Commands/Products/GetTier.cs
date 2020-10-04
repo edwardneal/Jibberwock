@@ -70,7 +70,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Products
                                                      Description = cV.Description,
                                                      Visible = cV.Visible,
                                                      Enabled = cV.Enabled,
-                                                     ValueType = cV.ValueType
+                                                     ValueType = (ProductCharacteristicValueType)cV.ValueType
                                                  }
                                              }).ToArray();
 

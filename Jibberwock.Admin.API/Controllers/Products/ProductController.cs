@@ -16,6 +16,7 @@ using Jibberwock.Shared.Configuration;
 using Jibberwock.Shared.Http.Authentication;
 using Jibberwock.Admin.API.ActionModels.Products;
 using Jibberwock.Shared.Http;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace Jibberwock.Admin.API.Controllers.Products
 {
@@ -147,8 +148,9 @@ namespace Jibberwock.Admin.API.Controllers.Products
             if (!ModelState.IsValid)
             { return BadRequest(ModelState); }
 
+            var productModel = new Product() { Id = id };
             var currentUser = await CurrentUserRetriever.GetCurrentUserAsync();
-            var listTiersCommand = new Jibberwock.Persistence.DataAccess.Commands.Products.ListTiers(Logger, currentUser, includeHiddenTiers);
+            var listTiersCommand = new Jibberwock.Persistence.DataAccess.Commands.Products.ListTiers(Logger, currentUser, includeHiddenTiers, productModel);
             var tiers = await listTiersCommand.Execute(SqlServerDataSource);
 
             return Ok(tiers);
@@ -189,16 +191,134 @@ namespace Jibberwock.Admin.API.Controllers.Products
 
         [Route("{id:int}/tiers/{tierId:int}")]
         [HttpPut]
-        public async Task<IActionResult> UpdateProductTier([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromRoute] long tierId, [FromBody] object updatedProduct)
+        public async Task<IActionResult> UpdateProductTier([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromRoute] long tierId, [FromBody] TierCreationOptions updatedProduct)
         {
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
+            if (tierId == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
             return Ok();
         }
 
+        /// <summary>
+        /// Creates a single product tier.
+        /// </summary>
+        /// <param name="id">The ID of the product to create the tier for.</param>
+        /// <param name="productTier">The details of the tier to create.</param>
+        /// <response code="201" nullable="false">The created <see cref="Tier"/> object.</response>
+        /// <response code="400" nullable="false">Unable to create the tier, see response for details.</response>
         [Route("{id:int}/tiers")]
         [HttpPost]
-        public async Task<IActionResult> CreateProductTier([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromBody] object productPlan)
+        [ProducesResponseType(typeof(Tier), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateProductTier([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromBody] TierCreationOptions productTier)
         {
-            return Ok();
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
+            if (productTier == null)
+            { ModelState.AddModelError(ErrorResponses.MissingBody, string.Empty); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            // This is a three-step operation (because the tier characteristic values need to be interpreted)
+            // First, get the list of characteristics (and their associated data types)
+            // Second, perform the conversion from a string/object into a usable form
+            // Third, perform the upload
+            var suppliedCharacteristicValues = await parseProductCharacteristicsAsync(id, productTier.CharacteristicValues);
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var tierModel = new Tier()
+            {
+                Name = productTier.Name,
+                ExternalId = productTier.ExternalId,
+                StartDate = productTier.StartDate,
+                EndDate = productTier.EndDate,
+                Product = new Product() { Id = id },
+                Visible = productTier.Visible,
+                Characteristics = suppliedCharacteristicValues
+            };
+
+            var currentUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            // Create the tier, then pass the details along to a GetTierById command to populate the full details
+            var createTierCommand = new Jibberwock.Persistence.DataAccess.Commands.Products.CreateTier(Logger, currentUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, null, tierModel);
+            var auditedTierCreation = await createTierCommand.Execute(SqlServerDataSource);
+
+            var getCreatedTierCommand = new Jibberwock.Persistence.DataAccess.Commands.Products.GetTier(Logger, currentUser, auditedTierCreation.Result);
+            var resultantTier = await getCreatedTierCommand.Execute(SqlServerDataSource);
+
+            return Created(string.Empty, resultantTier);
+        }
+
+        private async Task<IEnumerable<TierProductCharacteristic>> parseProductCharacteristicsAsync(long productId, IEnumerable<TierCharacteristicValue> characteristicValues)
+        {
+            var suppliedCharacteristicValues = new List<TierProductCharacteristic>();
+
+            if (characteristicValues != null && characteristicValues.Any())
+            {
+                // Get the characteristics, filtering to Enabled ones for sanity's sake.
+                // Focus on the global characteristics list, then the product's applicable characteristics
+                var listCharacteristicsCommand = new Jibberwock.Persistence.DataAccess.Commands.Products.ListAllCharacteristics(Logger);
+                var globalCharacteristicsList = await listCharacteristicsCommand.Execute(SqlServerDataSource);
+                var globalCharacteristics = globalCharacteristicsList.Where(c => c.Enabled).ToDictionary(ch => ch.Id);
+
+                var currentUser = await CurrentUserRetriever.GetCurrentUserAsync();
+                var getProductCommand = new Jibberwock.Persistence.DataAccess.Commands.Products.GetById(Logger, currentUser, new Product() { Id = productId });
+                var productDetails = await getProductCommand.Execute(SqlServerDataSource);
+                var productCharacteristics = productDetails.ApplicableCharacteristics.Where(c => c.Enabled).ToDictionary(ch => ch.Id);
+
+                foreach (var charValue in characteristicValues)
+                {
+                    // Discard any supplied characteristics which don't exist in the lists
+                    if (!globalCharacteristics.ContainsKey(charValue.CharacteristicId) | !productCharacteristics.ContainsKey(charValue.CharacteristicId))
+                    {
+                        ModelState.AddModelError(ErrorResponses.InvalidCharacteristic, $"{{ \"id\": {charValue.CharacteristicId} }}");
+                        continue;
+                    }
+
+                    var prodChar = productCharacteristics[charValue.CharacteristicId];
+                    var resultantTpc = new TierProductCharacteristic()
+                    {
+                        ProductCharacteristic = prodChar
+                    };
+
+                    // Handle the translation, converting from strings to booleans, longs or strings
+                    switch (prodChar.ValueType)
+                    {
+                        case ProductCharacteristicValueType.Boolean:
+                            if (!bool.TryParse(charValue.Value, out var parsedBool))
+                            {
+                                ModelState.AddModelError(ErrorResponses.InvalidCharacteristicValue, $"{{ \"id\": {charValue.CharacteristicId}, \"type\": {(int)prodChar.ValueType} }}");
+                                continue;
+                            }
+
+                            resultantTpc.CharacteristicValue = parsedBool;
+                            break;
+                        case ProductCharacteristicValueType.Numeric:
+                            if (!long.TryParse(charValue.Value, out var parsedLong))
+                            {
+                                ModelState.AddModelError(ErrorResponses.InvalidCharacteristicValue, $"{{ \"id\": {charValue.CharacteristicId}, \"type\": {(int)prodChar.ValueType} }}");
+                                continue;
+                            }
+
+                            resultantTpc.CharacteristicValue = parsedLong;
+                            break;
+                        case ProductCharacteristicValueType.String:
+                            resultantTpc.CharacteristicValue = charValue.Value;
+                            break;
+                    }
+
+                    suppliedCharacteristicValues.Add(resultantTpc);
+                }
+            }
+
+            return suppliedCharacteristicValues;
         }
     }
 }

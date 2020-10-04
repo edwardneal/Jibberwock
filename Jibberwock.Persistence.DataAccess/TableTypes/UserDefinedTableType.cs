@@ -86,6 +86,12 @@ namespace Jibberwock.Persistence.DataAccess.TableTypes
                 return SqlDbType.UniqueIdentifier;
             if (type == typeof(string))
                 return SqlDbType.NVarChar;
+            if (type == typeof(object))
+                return SqlDbType.Variant;
+            if (type == typeof(DateTimeOffset))
+                return SqlDbType.DateTimeOffset;
+            if (type == typeof(DateTime))
+                return SqlDbType.DateTime2;
 
             throw new InvalidOperationException("Non-enumeration type must be one of Guid or string.");
         }

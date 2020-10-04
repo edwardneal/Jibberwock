@@ -28,6 +28,10 @@ namespace Jibberwock.DataModels.Security.Audit
         /// <summary>
         /// Entry is a <see cref="Jibberwock.DataModels.Security.Audit.EntryTypes.DeleteProductCharacteristic"/> record.
         /// </summary>
-        DeleteProductCharacteristic = 5
+        DeleteProductCharacteristic = 5,
+        /// <summary>
+        /// Entry is a <see cref="Jibberwock.DataModels.Security.Audit.EntryTypes.ModifyTier"/> record.
+        /// </summary>
+        ModifyTier = 6
     }
 }

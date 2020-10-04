@@ -54,3 +54,12 @@ GO
 
 GRANT EXECUTE ON [products].[usp_ListProductTiers] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [products].[usp_GetProductById] TO [CoreAPI]
+GO
+
+GRANT EXECUTE ON TYPE::[products].[udt_TierCharacteristicValue] TO [CoreAPI]
+GO
+
+GRANT EXECUTE ON [products].[usp_CreateProductTier] TO [CoreAPI]
+GO

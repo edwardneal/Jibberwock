@@ -23,7 +23,7 @@ BEGIN
 
 	select tcv.Tier_Characteristic_Value_ID as Id,
 		(case c.Value_Type_ID
-			when 1 then cast(tcv.String_Value as sql_variant)
+			when 1 then cast(cast(tcv.String_Value as nvarchar(4000)) as sql_variant)
 			when 2 then cast(tcv.Boolean_Value as sql_variant)
 			when 3 then cast(tcv.Numeric_Value as sql_variant)
 		end) as CharacteristicValue,
