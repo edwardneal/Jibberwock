@@ -69,3 +69,6 @@ GO
 
 GRANT EXECUTE ON [tenants].[usp_GetTenantsByName] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [security].[usp_GetAuditTrail] TO [CoreAPI]
+GO

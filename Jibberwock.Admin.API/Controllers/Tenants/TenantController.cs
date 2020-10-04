@@ -14,6 +14,7 @@ using Jibberwock.Shared.Configuration;
 using Jibberwock.Shared.Http.Authentication;
 using Jibberwock.DataModels.Tenants;
 using Jibberwock.Shared.Http;
+using Jibberwock.DataModels.Security.Audit;
 
 namespace Jibberwock.Admin.API.Controllers.Tenants
 {
@@ -113,12 +114,32 @@ namespace Jibberwock.Admin.API.Controllers.Tenants
             return Ok();
         }
 
+        /// <summary>
+        /// Gets an audit trail, filtering it by timestamp, user ID, tenant ID, operator and type.
+        /// </summary>
+        /// <param name="id">Filter to audit trail entries relating to this tenant.</param>
+        /// <param name="start">The start of the time window to retrieve.</param>
+        /// <param name="end">The end of the time window to retrieve.</param>
+        /// <param name="userId">Filter to audit trail entries relating to this user.</param>
+        /// <param name="performedBy">Filter to audit trail entries performed by this user.</param>
+        /// <param name="type">Filter to this type of audit trail entry.</param>
+        /// <response code="200" nullable="false">The retrieved set of <see cref="AuditTrailEntry"/> objects.</response>
         [Route("{id:int}/audittrail")]
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<AuditTrailEntry>), StatusCodes.Status200OK)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
-        public async Task<IActionResult> GetAuditTrail([FromRoute] long id, [FromQuery] string start, [FromQuery] string end, [FromQuery] long userId, [FromQuery] string performedBy, [FromQuery] string type)
+        public async Task<IActionResult> GetAuditTrail([FromRoute] long id, [FromQuery] DateTimeOffset? start, [FromQuery] DateTimeOffset? end,
+            [FromQuery] long? userId,
+            [FromQuery] long? performedBy, [FromQuery] AuditTrailEntryType? type)
         {
-            return Ok();
+            var getAuditTrailCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.GetAuditTrail(Logger,
+                start, end, userId.HasValue ? new DataModels.Users.User() { Id = userId.Value } : null,
+                new DataModels.Tenants.Tenant() { Id = id },
+                performedBy.HasValue ? new DataModels.Users.User() { Id = performedBy.Value } : null,
+                type);
+            var auditTrailEntries = await getAuditTrailCommand.Execute(SqlServerDataSource);
+
+            return Ok(auditTrailEntries);
         }
 
         [Route("{id:int}/notifications")]

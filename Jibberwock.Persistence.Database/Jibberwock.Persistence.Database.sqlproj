@@ -131,6 +131,7 @@
     <Build Include="products\udt_TierCharacteristicValue.sql" />
     <Build Include="products\usp_UpdateProductTier.sql" />
     <Build Include="tenants\usp_GetTenantsByName.sql" />
+    <Build Include="security\usp_GetAuditTrail.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
