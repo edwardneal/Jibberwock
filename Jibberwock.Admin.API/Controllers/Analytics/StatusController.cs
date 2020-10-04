@@ -96,14 +96,6 @@ namespace Jibberwock.Admin.API.Controllers.Analytics
             }
         }
 
-        [Route("analytics")]
-        [HttpGet]
-        [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
-        public async Task<IActionResult> GetAnalytics()
-        {
-            return Ok();
-        }
-
         /// <summary>
         /// Redirects to the status reporting page.
         /// </summary>
