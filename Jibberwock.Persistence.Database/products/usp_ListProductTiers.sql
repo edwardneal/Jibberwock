@@ -20,4 +20,21 @@ BEGIN
 	where t.Product_ID = @Product_ID
 		and t.Product_ID in (select Securable_Resource_ID from @availableSecurableResources)
 		and ((@Include_Hidden = 0 and t.Visible = 1) or (@Include_Hidden = 1))
+
+	select t.Tier_ID as TierId, c.Characteristic_ID as CharacteristicId, c.[Name],
+		c.[Description], c.[Visible], c.[Enabled], c.Value_Type_ID as ValueType,
+		tcv.Tier_Characteristic_Value_ID as TierCharacteristicValueId,
+		(case c.Value_Type_ID
+			when 1 then cast(cast(tcv.String_Value as nvarchar(4000)) as sql_variant)
+			when 2 then cast(tcv.Boolean_Value as sql_variant)
+			when 3 then cast(tcv.Numeric_Value as sql_variant)
+		end) as [Value]
+	from [products].[Tier] as t
+	inner join [products].[TierCharacteristicValue] as tcv
+		on (tcv.Tier_ID = t.Tier_ID)
+	inner join [products].[Characteristic] as c
+		on (c.Characteristic_ID = tcv.Characteristic_ID)
+	where t.Product_ID = @Product_ID
+		and t.Product_ID in (select Securable_Resource_ID from @availableSecurableResources)
+		and ((@Include_Hidden = 0 and t.Visible = 1) or (@Include_Hidden = 1))
 END
