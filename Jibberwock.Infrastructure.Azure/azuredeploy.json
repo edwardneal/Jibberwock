@@ -36,6 +36,17 @@
         "serviceObjective": "Basic"
       }
     },
+    "serviceBus": {
+      "tier": "Basic",
+      "namespaceName": "[concat(toLower(variables('sharedName')), '-bus')]",
+      "queues": {
+        "notifications": "[concat('notifications-', parameters('environmentName'))]"
+      },
+      "authRules": {
+        "read": "ReadOnly",
+        "write": "Send"
+      }
+    },
     "allertProductConfiguration": {
       "storageAccountName": "allert",
       "storageTableName": "alertdefinitiongroupdata"
@@ -86,7 +97,8 @@
         "name": "[concat(toLower(variables('sharedName')), '-proxy-', parameters('environmentName'))]"
       },
       "background": {
-        "name": "[concat(toLower(variables('sharedName')), '-background-', parameters('environmentName'))]"
+        "name": "[concat(toLower(variables('sharedName')), '-background-', parameters('environmentName'))]",
+        "notificationHandlingFunction": "HandleNotifications"
       }
     },
     "applicationInsights": {
@@ -109,6 +121,55 @@
         "capacity": "[variables('appService').capacity]",
         "name": "[variables('appService').plan]"
       }
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces",
+      "apiVersion": "2018-01-01-preview",
+      "location": "[resourceGroup().location]",
+      "name": "[variables('serviceBus').namespaceName]",
+      "tags": {
+        "purpose": "background-processing"
+      },
+      "properties": {},
+      "sku": {
+        "name": "[variables('serviceBus').tier]"
+      },
+      "resources": [
+        {
+          "type": "AuthorizationRules",
+          "apiVersion": "2017-04-01",
+          "name": "[variables('serviceBus').authRules.read]",
+          "properties": {
+            "rights": [ "Listen" ]
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBus').namespaceName)]"
+          ]
+        },
+        {
+          "type": "AuthorizationRules",
+          "apiVersion": "2017-04-01",
+          "name": "[variables('serviceBus').authRules.write]",
+          "properties": {
+            "rights": [ "Send" ]
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBus').namespaceName)]"
+          ]
+        },
+        {
+          "type": "queues",
+          "apiVersion": "2017-04-01",
+          "name": "[variables('serviceBus').queues.notifications]",
+          "tags": {},
+          "properties": {
+            "defaultMessageTimeToLive": "P14DT0H0M0S"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBus').namespaceName)]"
+          ]
+        }
+      ]
     },
     {
       "type": "Microsoft.Sql/servers",
@@ -328,7 +389,8 @@
           "apiVersion": "2020-06-01",
           "properties": {
             "SensitiveSettingKeyVaultName": "[variables('keyVault').name]",
-            "APPINSIGHTSSETTINGS_TENANTID": "[subscription().tenantId]"
+            "APPINSIGHTSSETTINGS_TENANTID": "[subscription().tenantId]",
+            "CONNECTIONS_SERVICEBUS_NAMESPACE": "[variables('serviceBus').namespaceName]"
           },
           "dependsOn": [
             "[resourceId('Microsoft.Web/sites', variables('appService').services[copyIndex()].name)]"
@@ -372,7 +434,7 @@
           "apiVersion": "2020-06-01",
           "name": "slotconfignames",
           "properties": {
-            "appSettingNames": [ "APPINSIGHTS_INSTRUMENTATIONKEY", "APPINSIGHTSSETTINGS_APPID" ],
+            "appSettingNames": [ "APPINSIGHTS_INSTRUMENTATIONKEY", "APPINSIGHTSSETTINGS_APPID", "CONNECTIONS_SERVICEBUS_QUEUES_NOTIFICATIONS" ],
             "connectionStringNames": [ "ReadOnlySqlServer", "ReadWriteSqlServer" ]
           },
           "dependsOn": [
@@ -402,7 +464,8 @@
               "name": "appsettings",
               "properties": {
                 "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').InstrumentationKey]",
-                "APPINSIGHTSSETTINGS_APPID": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').AppId]"
+                "APPINSIGHTSSETTINGS_APPID": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').AppId]",
+                "CONNECTIONS_SERVICEBUS_QUEUES_NOTIFICATIONS": "[variables('serviceBus').queues.notifications]"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Web/sites/slots', variables('appService').services[copyIndex()].name, parameters('environmentName'))]",
@@ -582,12 +645,16 @@
             "APPINSIGHTSSETTINGS_APPID": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').AppId]",
             "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(variables('sharedName')), 'root;AccountKey=', listKeys(concat(toLower(variables('sharedName')), 'root'), '2019-06-01').keys[0].value)]",
             "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(variables('sharedName')), 'root;AccountKey=', listKeys(concat(toLower(variables('sharedName')), 'root'), '2019-06-01').keys[0].value)]",
-            "WEBSITE_CONTENTSHARE": "[variables('appService').background.name]"
+            "WEBSITE_CONTENTSHARE": "[variables('appService').background.name]",
+            "CONNECTIONS_SERVICEBUS_NAMESPACE": "[variables('serviceBus').namespaceName]",
+            "CONNECTIONS_SERVICEBUS_QUEUES_NOTIFICATIONS": "[variables('serviceBus').queues.notifications]",
+            "CONNECTIONS_SERVICEBUS_CONNECTIONSTRING": "[listKeys(resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBus').namespaceName, variables('serviceBus').authRules.read), '2015-08-01').primaryConnectionString]"
           },
           "dependsOn": [
             "[resourceId('Microsoft.Web/sites', variables('appService').background.name)]",
             "[resourceId('Microsoft.Storage/storageAccounts', concat(toLower(variables('sharedName')), 'root'))]",
-            "[resourceId('Microsoft.Insights/components', variables('applicationInsights').name)]"
+            "[resourceId('Microsoft.Insights/components', variables('applicationInsights').name)]",
+            "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBus').namespaceName, variables('serviceBus').authRules.read)]"
           ]
         },
         {
