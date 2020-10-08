@@ -12,4 +12,4 @@ if 3 not in (select [Notification_Type_ID] from [core].[NotificationType])
 
 if 4 not in (select [Notification_Type_ID] from [core].[NotificationType])
 	insert into [core].[NotificationType] ([Notification_Type_ID], [Name])
-	values (4, 'question')
+	values (4, 'warning')
