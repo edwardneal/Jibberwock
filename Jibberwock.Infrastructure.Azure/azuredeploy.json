@@ -390,7 +390,7 @@
           "properties": {
             "SensitiveSettingKeyVaultName": "[variables('keyVault').name]",
             "APPINSIGHTSSETTINGS_TENANTID": "[subscription().tenantId]",
-            "CONNECTIONS_SERVICEBUS_NAMESPACE": "[variables('serviceBus').namespaceName]"
+            "CONFIGURATION_SERVICEBUS_NAMESPACE": "[variables('serviceBus').namespaceName]"
           },
           "dependsOn": [
             "[resourceId('Microsoft.Web/sites', variables('appService').services[copyIndex()].name)]"
@@ -434,7 +434,7 @@
           "apiVersion": "2020-06-01",
           "name": "slotconfignames",
           "properties": {
-            "appSettingNames": [ "APPINSIGHTS_INSTRUMENTATIONKEY", "APPINSIGHTSSETTINGS_APPID", "CONNECTIONS_SERVICEBUS_QUEUES_NOTIFICATIONS" ],
+            "appSettingNames": [ "APPINSIGHTS_INSTRUMENTATIONKEY", "APPINSIGHTSSETTINGS_APPID", "CONFIGURATION_SERVICEBUS_QUEUES_NOTIFICATIONS" ],
             "connectionStringNames": [ "ReadOnlySqlServer", "ReadWriteSqlServer" ]
           },
           "dependsOn": [
@@ -465,7 +465,7 @@
               "properties": {
                 "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').InstrumentationKey]",
                 "APPINSIGHTSSETTINGS_APPID": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').AppId]",
-                "CONNECTIONS_SERVICEBUS_QUEUES_NOTIFICATIONS": "[variables('serviceBus').queues.notifications]"
+                "CONFIGURATION_SERVICEBUS_QUEUES_NOTIFICATIONS": "[variables('serviceBus').queues.notifications]"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Web/sites/slots', variables('appService').services[copyIndex()].name, parameters('environmentName'))]",
@@ -646,9 +646,9 @@
             "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(variables('sharedName')), 'root;AccountKey=', listKeys(concat(toLower(variables('sharedName')), 'root'), '2019-06-01').keys[0].value)]",
             "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(variables('sharedName')), 'root;AccountKey=', listKeys(concat(toLower(variables('sharedName')), 'root'), '2019-06-01').keys[0].value)]",
             "WEBSITE_CONTENTSHARE": "[variables('appService').background.name]",
-            "CONNECTIONS_SERVICEBUS_NAMESPACE": "[variables('serviceBus').namespaceName]",
-            "CONNECTIONS_SERVICEBUS_QUEUES_NOTIFICATIONS": "[variables('serviceBus').queues.notifications]",
-            "CONNECTIONS_SERVICEBUS_CONNECTIONSTRING": "[listKeys(resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBus').namespaceName, variables('serviceBus').authRules.read), '2015-08-01').primaryConnectionString]"
+            "CONFIGURATION_SERVICEBUS_NAMESPACE": "[variables('serviceBus').namespaceName]",
+            "CONFIGURATION_SERVICEBUS_QUEUES_NOTIFICATIONS": "[variables('serviceBus').queues.notifications]",
+            "CONFIGURATION_SERVICEBUS_CONNECTIONSTRING": "[listKeys(resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBus').namespaceName, variables('serviceBus').authRules.read), '2015-08-01').primaryConnectionString]"
           },
           "dependsOn": [
             "[resourceId('Microsoft.Web/sites', variables('appService').background.name)]",

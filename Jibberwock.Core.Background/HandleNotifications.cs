@@ -17,7 +17,7 @@ namespace Jibberwock.Core.Background
 
         [FunctionName("HandleNotifications")]
         public async Task Run(
-            [ServiceBusTrigger("%CONNECTIONS_SERVICEBUS_QUEUES_NOTIFICATIONS%", Connection = "CONNECTIONS_SERVICEBUS_CONNECTIONSTRING")]
+            [ServiceBusTrigger("%CONFIGURATION_SERVICEBUS_QUEUES_NOTIFICATIONS%", Connection = "CONFIGURATION_SERVICEBUS_CONNECTIONSTRING")]
             Message notificationMessage,
             ILogger log)
         {

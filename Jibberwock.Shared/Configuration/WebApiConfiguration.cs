@@ -23,5 +23,10 @@ namespace Jibberwock.Shared.Configuration
         /// Dictionary which maps a specific token to a URL. Used when redirecting from EasyAuth.
         /// </summary>
         public Dictionary<string, string> PermittedRedirects { get; set; }
+
+        /// <summary>
+        /// Configuration for the Azure Service Bus connections.
+        /// </summary>
+        public ServiceBusConfiguration ServiceBus { get; set; }
     }
 }
