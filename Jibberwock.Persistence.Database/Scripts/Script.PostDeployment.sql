@@ -12,6 +12,10 @@ Post-Deployment Script Template
 
 :r .\Lookups\components.Purpose.sql
 :r .\Lookups\components.StatusProvider.sql
+:r .\Lookups\core.EmailBatchType.sql
+:r .\Lookups\core.NotificationPriority.sql
+:r .\Lookups\core.NotificationStatus.sql
+:r .\Lookups\core.NotificationType.sql
 :r .\Lookups\products.CharacteristicValueType.sql
 :r .\Lookups\security.AuditTrailType.sql
 :r .\Lookups\security.ExternalIdentityProvider.sql

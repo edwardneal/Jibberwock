@@ -132,6 +132,13 @@
     <Build Include="products\usp_UpdateProductTier.sql" />
     <Build Include="tenants\usp_GetTenantsByName.sql" />
     <Build Include="security\usp_GetAuditTrail.sql" />
+    <Build Include="core\EmailBatchType.sql" />
+    <Build Include="core\EmailBatch.sql" />
+    <Build Include="core\Email.sql" />
+    <Build Include="core\Notification.sql" />
+    <Build Include="core\NotificationType.sql" />
+    <Build Include="core\NotificationStatus.sql" />
+    <Build Include="core\NotificationPriority.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
@@ -148,5 +155,9 @@
     <None Include="Scripts\Lookups\security.WellKnownGroupType.sql" />
     <None Include="Scripts\Lookups\security.AuditTrailType.sql" />
     <None Include="Scripts\Lookups\products.CharacteristicValueType.sql" />
+    <None Include="Scripts\Lookups\core.EmailBatchType.sql" />
+    <None Include="Scripts\Lookups\core.NotificationType.sql" />
+    <None Include="Scripts\Lookups\core.NotificationStatus.sql" />
+    <None Include="Scripts\Lookups\core.NotificationPriority.sql" />
   </ItemGroup>
 </Project>

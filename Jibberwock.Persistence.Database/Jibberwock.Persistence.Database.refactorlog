@@ -161,4 +161,74 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Characteristic_Value_Type_I" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="62104ca3-421c-4487-b6c6-fd8440fd3819" ChangeDateTime="10/08/2020 18:46:28">
+    <Property Name="ElementName" Value="[core].[EmailBatchType].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[core].[EmailBatchType]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Email_Batch_Type_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="89929304-ef22-4d3b-b49c-0138edf2c8d8" ChangeDateTime="10/08/2020 19:01:01">
+    <Property Name="ElementName" Value="[core].[EmailBatch].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[core].[EmailBatch]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Email_Batch_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="cea877d4-9ce3-4080-b700-c5e8c5da7a22" ChangeDateTime="10/08/2020 20:21:17">
+    <Property Name="ElementName" Value="[core].[Email].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[core].[Email]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Email_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="4b8f25a9-59ab-46c4-a98c-db320dbd72d0" ChangeDateTime="10/08/2020 20:36:28">
+    <Property Name="ElementName" Value="[core].[Notification].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[core].[Notification]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Notification_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="73136ec9-4f6b-47aa-aa47-ebb9bd18dfe8" ChangeDateTime="10/08/2020 20:37:21">
+    <Property Name="ElementName" Value="[core].[Notification].[Type_I]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[core].[Notification]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Type_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="57e7f227-f951-4889-994a-cb3eea29f2cf" ChangeDateTime="10/08/2020 20:39:51">
+    <Property Name="ElementName" Value="[core].[NotificationType].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[core].[NotificationType]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Notification_Type_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="5dee62f0-1bd0-4a4b-8e2e-9ee9373d3545" ChangeDateTime="10/08/2020 20:46:43">
+    <Property Name="ElementName" Value="[core].[NotificationStatus].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[core].[NotificationStatus]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Notification_Status_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="6209ebce-9b41-4c9e-85ff-700c1ee6debe" ChangeDateTime="10/08/2020 20:48:52">
+    <Property Name="ElementName" Value="[core].[FK_Notification_ToTable]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[core].[Notification]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[FK_Notification_NotificationStatus]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="8c20ba4c-41c9-4185-be34-d5a628c66fc2" ChangeDateTime="10/08/2020 20:55:06">
+    <Property Name="ElementName" Value="[core].[NotificationPriority].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[core].[NotificationPriority]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Notification_Priority_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="357475b0-c470-46ff-8ac6-66675dbae73a" ChangeDateTime="10/08/2020 20:56:16">
+    <Property Name="ElementName" Value="[core].[Notification].[Sent_Date]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[core].[Notification]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Creation_Date" />
+  </Operation>
 </Operations>
