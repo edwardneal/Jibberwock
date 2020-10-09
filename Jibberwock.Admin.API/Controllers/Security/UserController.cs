@@ -15,6 +15,8 @@ using Jibberwock.Admin.API.ActionModels.Security;
 using Jibberwock.DataModels.Users;
 using Jibberwock.Shared.Http;
 using Jibberwock.Shared.Http.Authentication;
+using Jibberwock.Admin.API.ActionModels.Notifications;
+using Jibberwock.DataModels.Core;
 
 namespace Jibberwock.Admin.API.Controllers.Security
 {
@@ -91,7 +93,7 @@ namespace Jibberwock.Admin.API.Controllers.Security
         /// <response code="200" nullable="false">The updated <see cref="User"/> object.</response>
         /// <response code="400" nullable="false">Unable to update the user, see response for details.</response>
         /// <response code="404" nullable="false">A <see cref="User"/> with the provided ID does not exist.</response>
-        [Route("{id}")]
+        [Route("{id:int}")]
         [HttpPut]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -119,42 +121,109 @@ namespace Jibberwock.Admin.API.Controllers.Security
             { return NotFound(); }
         }
 
-        [Route("{id}/notifications")]
+        /// <summary>
+        /// Gets all currently-active <see cref="Notification"/>s for a specific <see cref="User"/> by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="User"/> to get the <see cref="Notification"/>s of.</param>
+        /// <response code="200" nullable="false">The retrieved set of <see cref="Notification"/> objects.</response>
+        /// <response code="400" nullable="false">Unable to get the set of <see cref="Notification"/>s, see response for details.</response>
+        /// <response code="404" nullable="false">A <see cref="User"/> with the provided ID does not exist.</response>
+        [Route("{id:int}/notifications")]
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Notification>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
-        public async Task<IActionResult> GetNotifications([FromRoute] string id)
+        public async Task<IActionResult> GetNotifications([FromRoute] long id)
         {
             return Ok();
         }
 
-        [Route("{id}/notifications")]
+        /// <summary>
+        /// Notifies a specific <see cref="User"/> by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="User"/> to notify.</param>
+        /// <param name="notification">Details of the <see cref="Notification"/> to send to this user.</param>
+        /// <response code="200" nullable="false">The created <see cref="Notification"/> object.</response>
+        /// <response code="400" nullable="false">Unable to notify this <see cref="User"/>, see response for details.</response>
+        /// <response code="404" nullable="false">A <see cref="User"/> with the provided ID does not exist.</response>
+        [Route("{id:int}/notifications")]
         [HttpPost]
+        [ProducesResponseType(typeof(Notification), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Change)]
-        public async Task<IActionResult> NotifyUser([FromRoute] string id, [FromBody] object notification)
+        public async Task<IActionResult> NotifyUser([FromRoute] long id, [FromBody] NotifyRequest notification)
         {
             return Ok();
         }
 
-        [Route("{id}/notifications/{notificationId}")]
+        /// <summary>
+        /// Updates a specific <see cref="Notification"/> for a specific <see cref="User"/> by their IDs.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="User"/> to update a <see cref="Notification"/> of.</param>
+        /// <param name="notificationId">The ID of the <see cref="Notification"/> to update.</param>
+        /// <param name="notification">Details of the <see cref="Notification"/> to update.</param>
+        /// <response code="200" nullable="false">The updated <see cref="Notification"/> object.</response>
+        /// <response code="400" nullable="false">Unable to update the <see cref="Notification"/> for this <see cref="User"/>, see response for details.</response>
+        /// <response code="404" nullable="false">A <see cref="User"/> with the provided ID does not exist, or a <see cref="Notification"/> with the provided ID does not exist.</response>
+        [Route("{id:int}/notifications/{notificationId:int}")]
         [HttpPut]
+        [ProducesResponseType(typeof(Notification), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Change)]
-        public async Task<IActionResult> UpdateNotification([FromRoute] string id, [FromRoute] string notificationId, [FromBody] object notification)
+        public async Task<IActionResult> UpdateNotification([FromRoute] long id, [FromRoute] long notificationId, [FromBody] NotifyRequest notification)
         {
             return Ok();
         }
 
+        /// <summary>
+        /// Gets all currently-active <see cref="Notification"/>s for all <see cref="User"/>s.
+        /// </summary>
+        /// <response code="200" nullable="false">The retrieved set of <see cref="Notification"/> objects.</response>
+        /// <response code="400" nullable="false">Unable to get the set of <see cref="Notification"/>s, see response for details.</response>
         [Route("all/notifications")]
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Notification>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
         public async Task<IActionResult> GetGlobalUserNotifications()
         {
             return Ok();
         }
 
+        /// <summary>
+        /// Notifies all <see cref="User"/>s.
+        /// </summary>
+        /// <param name="notification">Details of the <see cref="Notification"/> to send to all <see cref="User"/>s.</param>
+        /// <response code="200" nullable="false">The created <see cref="Notification"/> object.</response>
+        /// <response code="400" nullable="false">Unable to notify all <see cref="User"/>s, see response for details.</response>
         [Route("all/notifications")]
         [HttpPost]
+        [ProducesResponseType(typeof(Notification), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Change)]
-        public async Task<IActionResult> NotifyAllUsers([FromBody] object notification)
+        public async Task<IActionResult> NotifyAllUsers([FromBody] NotifyRequest notification)
+        {
+            return Ok();
+        }
+
+        /// <summary>
+        /// Updates a specific <see cref="Notification"/> for all <see cref="User"/>s.
+        /// </summary>
+        /// <param name="notificationId">The ID of the <see cref="Notification"/> to update.</param>
+        /// <param name="notification">Details of the <see cref="Notification"/> to update.</param>
+        /// <response code="200" nullable="false">The updated <see cref="Notification"/> object.</response>
+        /// <response code="400" nullable="false">Unable to update the <see cref="Notification"/> for all <see cref="User"/>s, see response for details.</response>
+        /// <response code="404" nullable="false">A global <see cref="Notification"/> with the provided ID does not exist.</response>
+        [Route("all/notifications/{notificationId:int}")]
+        [HttpPut]
+        [ProducesResponseType(typeof(Notification), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.Change)]
+        public async Task<IActionResult> UpdateGlobalNotification([FromRoute] long notificationId, [FromBody] NotifyRequest notification)
         {
             return Ok();
         }

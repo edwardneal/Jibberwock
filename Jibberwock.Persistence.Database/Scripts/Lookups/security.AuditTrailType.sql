@@ -21,3 +21,7 @@ if 5 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
 if 6 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
 	insert into [security].[AuditTrailType] ([Audit_Trail_Type_ID], [Name])
 	values (6, 'modify_tier')
+
+if 7 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
+	insert into [security].[AuditTrailType] ([Audit_Trail_Type_ID], [Name])
+	values (7, 'modify_notification')
