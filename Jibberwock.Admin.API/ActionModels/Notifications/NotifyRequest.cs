@@ -12,7 +12,7 @@ namespace Jibberwock.Admin.API.ActionModels.Notifications
     /// Describes the data sent to <see cref="Jibberwock.Admin.API.Controllers.Security.UserController.NotifyAllUsers(NotifyRequest)"/>,
     /// <see cref="Jibberwock.Admin.API.Controllers.Security.UserController.NotifyUser(long, NotifyRequest)"/>,
     /// <see cref="Jibberwock.Admin.API.Controllers.Security.UserController.UpdateNotification(long, long, NotifyRequest)"/>,
-    /// <see cref="Jibberwock.Admin.API.Controllers.Tenants.TenantController.NotifyAllTenants(NotifyRequest)"/>,
+    /// <see cref="Jibberwock.Admin.API.Controllers.Security.UserController.UpdateGlobalNotification(long, NotifyRequest)"/>,
     /// <see cref="Jibberwock.Admin.API.Controllers.Tenants.TenantController.NotifyTenant(long, NotifyRequest)"/> and
     /// <see cref="Jibberwock.Admin.API.Controllers.Tenants.TenantController.UpdateNotification(long, long, NotifyRequest)"/>
     /// in order to notify <see cref="User"/>s or <see cref="Tenant"/>s.

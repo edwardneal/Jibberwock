@@ -72,3 +72,12 @@ GO
 
 GRANT EXECUTE ON [security].[usp_GetAuditTrail] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [core].[usp_CreateNotification] TO [CoreAPI]
+GO
+
+GRANT EXECUTE ON [core].[usp_UpdateNotification] TO [CoreAPI]
+GO
+
+GRANT EXECUTE ON [core].[usp_ListNotifications] TO [CoreAPI]
+GO

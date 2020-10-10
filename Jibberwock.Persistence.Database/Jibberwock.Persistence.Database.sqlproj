@@ -139,6 +139,10 @@
     <Build Include="core\NotificationType.sql" />
     <Build Include="core\NotificationStatus.sql" />
     <Build Include="core\NotificationPriority.sql" />
+    <Build Include="core\usp_CreateNotification.sql" />
+    <Build Include="core\usp_UpdateNotification.sql" />
+    <Build Include="core\usp_GetNotificationByID.sql" />
+    <Build Include="core\usp_ListNotifications.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

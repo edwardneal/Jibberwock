@@ -215,40 +215,5 @@ namespace Jibberwock.Admin.API.Controllers.Tenants
         {
             return Ok();
         }
-
-        /// <summary>
-        /// Notifies all <see cref="Tenant"/>s.
-        /// </summary>
-        /// <param name="notification">Details of the <see cref="Notification"/> to send to all <see cref="Tenant"/>s.</param>
-        /// <response code="200" nullable="false">The created <see cref="Notification"/> object.</response>
-        /// <response code="400" nullable="false">Unable to notify all <see cref="Tenant"/>s, see response for details.</response>
-        [Route("all/notifications")]
-        [HttpPost]
-        [ProducesResponseType(typeof(Notification), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ResourcePermissions(SecurableResourceType.Service, Permission.Change)]
-        public async Task<IActionResult> NotifyAllTenants([FromBody] NotifyRequest notification)
-        {
-            return Ok();
-        }
-
-        /// <summary>
-        /// Updates a specific <see cref="Notification"/> for all <see cref="Tenant"/>s.
-        /// </summary>
-        /// <param name="notificationId">The ID of the <see cref="Notification"/> to update.</param>
-        /// <param name="notification">Details of the <see cref="Notification"/> to update.</param>
-        /// <response code="200" nullable="false">The updated <see cref="Notification"/> object.</response>
-        /// <response code="400" nullable="false">Unable to update the <see cref="Notification"/> for all <see cref="Tenant"/>s, see response for details.</response>
-        /// <response code="404" nullable="false">A global <see cref="Notification"/> with the provided ID does not exist.</response>
-        [Route("all/notifications/{notificationId:int}")]
-        [HttpPut]
-        [ProducesResponseType(typeof(Notification), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ResourcePermissions(SecurableResourceType.Service, Permission.Change)]
-        public async Task<IActionResult> UpdateGlobalNotification([FromRoute] long notificationId, [FromBody] NotifyRequest notification)
-        {
-            return Ok();
-        }
     }
 }

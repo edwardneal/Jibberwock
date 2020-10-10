@@ -16,7 +16,7 @@
     CONSTRAINT [PK_Notification] PRIMARY KEY ([Notification_ID]), 
     CONSTRAINT [FK_Notification_User] FOREIGN KEY ([User_ID]) REFERENCES [security].[User]([User_ID]), 
     CONSTRAINT [FK_Notification_Tenant] FOREIGN KEY ([Tenant_ID]) REFERENCES [tenants].[Tenant]([Tenant_ID]), 
-    CONSTRAINT [FK_Notification_EmailBatch] FOREIGN KEY ([Email_Batch_ID]) REFERENCES [core].[EmailBatch]([Email_Batch_ID]), 
+    CONSTRAINT [FK_Notification_EmailBatch] FOREIGN KEY ([Email_Batch_ID]) REFERENCES [core].[EmailBatch]([Email_Batch_ID]) ON DELETE SET NULL, 
     CONSTRAINT [FK_Notification_NotificationType] FOREIGN KEY ([Type_ID]) REFERENCES [core].[NotificationType]([Notification_Type_ID]), 
     CONSTRAINT [FK_Notification_NotificationStatus] FOREIGN KEY ([Status_ID]) REFERENCES [core].[NotificationStatus]([Notification_Status_ID]), 
     CONSTRAINT [FK_Notification_NotificationPriority] FOREIGN KEY ([Priority_ID]) REFERENCES [core].[NotificationPriority]([Notification_Priority_ID]) 
