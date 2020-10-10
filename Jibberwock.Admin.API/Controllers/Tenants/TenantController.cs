@@ -159,7 +159,19 @@ namespace Jibberwock.Admin.API.Controllers.Tenants
         [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
         public async Task<IActionResult> GetNotifications([FromRoute] long id)
         {
-            return Ok();
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var listNotificationsCommand = new Jibberwock.Persistence.DataAccess.Commands.Notifications.ListNotifications(Logger, new DataModels.Tenants.Tenant() { Id = id });
+            var notifications = await listNotificationsCommand.Execute(SqlServerDataSource);
+
+            if (notifications == null)
+            { return NotFound(); }
+            else
+            { return Ok(notifications); }
         }
 
         /// <summary>
@@ -197,21 +209,6 @@ namespace Jibberwock.Admin.API.Controllers.Tenants
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.Change)]
         public async Task<IActionResult> UpdateNotification([FromRoute] long id, [FromRoute] long notificationId, [FromBody] NotifyRequest notification)
-        {
-            return Ok();
-        }
-
-        /// <summary>
-        /// Gets all currently-active <see cref="Notification"/>s for all <see cref="Tenant"/>s.
-        /// </summary>
-        /// <response code="200" nullable="false">The retrieved set of <see cref="Notification"/> objects.</response>
-        /// <response code="400" nullable="false">Unable to get the set of <see cref="Notification"/>s, see response for details.</response>
-        [Route("all/notifications")]
-        [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<Notification>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
-        public async Task<IActionResult> GetGlobalTenantNotifications()
         {
             return Ok();
         }

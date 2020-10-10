@@ -9,3 +9,6 @@ GO
 
 GRANT EXECUTE ON [security].[usp_CreateAuditTrailEntry] TO [BackgroundProcessing]
 GO
+
+GRANT EXECUTE ON [core].[usp_GetEmailBatchByIdentifier] TO [BackgroundProcessing]
+GO

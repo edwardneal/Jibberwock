@@ -136,7 +136,19 @@ namespace Jibberwock.Admin.API.Controllers.Security
         [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
         public async Task<IActionResult> GetNotifications([FromRoute] long id)
         {
-            return Ok();
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var listNotificationsCommand = new Jibberwock.Persistence.DataAccess.Commands.Notifications.ListNotifications(Logger, new DataModels.Users.User() { Id = id });
+            var notifications = await listNotificationsCommand.Execute(SqlServerDataSource);
+
+            if (notifications == null)
+            { return NotFound(); }
+            else
+            { return Ok(notifications); }
         }
 
         /// <summary>
@@ -190,7 +202,13 @@ namespace Jibberwock.Admin.API.Controllers.Security
         [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
         public async Task<IActionResult> GetGlobalUserNotifications()
         {
-            return Ok();
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var listNotificationsCommand = new Jibberwock.Persistence.DataAccess.Commands.Notifications.ListNotifications(Logger);
+            var notifications = await listNotificationsCommand.Execute(SqlServerDataSource);
+
+            return Ok(notifications);
         }
 
         /// <summary>

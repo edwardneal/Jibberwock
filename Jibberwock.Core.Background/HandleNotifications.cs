@@ -21,7 +21,23 @@ namespace Jibberwock.Core.Background
             Message notificationMessage,
             ILogger log)
         {
-            log.LogInformation($"Received message on queue: {notificationMessage}");
+            if (notificationMessage == null)
+                throw new ArgumentNullException(nameof(notificationMessage));
+
+            log.LogDebug($"HandleNotifications received message ID {notificationMessage.MessageId}. Getting details from the database...");
+
+            var getEmailBatchCommand = new Jibberwock.Persistence.DataAccess.Commands.Notifications.GetEmailBatch(log, notificationMessage.MessageId);
+            var emailBatch = await getEmailBatchCommand.Execute(_dataSource);
+
+            if (emailBatch == null)
+            {
+                log.LogInformation($"Message ID {notificationMessage.MessageId} was received, but it does not exist in the database or is marked as inactive. Ignoring.");
+                return;
+            }
+
+            log.LogDebug($"Retrieved details from the database, proceeding to process message ID {notificationMessage.MessageId} (email batch {emailBatch.Id})");
+
+            throw new NotImplementedException();
         }
     }
 }

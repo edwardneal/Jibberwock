@@ -143,6 +143,7 @@
     <Build Include="core\usp_UpdateNotification.sql" />
     <Build Include="core\usp_GetNotificationByID.sql" />
     <Build Include="core\usp_ListNotifications.sql" />
+    <Build Include="core\usp_GetEmailBatchByIdentifier.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
