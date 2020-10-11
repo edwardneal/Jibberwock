@@ -23,19 +23,25 @@ namespace Jibberwock.DataModels.Security.Audit.EntryTypes
         public Notification Notification { get; set; }
 
         /// <summary>
+        /// Whether or not to send this <see cref="Notification"/> as an email.
+        /// </summary>
+        public bool SendAsEmail { get; set; }
+
+        /// <summary>
         /// If <c>true</c>, this <see cref="Notification"/> is a new record.
         /// </summary>
         public bool NewNotification { get; set; }
 
         public override string Metadata
         {
-            get => JsonSerializer.Serialize(new { Notification, NewNotification });
+            get => JsonSerializer.Serialize(new { Notification, NewNotification, SendAsEmail });
             set
             {
                 var jsonDoc = JsonDocument.Parse(value);
 
                 NewNotification = jsonDoc.RootElement.GetProperty(nameof(NewNotification)).GetBoolean();
                 Notification = JsonSerializer.Deserialize<Notification>(jsonDoc.RootElement.GetProperty(nameof(Notification)).GetRawText());
+                SendAsEmail = jsonDoc.RootElement.GetProperty(nameof(SendAsEmail)).GetBoolean();
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Jibberwock.Persistence.DataAccess.DataSources;
+using Microsoft.Azure.ServiceBus;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -40,6 +41,23 @@ namespace Jibberwock.Persistence.DataAccess.Utility
 
             if (dataSource is SqlServerDataSource sqlServerDataSource)
                 return await sqlServerDataSource.GetReadWriteDatabaseConnection();
+
+            throw new InvalidCastException($"{nameof(dataSource)} is not an expected type");
+        }
+
+        /// <summary>
+        /// Gets the correct queue client from this <see cref="IQueueDataSource"/>.
+        /// </summary>
+        /// <param name="dataSource">The <see cref="IQueueDataSource"/> to get the queue client from.</param>
+        /// <param name="queueName">The queue to get the queue client for.</param>
+        /// <returns>The associated queue client.</returns>
+        public static QueueClient GetQueueClient(this IQueueDataSource dataSource, string queueName)
+        {
+            if (dataSource == null)
+                throw new ArgumentNullException(nameof(dataSource));
+
+            if (dataSource is ServiceBusQueueDataSource serviceBusDataSource)
+                return serviceBusDataSource.GetQueueClient(queueName);
 
             throw new InvalidCastException($"{nameof(dataSource)} is not an expected type");
         }

@@ -24,9 +24,14 @@ namespace Jibberwock.Admin.API.Controllers.Tenants
     [Route("[controller]")]
     public class TenantController : JibberwockControllerBase
     {
+        private readonly IQueueDataSource _queueDataSource;
+
         public TenantController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource,
-            IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever) : base(loggerFactory, sqlServerDataSource, options, currentUserRetriever)
-        { }
+            IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever, IQueueDataSource queueDataSource)
+            : base(loggerFactory, sqlServerDataSource, options, currentUserRetriever)
+        {
+            _queueDataSource = queueDataSource;
+        }
 
         /// <summary>
         /// Gets all tenants with a name matching a pattern.
@@ -190,7 +195,35 @@ namespace Jibberwock.Admin.API.Controllers.Tenants
         [ResourcePermissions(SecurableResourceType.Service, Permission.Change)]
         public async Task<IActionResult> NotifyTenant([FromRoute] long id, [FromBody] NotifyRequest notification)
         {
-            return Ok();
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
+            if (notification == null)
+            { ModelState.AddModelError(ErrorResponses.MissingBody, string.Empty); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var requestedNotification = new Notification()
+            {
+                TargetTenant = new Tenant() { Id = id },
+                Status = notification.Status,
+                Type = notification.Type,
+                Priority = notification.Priority,
+                StartDate = notification.StartDate,
+                EndDate = notification.EndDate,
+                Subject = notification.Subject,
+                Message = notification.Message,
+                AllowDismissal = notification.AllowDismissal
+            };
+            var currentUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            var notifyCommand = new Jibberwock.Persistence.DataAccess.Commands.Notifications.Notify(Logger, currentUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, null,
+                requestedNotification, notification.SendAsEmail, _queueDataSource, WebApiConfiguration.ServiceBus.Queues.Notifications);
+            var resultantCommand = await notifyCommand.Execute(SqlServerDataSource);
+
+            if (resultantCommand.Result != null)
+            { return Ok(resultantCommand.Result); }
+            else
+            { return NotFound(); }
         }
 
         /// <summary>

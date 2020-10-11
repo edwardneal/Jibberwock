@@ -49,6 +49,11 @@ namespace Jibberwock.Admin.API
                     o.ReadOnlyConnectionString = Configuration?.GetConnectionString("ReadOnlySqlServer");
                     o.ReadWriteConnectionString = Configuration?.GetConnectionString("ReadWriteSqlServer");
                 })
+                .Configure<ServiceBusQueueDataSourceOptions>(o =>
+                {
+                    o.NamespaceUrl = $"{StronglyTypedConfiguration.ServiceBus.Namespace}.servicebus.windows.net";
+                    o.QueueNames = new[] { StronglyTypedConfiguration.ServiceBus.Queues.Notifications };
+                })
                 .AddJibberwockPersistence();
 
             services.AddHttpContextAccessor();
