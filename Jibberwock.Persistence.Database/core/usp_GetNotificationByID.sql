@@ -11,7 +11,7 @@ BEGIN
 		np.Notification_Priority_ID as Id, np.[Name], np.[Order],
 		usr.[User_ID] as Id,
 		ten.Tenant_ID as Id,
-		eb.Email_Batch_ID as Id
+		eb.Email_Batch_ID as Id, eb.External_Message_ID as ServiceBusMessageId, eb.Processed_Successfully as ProcessedSuccessfully
 	from core.[Notification] as n
 	inner join core.NotificationPriority as np
 		on (np.Notification_Priority_ID = n.Priority_ID)

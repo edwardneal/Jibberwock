@@ -18,7 +18,7 @@ namespace Jibberwock.Persistence.DataAccess.DependencyInjection
                 throw new ArgumentNullException(nameof(services));
 
             return services.AddScoped<DataSources.SqlServerDataSource>()
-                .AddScoped<DataSources.IQueueDataSource, DataSources.ServiceBusQueueDataSource>()
+                .AddSingleton<DataSources.IQueueDataSource, DataSources.ServiceBusQueueDataSource>()
                 ;
         }
     }

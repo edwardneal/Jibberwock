@@ -26,6 +26,7 @@ BEGIN
 		-- If sending as an email, create the email batch first. Wrapped this in a transaction to prevent
 		-- race conditions where something might pick up the email batch but not have the notification details.
 
+		declare @notificationId bigint = null
 		declare @emailBatchId bigint = null
 		declare @externalEmailBatchMessage as varchar(64) = null
 
@@ -49,6 +50,8 @@ BEGIN
 			@Status_ID, @Type_ID, @priorityId, SYSDATETIMEOFFSET(),
 			@Subject, @Message, @Allow_Dismissal
 
-		select SCOPE_IDENTITY() as Id, @emailBatchId as Id, @externalEmailBatchMessage as ServiceBusMessageId
+		select @notificationId = SCOPE_IDENTITY()
+
+		exec core.usp_GetNotificationByID @Notification_ID = @notificationId
 	commit transaction
 END

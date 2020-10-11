@@ -243,7 +243,38 @@ namespace Jibberwock.Admin.API.Controllers.Tenants
         [ResourcePermissions(SecurableResourceType.Service, Permission.Change)]
         public async Task<IActionResult> UpdateNotification([FromRoute] long id, [FromRoute] long notificationId, [FromBody] NotifyRequest notification)
         {
-            return Ok();
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
+            if (notificationId == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
+            if (notification == null)
+            { ModelState.AddModelError(ErrorResponses.MissingBody, string.Empty); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var requestedNotification = new Notification()
+            {
+                Id = notificationId,
+                TargetTenant = new Tenant() { Id = id },
+                Status = notification.Status,
+                Type = notification.Type,
+                Priority = notification.Priority,
+                StartDate = notification.StartDate,
+                EndDate = notification.EndDate,
+                Subject = notification.Subject,
+                Message = notification.Message,
+                AllowDismissal = notification.AllowDismissal
+            };
+            var currentUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            var updateNotificationCommand = new Jibberwock.Persistence.DataAccess.Commands.Notifications.UpdateNotification(Logger, currentUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, null,
+                requestedNotification, notification.SendAsEmail, _queueDataSource, WebApiConfiguration.ServiceBus.Queues.Notifications);
+            var resultantCommand = await updateNotificationCommand.Execute(SqlServerDataSource);
+
+            if (resultantCommand.Result != null)
+            { return Ok(resultantCommand.Result); }
+            else
+            { return NotFound(); }
         }
     }
 }

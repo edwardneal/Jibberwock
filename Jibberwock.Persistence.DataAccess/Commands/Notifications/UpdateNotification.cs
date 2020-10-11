@@ -13,15 +13,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
 {
     /// <summary>
-    /// Notifies a user, a tenant or all users, optionally sending this notification as an email.
+    /// Updates a single notification for a user, for a tenant or for all users.
     /// </summary>
-    public class Notify : AuditingCommand<Notification, ModifyNotification>
+    public class UpdateNotification : AuditingCommand<Notification, ModifyNotification>
     {
         private readonly IQueueDataSource _queueDataSource;
         private readonly string _emailQueueName;
@@ -38,7 +37,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
         [Required]
         public bool SendAsEmail { get; set; }
 
-        public Notify(ILogger logger, User performedBy, string connectionId, int serviceId, string comment,
+        public UpdateNotification(ILogger logger, User performedBy, string connectionId, int serviceId, string comment,
             Notification notification, bool sendAsEmail, IQueueDataSource queueDataSource, string emailQueueName)
             : base(logger, performedBy, connectionId, serviceId, comment)
         {
@@ -72,7 +71,23 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
             var databaseConnection = await dataSource.GetDbConnection();
             // This is a multi-step approach. We create the record in the database, then generate
             // a message using the QueueClient, then return
-            var createdNotifications = await databaseConnection.QueryAsync<Notification, NotificationPriority, User, Tenant, EmailBatch, Notification>("core.usp_CreateNotification",
+            var updateNotificationParameters = new DynamicParameters(new
+            {
+                Notification_ID = Notification.Id,
+                Status_ID = Notification.Status,
+                Type_ID = Notification.Type,
+                Priority_Name = Notification.Priority?.Name,
+                Start_Date = Notification.StartDate,
+                End_Date = Notification.EndDate,
+                Subject = Notification.Subject,
+                Message = Notification.Message,
+                Allow_Dismissal = Notification.AllowDismissal,
+                Send_As_Email = SendAsEmail
+            });
+
+            updateNotificationParameters.Add("New_Email_Message_Required", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+
+            var updatedNotifications = await databaseConnection.QueryAsync<Notification, NotificationPriority, User, Tenant, EmailBatch, Notification>("core.usp_UpdateNotification",
                 (n, np, usr, ten, eb) =>
                 {
                     n.Priority = np;
@@ -86,26 +101,15 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
                     if (eb != null && eb.Id != 0)
                     { n.EmailBatch = eb; }
                     return n;
-                }, new
-                {
-                    User_ID = Notification.TargetUser?.Id,
-                    Tenant_ID = Notification.TargetTenant?.Id,
-                    Status_ID = Notification.Status,
-                    Type_ID = Notification.Type,
-                    Priority_Name = Notification.Priority?.Name,
-                    Start_Date = Notification.StartDate,
-                    End_Date = Notification.EndDate,
-                    Subject = Notification.Subject,
-                    Message = Notification.Message,
-                    Allow_Dismissal = Notification.AllowDismissal,
-                    Send_As_Email = SendAsEmail
-                }, commandType: CommandType.StoredProcedure, transaction: transaction, commandTimeout: 30);
-            var resultantNotification = createdNotifications.FirstOrDefault();
+                }, updateNotificationParameters,
+                commandType: CommandType.StoredProcedure, transaction: transaction, commandTimeout: 30);
+            var resultantNotification = updatedNotifications.FirstOrDefault();
 
             Notification = resultantNotification;
-            if (resultantNotification.EmailBatch != null)
+            if (resultantNotification.EmailBatch != null
+                && updateNotificationParameters.Get<bool>("New_Email_Message_Required"))
             {
-                // If we've got an email batch, then we need to put the message onto the queue!
+                // If we've created an email batch, then we need to put the message onto the queue!
                 var messageToCreate = ServiceBusUtilities.GenerateMessage(new { Metadata = default(object) }, resultantNotification.EmailBatch.ServiceBusMessageId, Notification.StartDate);
 
                 await emailQueueClient.SendAsync(messageToCreate);
@@ -114,7 +118,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
             }
 
             provisionalAuditTrailEntry.Notification = Notification;
-            provisionalAuditTrailEntry.NewNotification = true;
+            provisionalAuditTrailEntry.NewNotification = false;
             provisionalAuditTrailEntry.SendAsEmail = SendAsEmail;
 
             return Notification;

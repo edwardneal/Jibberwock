@@ -8,7 +8,8 @@
 	@Subject nvarchar(128),
 	@Message nvarchar(max),
 	@Allow_Dismissal bit,
-	@Send_As_Email bit
+	@Send_As_Email bit,
+	@New_Email_Message_Required bit output
 AS
 BEGIN
 	set nocount on;
@@ -55,6 +56,7 @@ BEGIN
 		where Notification_ID = @Notification_ID
 			and ((Email_Batch_ID is not null and [Start_Date] >= @currentDate) or (Email_Batch_ID is null))
 
+		set @New_Email_Message_Required = 0
 		-- Fourth-stage update to handle Send_As_Email
 		if @Send_As_Email = 0
 		begin
@@ -95,6 +97,8 @@ BEGIN
 				update core.[Notification]
 				set Email_Batch_ID = @emailBatchId
 				where Notification_ID = @Notification_ID
+
+				set @New_Email_Message_Required = 1
 			end
 		end
 
