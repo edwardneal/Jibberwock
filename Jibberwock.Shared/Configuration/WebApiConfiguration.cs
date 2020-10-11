@@ -28,5 +28,10 @@ namespace Jibberwock.Shared.Configuration
         /// Configuration for the Azure Service Bus connections.
         /// </summary>
         public ServiceBusConfiguration ServiceBus { get; set; }
+
+        /// <summary>
+        /// Configuration for SendGrid web hooks and clients.
+        /// </summary>
+        public SendGridConfiguration SendGrid { get; set; }
     }
 }

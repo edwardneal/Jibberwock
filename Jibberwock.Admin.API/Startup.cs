@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Jibberwock.Admin.API.WebHooks;
 using Jibberwock.Persistence.DataAccess.DataSources;
 using Jibberwock.Persistence.DataAccess.DependencyInjection;
 using Jibberwock.Shared.Configuration;
@@ -56,6 +57,7 @@ namespace Jibberwock.Admin.API
                 })
                 .AddJibberwockPersistence();
 
+            services.AddApplicationInsightsTelemetry();
             services.AddHttpContextAccessor();
 
             services.AddAuthentication("EasyAuth")
@@ -88,6 +90,8 @@ namespace Jibberwock.Admin.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+
+                endpoints.MapSendGridWebHooks();
             });
         }
     }
