@@ -22,7 +22,7 @@ namespace Jibberwock.DataModels.Core
         /// <summary>
         /// The date that this <see cref="Email"/> was sent.
         /// </summary>
-        public DateTimeOffset SendDate { get; set; }
+        public DateTimeOffset? SendDate { get; set; }
 
         /// <summary>
         /// The unique identifier for this <see cref="Email"/> in the system which sent it.

@@ -10,12 +10,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
+namespace Jibberwock.Persistence.DataAccess.Commands.Emails
 {
     /// <summary>
     /// Gets an email batch based upon its external message ID.
     /// </summary>
-    public class GetEmailBatch : ValidatingCommand<EmailBatch, IReadableDataSource>
+    public class GetBatch : ValidatingCommand<EmailBatch, IReadableDataSource>
     {
         /// <summary>
         /// The ID of the message in the external message queue.
@@ -23,7 +23,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
         [StringLength(64, MinimumLength = 1, ErrorMessage = "The external message ID must be between 1 and 64 characters long.")]
         public string ExternalMessageId { get; set; }
 
-        public GetEmailBatch(ILogger logger, string externalMessageId)
+        public GetBatch(ILogger logger, string externalMessageId)
             : base(logger)
         {
             ExternalMessageId = externalMessageId;

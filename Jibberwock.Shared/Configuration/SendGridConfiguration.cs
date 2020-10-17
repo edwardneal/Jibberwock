@@ -23,5 +23,10 @@ namespace Jibberwock.Shared.Configuration
         /// This is the name of the parameter used to store the notification ID.
         /// </summary>
         public string NotificationIdParameterName { get; set; }
+
+        /// <summary>
+        /// This is the name of the parameter used to store the individual email ID.
+        /// </summary>
+        public string EmailIdParameterName { get; set; }
     }
 }

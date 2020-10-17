@@ -106,6 +106,11 @@ namespace Jibberwock.Admin.API.WebHooks.SendGrid
                     if (webhookEvent.UniqueParameters.ContainsKey(webApiConfiguration.SendGrid.NotificationIdParameterName))
                     { eventTelemetry.Properties.Add(webApiConfiguration.SendGrid.NotificationIdParameterName, webhookEvent.UniqueParameters[webApiConfiguration.SendGrid.NotificationIdParameterName]); }
 
+                    // Same as above for the "jibberwock_email_id" as a unique parameter. The difference between them is that this parameter is unique per email,
+                    // and the previous is unique per batch of emails
+                    if (webhookEvent.UniqueParameters.ContainsKey(webApiConfiguration.SendGrid.EmailIdParameterName))
+                    { eventTelemetry.Properties.Add(webApiConfiguration.SendGrid.EmailIdParameterName, webhookEvent.UniqueParameters[webApiConfiguration.SendGrid.EmailIdParameterName]); }
+
                     appInsightsTelemetry.TrackEvent(eventTelemetry);
                 }
                 catch (Exception ex)

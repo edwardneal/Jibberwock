@@ -144,6 +144,12 @@
     <Build Include="core\usp_GetNotificationByID.sql" />
     <Build Include="core\usp_ListNotifications.sql" />
     <Build Include="core\usp_GetEmailBatchByIdentifier.sql" />
+    <Build Include="core\usp_StartEmailBatch.sql" />
+    <Build Include="core\udt_Email.sql" />
+    <Build Include="core\usp_PrepareEmails.sql" />
+    <Build Include="core\usp_CompleteEmails.sql" />
+    <Build Include="core\usp_CompleteEmailBatch.sql" />
+    <Build Include="core\usp_GetNotificationEmailBatchByID.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

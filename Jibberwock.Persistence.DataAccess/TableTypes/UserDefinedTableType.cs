@@ -6,13 +6,24 @@ using System.Text;
 
 namespace Jibberwock.Persistence.DataAccess.TableTypes
 {
-    internal abstract class UserDefinedTableType : SqlDataRecord
+    /// <summary>
+    /// This is a base class for a user-defined table type.
+    /// It includes a helper method to provide a strongly-typed interface.
+    /// </summary>
+    public abstract class UserDefinedTableType : SqlDataRecord
     {
+        /// <inheritdoc/>
         protected UserDefinedTableType(params SqlMetaData[] metaData)
             : base(metaData)
         {
         }
 
+        /// <summary>
+        /// Sets the value of a column in this <see cref="SqlDataRecord"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the value to set.</typeparam>
+        /// <param name="index">The column index to set the field at.</param>
+        /// <param name="value">The value to set the field to.</param>
         protected void SetValue<T>(int index, T value)
         {
             var valType = typeof(T);
@@ -38,12 +49,18 @@ namespace Jibberwock.Persistence.DataAccess.TableTypes
                 }
             }
         }
-
+        
+        /// <summary>
+        /// Generates a <see cref="SqlMetaData"/> record for a column of a given type.
+        /// </summary>
+        /// <typeparam name="T">The type of value to set.</typeparam>
+        /// <param name="columnName">The name of the <see cref="SqlMetaData"/> column.</param>
+        /// <returns>The column's metadata.</returns>
         public static SqlMetaData GetColumnMetadata<T>(string columnName)
         {
             var dbType = getColumnType<T>();
 
-            return dbType == SqlDbType.NVarChar
+            return dbType == SqlDbType.NVarChar || dbType == SqlDbType.VarBinary
                 ? new SqlMetaData(columnName, dbType, SqlMetaData.Max)
                 : new SqlMetaData(columnName, dbType);
         }
@@ -92,6 +109,8 @@ namespace Jibberwock.Persistence.DataAccess.TableTypes
                 return SqlDbType.DateTimeOffset;
             if (type == typeof(DateTime))
                 return SqlDbType.DateTime2;
+            if (type == typeof(byte[]))
+                return SqlDbType.VarBinary;
 
             throw new InvalidOperationException("Non-enumeration type must be one of Guid or string.");
         }

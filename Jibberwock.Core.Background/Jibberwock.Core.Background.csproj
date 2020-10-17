@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Jibberwock.DataModels\Jibberwock.DataModels.csproj" />
     <ProjectReference Include="..\Jibberwock.Persistence.DataAccess\Jibberwock.Persistence.DataAccess.csproj" />
+    <ProjectReference Include="..\Jibberwock.Shared\Jibberwock.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
