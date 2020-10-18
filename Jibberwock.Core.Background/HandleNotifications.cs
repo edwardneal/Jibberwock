@@ -136,7 +136,7 @@ namespace Jibberwock.Core.Background
                     var plannedEmailRecords = from p in batch.Personalisations
                                               let saltText = currentUtcDate.ToString("yyyy-MM..MM-yyyy")   // NB: the length of this text is important!
                                               let saltBytes = Encoding.UTF8.GetBytes(saltText)
-                                              let hashedToAddress = _hashCalculator.CalculateHash(p.Tos[0].Email, saltBytes)
+                                              let hashedToAddress = _hashCalculator.CalculateHash(p.Tos[0].Email.ToLower(), saltBytes)
                                               select new Jibberwock.Persistence.DataAccess.TableTypes.Emails.Email(
                                                   p.CustomArgs[_webApiConfiguration.SendGrid.EmailIdParameterName],
                                                   saltBytes,
