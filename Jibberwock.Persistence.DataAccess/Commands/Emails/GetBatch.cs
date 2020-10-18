@@ -38,7 +38,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Emails
                 {
                     eb.Type = ebt;
                     return eb;
-                }, new { External_Message_ID = ExternalMessageId },
+                }, new { External_Message_Identifier = ExternalMessageId },
                 commandType: System.Data.CommandType.StoredProcedure, commandTimeout: 30);
 
             return emailBatch.FirstOrDefault();

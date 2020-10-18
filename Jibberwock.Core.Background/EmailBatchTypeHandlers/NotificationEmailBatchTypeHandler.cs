@@ -30,9 +30,10 @@ namespace Jibberwock.Core.Background.EmailBatchTypeHandlers
                 pers.SendAt = _notification.StartDate?.ToUnixTimeSeconds();
                 pers.TemplateData = new
                 {
-                    Subject = _notification.Subject,
-                    Message = _notification.Message,
-                    Metadata = messageMetadata
+                    subject = _notification.Subject,
+                    message = _notification.Message,
+                    metadata = messageMetadata,
+                    message_id = pers.CustomArgs[_sendGridConfiguration.EmailIdParameterName]
                 };
 
                 pers.Tos = new List<EmailAddress>() { new EmailAddress(email) };

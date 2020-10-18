@@ -20,7 +20,7 @@ BEGIN
 		-- If there are any already-sent emails in the same batch,
 		-- sent to the same person, don't send again.
 		insert into @emailExclusions (External_Email_ID)
-			select distinct e2s.External_Email_ID, Send_Date
+			select distinct e2s.External_Email_ID
 			from @Emails_To_Send as e2s
 			inner join core.Email as eml
 				on (eml.To_Address_Salt = e2s.To_Address_Salt

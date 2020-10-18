@@ -36,7 +36,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Emails
 
             var databaseConnection = await dataSource.GetDbConnection();
 
-            var notificationSet = await databaseConnection.QueryMultipleAsync("core.usp_GetEmailBatchByIdentifier",
+            var notificationSet = await databaseConnection.QueryMultipleAsync("core.usp_GetNotificationEmailBatchByID",
                 new { Email_Batch_ID = EmailBatch.Id },
                 commandType: System.Data.CommandType.StoredProcedure, commandTimeout: 30);
 

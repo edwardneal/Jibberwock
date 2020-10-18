@@ -14,16 +14,20 @@ namespace Jibberwock.Core.Background
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
+            var wac = new WebApiConfiguration();
             var configuration = builder.Services.BuildServiceProvider().GetService<IConfiguration>();
+            var jobHostRoot = configuration.GetWebJobsRootConfiguration();
             var readOnlyConnectionString = configuration.GetConnectionString("ReadOnlySqlServer");
             var readWriteConnectionString = configuration.GetConnectionString("ReadWriteSqlServer");
 
-            builder.Services.Configure<WebApiConfiguration>(configuration.GetSection("Configuration"));
             builder.Services.Configure<Jibberwock.Persistence.DataAccess.DataSources.SqlServerDataSourceOptions>(opt =>
             {
                 opt.ReadOnlyConnectionString = readOnlyConnectionString;
                 opt.ReadWriteConnectionString = readWriteConnectionString;
             });
+
+            jobHostRoot.Bind("Configuration", wac);
+            builder.Services.AddSingleton(wac);
 
             builder.Services.AddJibberwockPersistence()
                 .AddJibberwockCryptography();

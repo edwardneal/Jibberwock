@@ -142,7 +142,7 @@ namespace Jibberwock.Core.Background
                                                   saltBytes,
                                                   hashedToAddress
                                                   );
-                    var emailRequest = new Jibberwock.Persistence.DataAccess.Commands.Emails.PrepareEmails(log, emailBatch, plannedEmailRecords);
+                    var emailRequest = new Jibberwock.Persistence.DataAccess.Commands.Emails.PrepareEmails(log, emailBatch, plannedEmailRecords.ToArray());
                     var createdEmailRecords = await emailRequest.Execute(_dataSource);
 
                     // Now, strip the list of personalisations of any excluded email addresses
@@ -162,7 +162,7 @@ namespace Jibberwock.Core.Background
                         log.LogInformation($"Successfully sent email group {i} in email batch ID {emailBatch.Id} ({sgm.Personalizations.Count} emails).");
 
                         // Now, mark these emails as having been sent
-                        var completeEmailsCommand = new Jibberwock.Persistence.DataAccess.Commands.Emails.CompleteEmails(log, emailBatch, currentUtcDate, plannedEmailRecords);
+                        var completeEmailsCommand = new Jibberwock.Persistence.DataAccess.Commands.Emails.CompleteEmails(log, emailBatch, currentUtcDate, plannedEmailRecords.ToArray());
                         var sentSuccessfully = await completeEmailsCommand.Execute(_dataSource);
 
                         // This is a very dangerous part of the execution - it could allow us to send the same email to people twice if we get it wrong

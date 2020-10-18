@@ -43,7 +43,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Emails
 
             var databaseConnection = await dataSource.GetDbConnection();
 
-            var prepareEmailsReader = await databaseConnection.QueryMultipleAsync("core.usp_StartEmailBatch",
+            var prepareEmailsReader = await databaseConnection.QueryMultipleAsync("core.usp_PrepareEmails",
                 new { Email_Batch_ID = EmailBatch.Id, Emails_To_Send = EmailRecords },
                 commandType: System.Data.CommandType.StoredProcedure, commandTimeout: 30);
 
