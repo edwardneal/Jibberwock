@@ -47,6 +47,9 @@
         "write": "Send"
       }
     },
+    "sendgrid": {
+      "verificationPublicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE9xDUFAT9Bu/QtafNvjQ8GsKi6jIuXf5wG7R9tOz0pOQlmhNZSpHV5sPjJFzS2vg/DgOy+lkFvI/tFNLro1M6mQ=="
+    },
     "allertProductConfiguration": {
       "storageAccountName": "allert",
       "storageTableName": "alertdefinitiongroupdata"
@@ -103,6 +106,15 @@
     },
     "applicationInsights": {
       "name": "[concat(toLower(variables('sharedName')), '-insights-', parameters('environmentName'))]"
+    },
+    "roleDefinitions": {
+      "storageBlobDataContributor": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
+      "serviceBusDataReceiver": "4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0",
+      "serviceBusDataSender": "69a216fc-b8fb-44d8-bc22-1f3c2cd27a39",
+      "keyVaultSecretsOfficer": "b86a8fe4-44ce-4948-aee5-eccb2c155cd7",
+      "keyVaultSecretsUser": "4633458b-17de-408a-b874-0445c86b69e6",
+      "logAnalyticsReader": "73c42c96-874c-492b-b04d-ab87d138a893",
+      "monitoringReader": "43d0d8ad-25c7-4714-9337-8ba259a9fe05"
     }
   },
   "resources": [
@@ -388,12 +400,20 @@
           "name": "appsettings",
           "apiVersion": "2020-06-01",
           "properties": {
-            "SensitiveSettingKeyVaultName": "[variables('keyVault').name]",
+            "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').InstrumentationKey]",
+            "APPINSIGHTSSETTINGS_APPID": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').AppId]",
             "APPINSIGHTSSETTINGS_TENANTID": "[subscription().tenantId]",
-            "CONFIGURATION_SERVICEBUS_NAMESPACE": "[variables('serviceBus').namespaceName]"
+            "CONFIGURATION__APPINSIGHTSCONFIGURATION__APPID": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').AppId]",
+            "CONFIGURATION__APPINSIGHTSCONFIGURATION__TENANTID": "[subscription().tenantId]",
+            "CONFIGURATION__PERMITTEDREDIRECTS__ADMINHOMEPAGE": "https://admin.jibberwock.com",
+            "CONFIGURATION__SENDGRID__VERIFICATIONPUBLICKEY": "[variables('sendgrid').verificationPublicKey]",
+            "CONFIGURATION__SENSITIVESETTINGKEYVAULTNAME": "[variables('keyVault').name]",
+            "CONFIGURATION__SERVICEBUS__NAMESPACE": "[variables('serviceBus').namespaceName]",
+            "CONFIGURATION__SERVICEBUS__QUEUES__NOTIFICATIONS": "[variables('serviceBus').queues.notifications]"
           },
           "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', variables('appService').services[copyIndex()].name)]"
+            "[resourceId('Microsoft.Web/sites', variables('appService').services[copyIndex()].name)]",
+            "[resourceId('Microsoft.Insights/components', variables('applicationInsights').name)]"
           ]
         },
         {
@@ -434,7 +454,14 @@
           "apiVersion": "2020-06-01",
           "name": "slotconfignames",
           "properties": {
-            "appSettingNames": [ "APPINSIGHTS_INSTRUMENTATIONKEY", "APPINSIGHTSSETTINGS_APPID", "CONFIGURATION_SERVICEBUS_QUEUES_NOTIFICATIONS" ],
+            "appSettingNames": [
+              "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "APPINSIGHTSSETTINGS_APPID",
+              "CONFIGURATION__APPINSIGHTSCONFIGURATION__APPID",
+              "CONFIGURATION__SERVICEBUS__QUEUES__NOTIFICATIONS",
+              "CONFIGURATION__SENDGRID__VERIFICATIONPUBLICKEY",
+              "CONFIGURATION__PERMITTEDREDIRECTS__ADMINHOMEPAGE"
+            ],
             "connectionStringNames": [ "ReadOnlySqlServer", "ReadWriteSqlServer" ]
           },
           "dependsOn": [
@@ -465,7 +492,9 @@
               "properties": {
                 "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').InstrumentationKey]",
                 "APPINSIGHTSSETTINGS_APPID": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').AppId]",
-                "CONFIGURATION_SERVICEBUS_QUEUES_NOTIFICATIONS": "[variables('serviceBus').queues.notifications]"
+                "CONFIGURATION__SERVICEBUS__QUEUES__NOTIFICATIONS": "[variables('serviceBus').queues.notifications]",
+                "CONFIGURATION__SENDGRID__VERIFICATIONPUBLICKEY": "[variables('sendgrid').verificationPublicKey]",
+                "CONFIGURATION__PERMITTEDREDIRECTS__ADMINHOMEPAGE": "[concat('https://admin-', parameters('environmentName'), '.jibberwock.com')]"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Web/sites/slots', variables('appService').services[copyIndex()].name, parameters('environmentName'))]",
@@ -517,6 +546,76 @@
           ],
           "dependsOn": [
             "[resourceId('Microsoft.Web/sites', variables('appService').services[copyIndex()].name)]"
+          ]
+        },
+        {
+          "type": "Microsoft.KeyVault/vaults/providers/roleAssignments",
+          "name": "[concat(variables('keyVault').name, '/Microsoft.Authorization/', guid(uniqueString(concat(variables('appService').services[copyIndex()].name, '-secretsOfficer'))))]",
+          "apiVersion": "2020-04-01-preview",
+          "properties": {
+            "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitions').keyVaultSecretsOfficer)]",
+            "principalId": "[reference(concat(resourceId('Microsoft.Web/Sites/', variables('appService').services[copyIndex()].name), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2015-08-31-preview').principalId]",
+            "principalType": "ServicePrincipal"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appService').services[copyIndex()].name)]",
+            "[resourceId('Microsoft.KeyVault/vaults', variables('keyVault').name)]"
+          ]
+        },
+        {
+          "type": "Microsoft.KeyVault/vaults/providers/roleAssignments",
+          "name": "[concat(variables('keyVault').name, '/Microsoft.Authorization/', guid(uniqueString(concat(variables('appService').services[copyIndex()].name, '-secretsUser'))))]",
+          "apiVersion": "2020-04-01-preview",
+          "properties": {
+            "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitions').keyVaultSecretsUser)]",
+            "principalId": "[reference(concat(resourceId('Microsoft.Web/Sites/', variables('appService').services[copyIndex()].name), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2015-08-31-preview').principalId]",
+            "principalType": "ServicePrincipal"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appService').services[copyIndex()].name)]",
+            "[resourceId('Microsoft.KeyVault/vaults', variables('keyVault').name)]"
+          ]
+        },
+        {
+          "type": "Microsoft.Insights/components/providers/roleAssignments",
+          "name": "[concat(variables('applicationInsights').name, '/Microsoft.Authorization/', guid(uniqueString(concat(variables('appService').services[copyIndex()].name, '-logAnalyticsReader'))))]",
+          "apiVersion": "2020-04-01-preview",
+          "properties": {
+            "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitions').logAnalyticsReader)]",
+            "principalId": "[reference(concat(resourceId('Microsoft.Web/Sites/', variables('appService').services[copyIndex()].name), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2015-08-31-preview').principalId]",
+            "principalType": "ServicePrincipal"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appService').services[copyIndex()].name)]",
+            "[resourceId('Microsoft.Insights/components', variables('applicationInsights').name)]"
+          ]
+        },
+        {
+          "type": "Microsoft.Insights/components/providers/roleAssignments",
+          "name": "[concat(variables('applicationInsights').name, '/Microsoft.Authorization/', guid(uniqueString(concat(variables('appService').services[copyIndex()].name, '-monitoringReader'))))]",
+          "apiVersion": "2020-04-01-preview",
+          "properties": {
+            "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitions').monitoringReader)]",
+            "principalId": "[reference(concat(resourceId('Microsoft.Web/Sites/', variables('appService').services[copyIndex()].name), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2015-08-31-preview').principalId]",
+            "principalType": "ServicePrincipal"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appService').services[copyIndex()].name)]",
+            "[resourceId('Microsoft.Insights/components', variables('applicationInsights').name)]"
+          ]
+        },
+        {
+          "type": "Microsoft.ServiceBus/namespaces/providers/roleAssignments",
+          "name": "[concat(variables('serviceBus').namespaceName, '/Microsoft.Authorization/', guid(uniqueString(concat(variables('appService').services[copyIndex()].name, '-serviceBusDataSender'))))]",
+          "apiVersion": "2020-04-01-preview",
+          "properties": {
+            "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitions').serviceBusDataSender)]",
+            "principalId": "[reference(concat(resourceId('Microsoft.Web/Sites/', variables('appService').services[copyIndex()].name), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2015-08-31-preview').principalId]",
+            "principalType": "ServicePrincipal"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appService').services[copyIndex()].name)]",
+            "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBus').namespaceName)]"
           ]
         }
       ],
@@ -675,6 +774,48 @@
             "[resourceId('Microsoft.Web/sites', variables('appService').background.name)]",
             "[resourceId('Microsoft.Insights/components', variables('applicationInsights').name)]",
             "[resourceId('Microsoft.Sql/servers/', variables('sqlServer').serverName)]"
+          ]
+        },
+        {
+          "type": "Microsoft.KeyVault/vaults/providers/roleAssignments",
+          "name": "[concat(variables('keyVault').name, '/Microsoft.Authorization/', guid(uniqueString(concat(variables('appService').background.name, '-secretsOfficer'))))]",
+          "apiVersion": "2020-04-01-preview",
+          "properties": {
+            "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitions').keyVaultSecretsOfficer)]",
+            "principalId": "[reference(concat(resourceId('Microsoft.Web/Sites/', variables('appService').background.name), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2015-08-31-preview').principalId]",
+            "principalType": "ServicePrincipal"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appService').background.name)]",
+            "[resourceId('Microsoft.KeyVault/vaults', variables('keyVault').name)]"
+          ]
+        },
+        {
+          "type": "Microsoft.KeyVault/vaults/providers/roleAssignments",
+          "name": "[concat(variables('keyVault').name, '/Microsoft.Authorization/', guid(uniqueString(concat(variables('appService').background.name, '-secretsUser'))))]",
+          "apiVersion": "2020-04-01-preview",
+          "properties": {
+            "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitions').keyVaultSecretsUser)]",
+            "principalId": "[reference(concat(resourceId('Microsoft.Web/Sites/', variables('appService').background.name), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2015-08-31-preview').principalId]",
+            "principalType": "ServicePrincipal"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appService').background.name)]",
+            "[resourceId('Microsoft.KeyVault/vaults', variables('keyVault').name)]"
+          ]
+        },
+        {
+          "type": "Microsoft.ServiceBus/namespaces/providers/roleAssignments",
+          "name": "[concat(variables('serviceBus').namespaceName, '/Microsoft.Authorization/', guid(uniqueString(concat(variables('appService').background.name, '-serviceBusDataReceiver'))))]",
+          "apiVersion": "2020-04-01-preview",
+          "properties": {
+            "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitions').serviceBusDataReceiver)]",
+            "principalId": "[reference(concat(resourceId('Microsoft.Web/Sites/', variables('appService').background.name), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2015-08-31-preview').principalId]",
+            "principalType": "ServicePrincipal"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('appService').background.name)]",
+            "[resourceId('Microsoft.ServiceBus/namespaces', variables('serviceBus').namespaceName)]"
           ]
         }
       ],

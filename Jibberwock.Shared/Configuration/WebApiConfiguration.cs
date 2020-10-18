@@ -33,5 +33,10 @@ namespace Jibberwock.Shared.Configuration
         /// Configuration for SendGrid web hooks and clients.
         /// </summary>
         public SendGridConfiguration SendGrid { get; set; }
+
+        /// <summary>
+        /// Configuration for Application Insights.
+        /// </summary>
+        public AppInsightsConfiguration AppInsightsConfiguration { get; set; }
     }
 }

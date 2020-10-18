@@ -5,7 +5,7 @@ using System.Text;
 namespace Jibberwock.Shared.Configuration
 {
     /// <summary>
-    /// Contains the top-level configuration for Application Insights.
+    /// Contains the high-level configuration for Application Insights.
     /// </summary>
     public class AppInsightsConfiguration
     {

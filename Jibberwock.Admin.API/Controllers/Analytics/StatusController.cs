@@ -29,11 +29,10 @@ namespace Jibberwock.Admin.API.Controllers.Analytics
         private readonly AppInsightsConfiguration _appInsightsConfiguration;
 
         public StatusController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource,
-            IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever,
-            IOptions<AppInsightsConfiguration> appInsightsOptions)
+            IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever)
             : base(loggerFactory, sqlServerDataSource, options, currentUserRetriever)
         {
-            _appInsightsConfiguration = appInsightsOptions.Value;
+            _appInsightsConfiguration = options?.Value.AppInsightsConfiguration;
         }
 
         /// <summary>

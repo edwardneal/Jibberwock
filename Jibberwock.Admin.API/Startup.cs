@@ -44,7 +44,6 @@ namespace Jibberwock.Admin.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<WebApiConfiguration>(Configuration.GetSection("Configuration"));
-            services.Configure<AppInsightsConfiguration>(Configuration.GetSection("AppInsightsSettings"));
             services.Configure<SqlServerDataSourceOptions>(o =>
                 {
                     o.ReadOnlyConnectionString = Configuration?.GetConnectionString("ReadOnlySqlServer");
@@ -53,7 +52,7 @@ namespace Jibberwock.Admin.API
                 .Configure<ServiceBusQueueDataSourceOptions>(o =>
                 {
                     o.NamespaceUrl = $"{StronglyTypedConfiguration.ServiceBus.Namespace}.servicebus.windows.net";
-                    o.QueueNames = new[] { StronglyTypedConfiguration.ServiceBus.Queues.Notifications };
+                    o.QueueNames = new[] { StronglyTypedConfiguration.ServiceBus.Queues?.Notifications };
                 })
                 .AddJibberwockPersistence();
 
