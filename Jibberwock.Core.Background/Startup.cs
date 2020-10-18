@@ -12,6 +12,20 @@ namespace Jibberwock.Core.Background
 {
     public class Startup : FunctionsStartup
     {
+        public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
+        {
+            base.ConfigureAppConfiguration(builder);
+
+            var config = builder.ConfigurationBuilder.Build();
+            var jobHostRoot = config.GetWebJobsRootConfiguration();
+            var keyVaultName = jobHostRoot.GetValue<string>("Configuration:SensitiveSettingKeyVaultName", null);
+
+            if (!string.IsNullOrWhiteSpace(keyVaultName))
+            {
+                builder.ConfigurationBuilder.AddAzureKeyVault($"https://{keyVaultName}.vault.azure.net/");
+            }
+        }
+
         public override void Configure(IFunctionsHostBuilder builder)
         {
             var wac = new WebApiConfiguration();
