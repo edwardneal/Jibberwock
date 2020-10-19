@@ -91,7 +91,7 @@ module.exports = {
     },
     buildModules: [
         '@nuxtjs/vuetify',
-        ['@nuxtjs/google-analytics', { id: 'UA-177636773-1', disabled: true, debug: { trace: true, sendHitTask: true } }]
+        ['@nuxtjs/google-analytics', { id: 'UA-177636773-1', disabled: true, debug: { trace: true, sendHitTask: true }, fields: { cookieFlags: 'SameSite=None; Secure' } }]
     ],
     modules: [
         '@nuxtjs/applicationinsights',
