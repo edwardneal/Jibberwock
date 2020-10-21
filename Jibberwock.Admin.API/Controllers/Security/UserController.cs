@@ -21,7 +21,7 @@ using Jibberwock.DataModels.Core;
 namespace Jibberwock.Admin.API.Controllers.Security
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class UserController : JibberwockControllerBase
     {
         private readonly IQueueDataSource _queueDataSource;

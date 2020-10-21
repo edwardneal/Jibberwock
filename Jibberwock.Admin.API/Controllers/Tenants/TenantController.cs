@@ -21,7 +21,7 @@ using Jibberwock.DataModels.Core;
 namespace Jibberwock.Admin.API.Controllers.Tenants
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class TenantController : JibberwockControllerBase
     {
         private readonly IQueueDataSource _queueDataSource;

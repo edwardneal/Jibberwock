@@ -17,7 +17,7 @@ using Jibberwock.DataModels.Security.Audit;
 namespace Jibberwock.Admin.API.Controllers.Security
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AuditTrailController : JibberwockControllerBase
     {
         public AuditTrailController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource,

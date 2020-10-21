@@ -21,7 +21,7 @@ using System.Net;
 namespace Jibberwock.Admin.API.Controllers.Products
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize]
     public class ProductCharacteristicController : JibberwockControllerBase
     {

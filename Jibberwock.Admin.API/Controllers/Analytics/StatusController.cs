@@ -22,7 +22,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace Jibberwock.Admin.API.Controllers.Analytics
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize]
     public class StatusController : JibberwockControllerBase
     {

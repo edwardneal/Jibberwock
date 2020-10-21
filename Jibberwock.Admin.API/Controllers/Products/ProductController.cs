@@ -21,7 +21,7 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 namespace Jibberwock.Admin.API.Controllers.Products
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize]
     public class ProductController : JibberwockControllerBase
     {

@@ -17,7 +17,7 @@ using Microsoft.Extensions.Options;
 namespace Jibberwock.Admin.API.Controllers.Authentication
 {
     [ApiController]
-    [Route("auth/[controller]")]
+    [Route("api/auth/[controller]")]
     [Authorize]
     public class RedirectController : JibberwockControllerBase
     {
