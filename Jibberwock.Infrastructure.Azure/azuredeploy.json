@@ -73,7 +73,7 @@
       "services": [
         {
           "name": "[concat(toLower(variables('sharedName')), '-api')]",
-          "subdomain": "api",
+          "subdomain": "www",
           "easyAuth": {
             "clientId": "98010cfe-0e61-4daf-a403-94464e8899cb",
             "issuerUrl": "https://jibberwockb2c.b2clogin.com/jibberwockb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignIn"
@@ -81,7 +81,7 @@
         },
         {
           "name": "allert-api",
-          "subdomain": "allert-api",
+          "subdomain": "allert",
           "easyAuth": {
             "clientId": "e7c77cb9-8ff1-4777-bc3f-02d01a32fb69",
             "issuerUrl": "https://jibberwockb2c.b2clogin.com/jibberwockb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignIn"
@@ -89,16 +89,13 @@
         },
         {
           "name": "[concat(toLower(variables('sharedName')), '-admin-api')]",
-          "subdomain": "admin-api",
+          "subdomain": "admin",
           "easyAuth": {
             "clientId": "6d105e75-5dac-419c-9981-cfe1e6661fb0",
             "issuerUrl": "https://jibberwockb2c.b2clogin.com/jibberwockb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignIn"
           }
         }
       ],
-      "proxy": {
-        "name": "[concat(toLower(variables('sharedName')), '-proxy-', parameters('environmentName'))]"
-      },
       "background": {
         "name": "[concat(toLower(variables('sharedName')), '-background-', parameters('environmentName'))]",
         "notificationHandlingFunction": "HandleNotifications"
@@ -627,75 +624,6 @@
         "name": "webSitesCopy",
         "count": "[length(variables('appService').services)]"
       }
-    },
-    {
-      "type": "Microsoft.Web/sites",
-      "apiVersion": "2020-06-01",
-      "location": "[resourceGroup().location]",
-      "name": "[variables('appService').proxy.name]",
-      "kind": "functionapp",
-      "tags": {
-        "purpose": "proxy"
-      },
-      "identity": {
-        "type": "SystemAssigned"
-      },
-      "properties": {
-        "serverFarmId": "[variables('appService').name]",
-        "httpsOnly": true,
-        "clientAffinityEnabled": false,
-        "hostNameSslStates": [
-          {
-            "name": "www.jibberwock.com",
-            "sslState": "SniEnabled",
-            "thumbprint": "[reference(resourceId('Microsoft.Web/certificates', concat(variables('keyVault').name, '-', variables('appService').globalCertificateName))).Thumbprint]",
-            "hostType": "Standard"
-          }
-        ]
-      },
-      "resources": [
-        {
-          "type": "config",
-          "name": "web",
-          "apiVersion": "2020-06-01",
-          "properties": {
-            "http20Enabled": true,
-            "minTlsVersion": "1.2",
-            "ftpsState": "Disabled",
-            "requestTracingEnabled": true,
-            "httpLoggingEnabled": true,
-            "detailedErrorLoggingEnabled": true,
-            "alwaysOn": true,
-            "use32BitWorkerProcess": false
-          },
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', variables('appService').proxy.name)]"
-          ]
-        },
-        {
-          "type": "config",
-          "name": "appsettings",
-          "apiVersion": "2020-06-01",
-          "properties": {
-            "FUNCTIONS_EXTENSION_VERSION": "~3",
-            "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-            "SensitiveSettingKeyVaultName": "[variables('keyVault').name]",
-            "APPINSIGHTSSETTINGS_TENANTID": "[subscription().tenantId]",
-            "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').InstrumentationKey]",
-            "APPINSIGHTSSETTINGS_APPID": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsights').name), '2018-05-01-preview').AppId]",
-            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(variables('sharedName')), 'root;AccountKey=', listKeys(concat(toLower(variables('sharedName')), 'root'), '2019-06-01').keys[0].value)]"
-          },
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', variables('appService').proxy.name)]",
-            "[resourceId('Microsoft.Storage/storageAccounts', concat(toLower(variables('sharedName')), 'root'))]",
-            "[resourceId('Microsoft.Insights/components', variables('applicationInsights').name)]"
-          ]
-        }
-      ],
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverFarms', variables('appService').name)]",
-        "[resourceId('Microsoft.Web/certificates', concat(variables('keyVault').name, '-', variables('appService').globalCertificateName))]"
-      ]
     },
     {
       "type": "Microsoft.Web/sites",
