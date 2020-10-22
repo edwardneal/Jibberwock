@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://admin.jibberwock.com/sitemap.xml

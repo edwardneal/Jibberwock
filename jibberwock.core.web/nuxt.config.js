@@ -106,7 +106,7 @@ module.exports = {
             disableTelemetry: true,
             isCookieUseDisabled: true,
             samplingPercentage: 20,
-            correlationHeaderDomains: ['api.jibberwock.com'],
+            correlationHeaderDomains: ['www.jibberwock.com'],
             enableCorsCorrelation: true
         }
     },

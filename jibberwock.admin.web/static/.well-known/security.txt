@@ -1,0 +1,3 @@
+Canonical: https://admin.jibberwock.com/.well-known/security.txt
+Contact: mailto:security@jibberwock.com
+Preferred-Languages: en
