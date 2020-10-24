@@ -34,6 +34,14 @@
         </template>
       </v-list>
       <v-list v-else>
+        <v-list-item to="/" router exact>
+          <v-list-item-action>
+            <v-icon>mdi-wrench</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ languageStrings.productName }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item :href="getLogInUrl($route.fullPath)" router exact>
           <v-list-item-action>
             <v-icon>mdi-login</v-icon>
@@ -49,7 +57,7 @@
     </v-app-bar>
     <v-main>
       <v-container>
-        <nuxt />
+        <router-view :language-strings="languageStrings" />
       </v-container>
     </v-main>
     <v-footer app>
@@ -91,7 +99,7 @@ export default {
           ]
         }
       ],
-      title: 'Jibberwock Admin'
+      title: lang.productName
     }
   },
   computed: {

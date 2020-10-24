@@ -28,5 +28,14 @@ export default {
         allert: 'Allert'
       }
     }
+  },
+  pages: {
+    homepage: {
+      title: 'Homepage',
+      unauthenticated: {
+        header: 'Welcome to the Jibberwock Admin Site',
+        comment: 'Please log in to this site using the "Log In" link on the left.'
+      }
+    }
   }
 }
