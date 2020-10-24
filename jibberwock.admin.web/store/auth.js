@@ -2,7 +2,7 @@ export const state = () => ({
   urls: {
     logIn: 'https://admin.jibberwock.com/.auth/login/aad?post_login_redirect_url={redirectTo}',
     me: 'https://admin.jibberwock.com/.auth/me',
-    logOut: 'https://admin.jibberwock.com/.auth/logout'
+    logOut: 'https://admin.jibberwock.com/.auth/logout?post_logout_redirect_url={redirectTo}'
   },
   loggedIn: false,
   userInfo: null
@@ -22,6 +22,9 @@ export const mutations = {
 export const getters = {
   getLogInUrl: state => (url) => {
     return state.urls.logIn.replace('{redirectTo}', encodeURIComponent(url))
+  },
+  getLogOutUrl: state => (url) => {
+    return state.urls.logOut.replace('{redirectTo}', encodeURIComponent(url))
   }
 }
 

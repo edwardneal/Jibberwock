@@ -1,116 +1,110 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      app
-    >
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
+  <v-app>
+    <v-navigation-drawer :clipped="false" fixed app>
+      <v-list v-if="$store.state.auth.loggedIn">
+        <v-list-item to="/" router exact>
           <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
+            <v-icon>mdi-wrench</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
+            <v-list-item-title>{{ languageStrings.productName }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item :href="getLogOutUrl($route.fullPath)" router exact>
+          <v-list-item-action>
+            <v-icon>mdi-logout</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ languageStrings.auth.logOut }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <template v-for="(section, s) in sections">
+          <v-subheader :key="'title.' + s">
+            {{ section.title }}
+          </v-subheader>
+          <v-divider :key="'divider.' + s" />
+          <v-list-item v-for="(item, i) in section.items" :key="'section' + s + '.item.' + i" :to="item.to" router exact>
+            <v-list-item-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title" />
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+      </v-list>
+      <v-list v-else>
+        <v-list-item :href="getLogInUrl($route.fullPath)" router exact>
+          <v-list-item-action>
+            <v-icon>mdi-login</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ languageStrings.auth.logIn }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar
-      :clipped-left="clipped"
-      fixed
-      app
-    >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn
-        icon
-        @click.stop="miniVariant = !miniVariant"
-      >
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="clipped = !clipped"
-      >
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="fixed = !fixed"
-      >
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
+    <v-app-bar fixed app>
       <v-toolbar-title v-text="title" />
-      <v-spacer />
-      <v-btn
-        icon
-        @click.stop="rightDrawer = !rightDrawer"
-      >
-        <v-icon>mdi-menu</v-icon>
-      </v-btn>
     </v-app-bar>
     <v-main>
       <v-container>
         <nuxt />
       </v-container>
     </v-main>
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      :right="right"
-      temporary
-      fixed
-    >
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
-            </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-footer
-      :absolute="!fixed"
-      app
-    >
+    <v-footer app>
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import lang from '~/static-data/lang/en'
+
 export default {
   data () {
     return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
-      items: [
+      languageStrings: lang,
+      sections: [
         {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/'
+          title: lang.sections.users.title,
+          items: [
+            { icon: 'mdi-account', title: lang.sections.users.items.users, to: '/users' },
+            { icon: 'mdi-account-group', title: lang.sections.users.items.tenants, to: '/tenants' }
+          ]
         },
         {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
+          title: lang.sections.service.title,
+          items: [
+            { icon: 'mdi-book-open', title: lang.sections.service.items.auditTrail, to: '/audit-trail' },
+            { icon: 'mdi-gauge', title: lang.sections.service.items.status, to: '/status' },
+            { icon: 'mdi-shield-alert', title: lang.sections.service.items.exceptions, to: '/exceptions' }
+          ]
+        },
+        {
+          title: lang.sections.products.title,
+          items: [
+            { icon: 'mdi-sticker', title: lang.sections.products.items.characteristics, to: '/characteristics' },
+            { icon: 'mdi-package-variant-closed', title: lang.sections.products.items.products, to: '/products' },
+            { icon: 'mdi-cloud-alert', title: lang.sections.products.items.allert, to: '/allert' }
+          ]
         }
       ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js'
+      title: 'Jibberwock Admin'
+    }
+  },
+  computed: {
+    ...mapGetters({
+      getLogInUrl: 'auth/getLogInUrl',
+      getLogOutUrl: 'auth/getLogOutUrl'
+    })
+  },
+  head () {
+    return {
+      changed: (metaInfo) => {
+        this.title = metaInfo.titleChunk
+      }
     }
   }
 }

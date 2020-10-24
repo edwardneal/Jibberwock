@@ -1,4 +1,4 @@
-export default function ({ store }) {
+export default function ({ _route, store, _redirect }) {
   const populateLoggedInState = store._actions['auth/populateLoggedInState']
 
   // On every page load, repopulate the logged-in status.

@@ -44,6 +44,14 @@ export default {
     ...mapGetters({
       getLogInUrl: 'auth/getLogInUrl'
     })
+  },
+  meta: {
+    auth: { required: false }
+  },
+  head () {
+    return {
+      title: 'Homepage'
+    }
   }
 }
 </script>
