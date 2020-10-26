@@ -56,6 +56,8 @@ namespace Jibberwock.Admin.API
                 })
                 .AddJibberwockPersistence();
 
+            services.AddCors();
+
             services.AddApplicationInsightsTelemetry();
             services.AddHttpContextAccessor();
 
@@ -80,15 +82,27 @@ namespace Jibberwock.Admin.API
             }
 
             app.UseHttpsRedirection();
-            
+
             app.UseRouting();
+
+            if (env.IsDevelopment())
+            { app.UseCors(); }
 
             app.UseAuthentication()
                 .UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers()
+                    .RequireCors(cpb =>
+                    {
+                        if (env.IsDevelopment())
+                        {
+                            cpb.AllowAnyOrigin()
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                        }
+                    });
 
                 endpoints.MapSendGridWebHooks();
             });

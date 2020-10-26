@@ -20,7 +20,8 @@
     "core-js": "^3.6.5",
     "nuxt": "^2.14.6",
     "vue-cookies": "^1.7.4",
-    "vue-promised": "^1.2.2"
+    "vue-promised": "^1.2.2",
+    "vuelidate": "^0.7.6"
   },
   "devDependencies": {
     "@nuxt/types": "^2.14.6",
