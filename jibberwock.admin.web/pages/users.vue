@@ -14,17 +14,17 @@
           :search-function="findUsersInternal"
           @selection-changed="updateSelection"
         >
-          <template v-slot:toolbar-actions="{ isPending, error }">
+          <template v-slot:toolbar-actions="{ shouldDisable }">
             <v-toolbar-items>
-              <v-btn depressed :disabled="isPending || error !== null || !userDetails.selection.some((s) => !s.enabled)" class="pl-2">
+              <v-btn depressed :disabled="shouldDisable || !userDetails.selection.some((s) => !s.enabled)" class="pl-2" @click="enableUser">
                 <v-icon>mdi-lightning-bolt</v-icon>
                 {{ languageStrings.pages.users.actions.enable }}
               </v-btn>
-              <v-btn depressed :disabled="isPending || error !== null || !userDetails.selection.some((s) => s.enabled)" class="pl-2">
+              <v-btn depressed :disabled="shouldDisable || !userDetails.selection.some((s) => s.enabled)" class="pl-2" @click="disableUser">
                 <v-icon>mdi-lightning-bolt-outline</v-icon>
                 {{ languageStrings.pages.users.actions.disable }}
               </v-btn>
-              <v-btn depressed :disabled="isPending || error !== null || userDetails.selection.length === 0" class="pl-3">
+              <v-btn depressed :disabled="shouldDisable || userDetails.selection.length === 0" class="pl-3">
                 <v-icon>mdi-message-draw</v-icon>
                 {{ languageStrings.pages.users.actions.notify }}
               </v-btn>
@@ -66,6 +66,20 @@
       :notification="updateNotification.recordToUpdate"
       :post-update-callback="updateNotification.postUpdateCallback"
     />
+    <ProgressDialog
+      :language-strings="languageStrings"
+      :prompt="formatPlural(languageStrings.dialogs.enableUserConfirmation, userDetails.selection)"
+      :activity-promise-factory="userAccess.enableUserPromiseFactory"
+      :confirm-button-text="languageStrings.actions.confirm"
+      :cancel-button-text="languageStrings.actions.cancel"
+    />
+    <ProgressDialog
+      :language-strings="languageStrings"
+      :prompt="formatPlural(languageStrings.dialogs.disableUserConfirmation, userDetails.selection)"
+      :activity-promise-factory="userAccess.disableUserPromiseFactory"
+      :confirm-button-text="languageStrings.actions.confirm"
+      :cancel-button-text="languageStrings.actions.cancel"
+    />
   </v-sheet>
 </template>
 
@@ -78,12 +92,14 @@ import { mapActions } from 'vuex'
 import SearchableTable from '~/components/SearchableTable.vue'
 import NotificationList from '~/components/NotificationList.vue'
 import UpdateNotificationForm from '~/components/UpdateNotificationForm.vue'
+import ProgressDialog from '~/components/ProgressDialog.vue'
 
 export default {
   components: {
     SearchableTable,
     NotificationList,
-    UpdateNotificationForm
+    UpdateNotificationForm,
+    ProgressDialog
   },
   props: {
     languageStrings: {
@@ -116,6 +132,11 @@ export default {
         showDialog: false,
         recordToUpdate: null,
         postUpdateCallback: null
+      },
+
+      userAccess: {
+        enableUserPromiseFactory: null,
+        disableUserPromiseFactory: null
       }
     }
   },
@@ -124,7 +145,8 @@ export default {
   methods: {
     ...mapActions({
       findUsersInternal: 'users/findUsers',
-      getUserNotificationsInternal: 'users/getNotifications'
+      getUserNotificationsInternal: 'users/getNotifications',
+      controlUserAccess: 'users/controlUserAccess'
     }),
     updateSelection (value) {
       this.userDetails.selection = value
@@ -136,6 +158,42 @@ export default {
       }
       this.updateNotification.recordToUpdate = { ...notification }
       this.updateNotification.showDialog = true
+    },
+    formatPlural (languageString, collection) {
+      const replacementPlural = collection.length === 1 ? '' : 's'
+      const replacementThis = collection.length === 1 ? 'this' : 'these'
+
+      return languageString.replace('{thisPlural}', replacementThis).replace('{plural}', replacementPlural)
+    },
+    enableUser () {
+      const selectedUsers = this.userDetails.selection
+      const enableSingleUser = (usr) => {
+        return this.controlUserAccess({ userId: usr.id, enabled: true })
+          .then((v) => {
+            usr.enabled = v.data.enabled
+
+            return v
+          })
+      }
+
+      this.userAccess.enableUserPromiseFactory = () => {
+        return Promise.all(selectedUsers.map(enableSingleUser))
+      }
+    },
+    disableUser () {
+      const selectedUsers = this.userDetails.selection
+      const disableSingleUser = (usr) => {
+        return this.controlUserAccess({ userId: usr.id, enabled: false })
+          .then((v) => {
+            usr.enabled = v.data.enabled
+
+            return v
+          })
+      }
+
+      this.userAccess.disableUserPromiseFactory = () => {
+        return Promise.all(selectedUsers.map(disableSingleUser))
+      }
     }
   },
   meta: {

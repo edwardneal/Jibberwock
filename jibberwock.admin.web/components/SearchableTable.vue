@@ -44,7 +44,7 @@
             </v-tooltip>
           </v-alert>
           <v-toolbar dense>
-            <slot name="toolbar-actions" v-bind="{ isPending, error }" />
+            <slot name="toolbar-actions" v-bind="{ shouldDisable: isPending || error !== null }" />
           </v-toolbar>
         </template>
         <template v-slot:item.enabled="{ item }">

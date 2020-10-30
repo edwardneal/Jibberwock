@@ -3,6 +3,7 @@ const baseUrl = process.env.NODE_ENV === 'production' ? 'https://admin.jibberwoc
 export const state = () => ({
   urls: {
     findUser: baseUrl + '/user?name={searchString}',
+    controlAccess: baseUrl + '/user/{id}',
     getNotifications: baseUrl + '/user/{id}/notifications',
     updateNotification: baseUrl + '/user/{id}/notifications/{notificationId}'
   }
@@ -27,5 +28,10 @@ export const actions = {
     const notificationUrl = state.urls.updateNotification.replace('{id}', encodeURIComponent(userId)).replace('{notificationId}', encodeURIComponent(notificationId))
 
     return this.$axios.put(notificationUrl, notification)
+  },
+  controlUserAccess ({ state }, { userId, enabled }) {
+    const accessUrl = state.urls.controlAccess.replace('{id}', encodeURIComponent(userId))
+
+    return this.$axios.put(accessUrl, { enabled })
   }
 }

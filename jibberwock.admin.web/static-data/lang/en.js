@@ -35,12 +35,20 @@ export default {
     noSearchString: 'Please provide something to search for.',
     searchStringTooLong: 'The value you\'re searching for is too long. Please search for a shorter value.',
     unableToUpdateNotification: 'Unable to update notification, please try again later.',
+    unableToCompleteAction: 'Unable to complete this action, please try again later.',
     noSubject: 'Please provide a subject.',
     subjectTooLong: 'This subject is too long. Please provide a shorter subject.',
     noMessage: 'Please provide a message.'
   },
   actions: {
-    search: 'Search'
+    search: 'Search',
+    confirm: 'Confirm',
+    cancel: 'Cancel'
+  },
+  dialogs: {
+    confirmationDialogHeader: 'Confirmation Required',
+    enableUserConfirmation: 'Are you sure you want to enable {thisPlural} user{plural}?',
+    disableUserConfirmation: 'Are you sure you want to disable {thisPlural} user{plural}?'
   },
   notificationList: {
     headers: {
