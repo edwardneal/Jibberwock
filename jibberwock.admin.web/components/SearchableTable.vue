@@ -16,16 +16,16 @@
                 v-model="searchString"
                 :label="languageStrings.actions.search"
                 clearable
-                hide-details
+                hide-details3
                 autofocus
                 :error-messages="searchStringErrors"
                 @input="$v.searchString.$touch()"
                 @blur="$v.searchString.$touch()"
-                @keyup.enter="findRecords"
+                @keyup.enter="if (! $v.$anyError) { findRecords() }"
                 v-on="on"
               >
                 <template v-slot:append-outer>
-                  <v-btn color="primary" small :disabled="started && isPending" @click="findRecords">
+                  <v-btn color="primary" small :disabled="(started && isPending) || ($v.$anyError)" @click="findRecords">
                     {{ languageStrings.pages.users.searchButton }}
                   </v-btn>
                 </template>

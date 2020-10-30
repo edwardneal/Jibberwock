@@ -16,6 +16,7 @@ export default {
       title: 'Service',
       items: {
         auditTrail: 'Audit Trail',
+        emails: 'Emails',
         status: 'Status',
         exceptions: 'Exceptions'
       }
@@ -32,7 +33,11 @@ export default {
   validationErrorMessages: {
     unableToSearch: 'Unable to search, please try again later.',
     noSearchString: 'Please provide something to search for.',
-    searchStringTooLong: 'The value you\'re searching for is too long. Please search for a shorter value.'
+    searchStringTooLong: 'The value you\'re searching for is too long. Please search for a shorter value.',
+    unableToUpdateNotification: 'Unable to update notification, please try again later.',
+    noSubject: 'Please provide a subject.',
+    subjectTooLong: 'This subject is too long. Please provide a shorter subject.',
+    noMessage: 'Please provide a message.'
   },
   actions: {
     search: 'Search'
@@ -50,11 +55,47 @@ export default {
       specificTenant: 'Tenant: ',
       masterTemplate: '{group} ({count} notification{plural})'
     },
-    notificationTypes: {
-      1: 'Alert',
-      2: 'Information',
-      3: 'Error',
-      4: 'Warning'
+    notificationTypes: [
+      { id: 1, label: 'Alert' },
+      { id: 2, label: 'Information' },
+      { id: 3, label: 'Error' },
+      { id: 4, label: 'Warning' }
+    ],
+    notificationStatuses: [
+      { id: 1, label: 'Active' },
+      { id: 2, label: 'Cancelled' }
+    ],
+    notificationPriorities: [
+      { name: 'low', label: 'Low' },
+      { name: 'normal', label: 'Normal' },
+      { name: 'high', label: 'High' }
+    ]
+  },
+  forms: {
+    updateNotification: {
+      title: 'Edit Notification',
+      description: 'You can edit the details of this notification using the fields below. When you\'re finished, hit Save.',
+      tooltips: {
+        allUsers: 'This notification appears to all users of all Jibberwock services.',
+        specificUser: 'This notification only appears to this user account.',
+        specificTenant: 'This notification only appears to user accounts linked to this tenant.'
+      }
+    },
+    fields: {
+      addressedTo: 'Addressed To',
+      priority: 'Priority',
+      notificationType: 'Type',
+      subject: 'Subject',
+      message: 'Message',
+      active: 'Active',
+      allowDismissal: 'Allow Dismissal',
+      startDate: 'Start Date',
+      endDate: 'End Date',
+      sendAsEmail: 'Send as Email'
+    },
+    buttons: {
+      update: 'Save',
+      cancel: 'Cancel'
     }
   },
   pages: {

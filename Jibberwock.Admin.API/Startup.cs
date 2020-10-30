@@ -83,26 +83,24 @@ namespace Jibberwock.Admin.API
 
             app.UseHttpsRedirection();
 
-            app.UseRouting();
-
             if (env.IsDevelopment())
-            { app.UseCors(); }
+            {
+                app.UseCors(cpb =>
+                {
+                    cpb.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            }
+
+            app.UseRouting();
 
             app.UseAuthentication()
                 .UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers()
-                    .RequireCors(cpb =>
-                    {
-                        if (env.IsDevelopment())
-                        {
-                            cpb.AllowAnyOrigin()
-                                .AllowAnyHeader()
-                                .AllowAnyMethod();
-                        }
-                    });
+                endpoints.MapControllers();
 
                 endpoints.MapSendGridWebHooks();
             });

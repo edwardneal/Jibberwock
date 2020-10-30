@@ -1,70 +1,84 @@
 <template>
   <v-app>
     <v-navigation-drawer :clipped="false" fixed app>
-      <v-list v-if="$store.state.auth.loggedIn">
-        <v-list-item to="/" router exact>
-          <v-list-item-action>
-            <v-icon>mdi-wrench</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>{{ languageStrings.productName }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item :href="getLogOutUrl($route.fullPath)" router exact>
-          <v-list-item-action>
-            <v-icon>mdi-logout</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>{{ languageStrings.auth.logOut }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <template v-for="(section, s) in sections">
-          <v-subheader :key="'title.' + s">
-            {{ section.title }}
-          </v-subheader>
-          <v-divider :key="'divider.' + s" />
-          <v-list-item v-for="(item, i) in section.items" :key="'section' + s + '.item.' + i" :to="item.to" router exact>
+      <v-layout column fill-height>
+        <v-list v-if="$store.state.auth.loggedIn">
+          <v-list-item to="/" router exact>
             <v-list-item-action>
-              <v-icon>{{ item.icon }}</v-icon>
+              <v-icon>mdi-wrench</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title v-text="item.title" />
+              <v-list-item-title>{{ languageStrings.productName }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-        </template>
-      </v-list>
-      <v-list v-else>
-        <v-list-item to="/" router exact>
-          <v-list-item-action>
-            <v-icon>mdi-wrench</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>{{ languageStrings.productName }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item :href="getLogInUrl($route.fullPath)" router exact>
-          <v-list-item-action>
-            <v-icon>mdi-login</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>{{ languageStrings.auth.logIn }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+          <v-list-item :href="getLogOutUrl($route.fullPath)" router exact>
+            <v-list-item-action>
+              <v-icon>mdi-logout</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>{{ languageStrings.auth.logOut }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <template v-for="(section, s) in sections">
+            <v-subheader :key="'title.' + s">
+              {{ section.title }}
+            </v-subheader>
+            <v-divider :key="'divider.' + s" />
+            <v-list-item v-for="(item, i) in section.items" :key="'section' + s + '.item.' + i" :to="item.to" router exact>
+              <v-list-item-action>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title v-text="item.title" />
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+        </v-list>
+        <v-list v-else>
+          <v-list-item to="/" router exact>
+            <v-list-item-action>
+              <v-icon>mdi-wrench</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>{{ languageStrings.productName }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item :href="getLogInUrl($route.fullPath)" router exact>
+            <v-list-item-action>
+              <v-icon>mdi-login</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>{{ languageStrings.auth.logIn }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+        <v-spacer />
+        <v-list>
+          <v-list-item>
+            <v-list-item-content>
+              <v-checkbox v-model="$vuetify.theme.dark" label="Dark Mode" hide-details />
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-layout>
     </v-navigation-drawer>
     <v-app-bar fixed app>
       <v-toolbar-title v-text="title" />
     </v-app-bar>
     <v-main>
-      <v-container>
+      <v-layout id="app-container" column fill-height>
         <router-view :language-strings="languageStrings" />
-      </v-container>
+      </v-layout>
     </v-main>
     <v-footer app>
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
 </template>
+
+<style>
+  #app-container .v-sheet:first-child { padding:16px; height: 100% }
+</style>
 
 <script>
 import { mapGetters } from 'vuex'
@@ -86,6 +100,7 @@ export default {
           title: lang.sections.service.title,
           items: [
             { icon: 'mdi-book-open', title: lang.sections.service.items.auditTrail, to: '/audit-trail' },
+            { icon: 'mdi-email-search', title: lang.sections.service.items.emails, to: '/emails' },
             { icon: 'mdi-gauge', title: lang.sections.service.items.status, to: '/status' },
             { icon: 'mdi-shield-alert', title: lang.sections.service.items.exceptions, to: '/exceptions' }
           ]

@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
     <v-row justify="center">
-      <v-col sm="12" md="6" cols="6">
+      <v-col sm="12" md="6" cols="12">
         <SearchableTable
           :language-strings="languageStrings"
           :headers="userListHeaders"
@@ -36,7 +36,7 @@
           </template>
         </SearchableTable>
       </v-col>
-      <v-col sm="12" md="6" cols="6">
+      <v-col sm="12" md="6" cols="12">
         <v-card v-if="userDetails.selection.length === 0" elevation="0">
           <v-card-title>{{ languageStrings.pages.users.detailsPanel.title }}</v-card-title>
           <v-card-text>
@@ -49,7 +49,7 @@
             {{ languageStrings.pages.users.detailsPanel.notifications.title }}
           </v-card-subtitle>
           <v-card-text>
-            <NotificationList :language-strings="languageStrings" :users="userDetails.selection" />
+            <NotificationList :language-strings="languageStrings" :users="userDetails.selection" @notification-selected="showUpdateForm" />
           </v-card-text>
           <v-card-subtitle>{{ languageStrings.pages.users.detailsPanel.tenants.title }}</v-card-subtitle>
           <v-card-text>Tenants here</v-card-text>
@@ -60,6 +60,12 @@
         </v-card>
       </v-col>
     </v-row>
+    <UpdateNotificationForm
+      :visible.sync="updateNotification.showDialog"
+      :language-strings="languageStrings"
+      :notification="updateNotification.recordToUpdate"
+      :post-update-callback="updateNotification.postUpdateCallback"
+    />
   </v-sheet>
 </template>
 
@@ -71,11 +77,13 @@
 import { mapActions } from 'vuex'
 import SearchableTable from '~/components/SearchableTable.vue'
 import NotificationList from '~/components/NotificationList.vue'
+import UpdateNotificationForm from '~/components/UpdateNotificationForm.vue'
 
 export default {
   components: {
     SearchableTable,
-    NotificationList
+    NotificationList,
+    UpdateNotificationForm
   },
   props: {
     languageStrings: {
@@ -102,6 +110,12 @@ export default {
       ],
       userDetails: {
         selection: []
+      },
+
+      updateNotification: {
+        showDialog: false,
+        recordToUpdate: null,
+        postUpdateCallback: null
       }
     }
   },
@@ -114,6 +128,14 @@ export default {
     }),
     updateSelection (value) {
       this.userDetails.selection = value
+    },
+    showUpdateForm (notification, updateCallback) {
+      this.updateNotification.postUpdateCallback = () => {
+        this.updateNotification.showDialog = false
+        updateCallback()
+      }
+      this.updateNotification.recordToUpdate = { ...notification }
+      this.updateNotification.showDialog = true
     }
   },
   meta: {

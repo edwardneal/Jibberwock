@@ -1,11 +1,13 @@
 <template>
   <Promised :promise="masterNotificationPromise">
     <template v-slot:combined="{ isPending, error, data }">
+      <!-- todo: implement an error bar here, like SearchableTable has -->
       <v-data-table
         :headers="masterHeaders"
         :loading="isPending"
         :items="!isPending && error === null ? data : undefined"
         :custom-group="groupItems"
+        :custom-sort="sortItems"
         group-by="id"
       >
         <template v-slot:group.header="{ group, items, isOpen, toggle }">
@@ -20,16 +22,16 @@
           </td>
         </template>
         <template v-slot:item.type="{ item }">
-          {{ languageStrings.notificationList.notificationTypes[item.type] }}
+          {{ languageStrings.notificationList.notificationTypes.find(tp => tp.id === item.type).label }}
         </template>
         <template v-slot:item.startDate="{ item }">
-          {{ typeof item.startDate !== 'undefined' && item.startDate !== null ? new Date(item.startDate).toLocaleString() : '-' }}
+          {{ typeof item.startDate !== 'undefined' && item.startDate !== null ? new Date(item.startDate).toLocaleDateString() : '-' }}
         </template>
         <template v-slot:item.endDate="{ item }">
-          {{ typeof item.endDate !== 'undefined' && item.endDate !== null ? new Date(item.endDate).toLocaleString() : '-' }}
+          {{ typeof item.endDate !== 'undefined' && item.endDate !== null ? new Date(item.endDate).toLocaleDateString() : '-' }}
         </template>
         <template v-slot:item._actions="{ item }">
-          <v-btn icon color="primary" @click="$emit('notification-selected', item, updateMasterNotificationPromise)">
+          <v-btn icon color="primary" @click.stop="$emit('notification-selected', item, updateMasterNotificationPromise)">
             <v-icon>
               mdi-information
             </v-icon>
@@ -122,44 +124,16 @@ export default {
       getUserNotificationsInternal: 'users/getNotifications'
     }),
     updateMasterNotificationPromise () {
-      let allPromiseList = []
-
-      if (typeof this.tenants !== 'undefined' && this.tenants !== null) {
-        //
-      } else {
-        allPromiseList.push(this.getUserNotificationsInternal('all'))
-
-        if (typeof this.users !== 'undefined' && this.users !== null) {
-          allPromiseList = allPromiseList.concat(
-            this.users.map((item) => { return this.getUserNotificationsInternal(item.id) })
-          )
-        }
-      }
-      this.masterNotificationPromise = Promise.all(allPromiseList).then((values) => {
-        return values.flatMap((v) => { return v.data })
-      })
-    },
-    groupItems (items) {
       const lookupUsers = {}
       const lookupTenants = {}
       let currUsr = null
       let currTen = null
-      let currItem = null
-      let currItemKey = ''
-      let currGroupRecord = {}
-      const returnedGroups = []
+      let currNot = null
 
-      // First, build a workable lookup table for users and tenants
-      if (typeof this.users !== 'undefined' && this.users !== null) {
-        for (let i = 0; i < this.users.length; i++) {
-          currUsr = this.users[i]
+      let allPromiseList = []
 
-          if (typeof lookupUsers[currUsr.id] === 'undefined') {
-            lookupUsers[currUsr.id] = currUsr
-          }
-        }
-      }
       if (typeof this.tenants !== 'undefined' && this.tenants !== null) {
+        // Turn the list of selected tenants into a dictionary, keyed by ID
         for (let i = 0; i < this.tenants.length; i++) {
           currTen = this.tenants[i]
 
@@ -167,7 +141,48 @@ export default {
             lookupTenants[currTen.id] = currTen
           }
         }
+        // todo: this will need additional code when tenant notifications are implemented
+      } else {
+        allPromiseList.push(this.getUserNotificationsInternal('all'))
+
+        if (typeof this.users !== 'undefined' && this.users !== null) {
+          // Turn the list of selected users into a dictionary, keyed by ID
+          for (let i = 0; i < this.users.length; i++) {
+            currUsr = this.users[i]
+
+            if (typeof lookupUsers[currUsr.id] === 'undefined') {
+              lookupUsers[currUsr.id] = currUsr
+            }
+          }
+
+          allPromiseList = allPromiseList.concat(
+            this.users.map((item) => { return this.getUserNotificationsInternal(item.id) })
+          )
+        }
       }
+      this.masterNotificationPromise = Promise.all(allPromiseList).then((values) => {
+        return values.flatMap((v) => { return v.data })
+      }).then((notifications) => {
+        // Start rattling through the targetTenant and targetUsers, setting their names
+        for (let i = 0; i < notifications.length; i++) {
+          currNot = notifications[i]
+
+          if (currNot.targetTenant !== null && typeof lookupTenants[currNot.targetTenant.id] !== 'undefined') {
+            currNot.targetTenant.name = lookupTenants[currNot.targetTenant.id].name
+          }
+          if (currNot.targetUser !== null && typeof lookupUsers[currNot.targetUser.id] !== 'undefined') {
+            currNot.targetUser.name = lookupUsers[currNot.targetUser.id].name
+          }
+        }
+
+        return notifications
+      })
+    },
+    groupItems (items) {
+      let currItem = null
+      let currItemKey = ''
+      let currGroupRecord = {}
+      const returnedGroups = []
 
       for (let i = 0; i < items.length; i++) {
         currItem = items[i]
@@ -178,10 +193,10 @@ export default {
           currItemKey = this.languageStrings.notificationList.groupHeaders.allUsers
           currGroupRecord = returnedGroups.find(g => g.groupedTenant === null && g.groupedUser === null)
         } else if (currItem.targetTenant === null && currItem.targetUser !== null) {
-          currItemKey = this.languageStrings.notificationList.groupHeaders.specificUser + lookupUsers[currItem.targetUser.id].name
+          currItemKey = this.languageStrings.notificationList.groupHeaders.specificUser + currItem.targetUser.name
           currGroupRecord = returnedGroups.find(g => g.groupedTenant === null && g.groupedUser !== null && g.groupedUser.id === currItem.targetUser.id)
         } else if (currItem.targetTenant !== null) {
-          currItemKey = this.languageStrings.notificationList.groupHeaders.specificTenant + lookupTenants[currItem.targetTenant.id].name
+          currItemKey = this.languageStrings.notificationList.groupHeaders.specificTenant + currItem.targetTenant.name
           currGroupRecord = returnedGroups.find(g => g.groupedTenant !== null && g.groupedTenant.id === currItem.targetTenant.id)
         }
 
@@ -195,6 +210,35 @@ export default {
       }
 
       return returnedGroups
+    },
+    sortItems (items, indexes, isDescendingValues) {
+      if (indexes.length === 1) {
+        return items
+      }
+
+      items.sort((a, b) => {
+        const index = indexes[1]
+        const isDescending = isDescendingValues[1]
+        let firstItem = a[index]
+        let secondItem = b[index]
+
+        if (index === 'startDate' || index === 'endDate') {
+          if (typeof firstItem !== 'undefined' && firstItem !== null) {
+            firstItem = new Date(firstItem)
+          }
+          if (typeof secondItem !== 'undefined' && secondItem !== null) {
+            secondItem = new Date(secondItem)
+          }
+        }
+
+        if (isDescending) {
+          return secondItem < firstItem ? -1 : 1
+        } else {
+          return firstItem < secondItem ? -1 : 1
+        }
+      })
+
+      return items
     }
   }
 }
