@@ -35,6 +35,7 @@ export default {
     noSearchString: 'Please provide something to search for.',
     searchStringTooLong: 'The value you\'re searching for is too long. Please search for a shorter value.',
     unableToUpdateNotification: 'Unable to update notification, please try again later.',
+    unableToListNotifications: 'Unable to get the list of notifications, please try again later.',
     unableToCompleteAction: 'Unable to complete this action, please try again later.',
     noSubject: 'Please provide a subject.',
     subjectTooLong: 'This subject is too long. Please provide a shorter subject.',

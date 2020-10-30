@@ -1,7 +1,14 @@
 <template>
   <Promised :promise="masterNotificationPromise">
     <template v-slot:combined="{ isPending, error, data }">
-      <!-- todo: implement an error bar here, like SearchableTable has -->
+      <v-alert v-if="error !== null" dense dismissible outlined type="error">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <span v-bind="attrs" v-on="on">{{ languageStrings.validationErrorMessages.unableToListNotifications }}</span>
+          </template>
+          <span>{{ error.message }}</span>
+        </v-tooltip>
+      </v-alert>
       <v-data-table
         :headers="masterHeaders"
         :loading="isPending"
