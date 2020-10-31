@@ -1,5 +1,5 @@
 <template>
-  <Promised v-if="visible" :promise="updateNotificationPromise">
+  <Promised v-if="visible" :promise="notifyPromise">
     <template v-slot:combined="{ isPending, error }">
       <v-dialog
         v-model="visible"
@@ -10,16 +10,16 @@
       >
         <v-card>
           <v-card-title>
-            <span class="headline">{{ languageStrings.forms.updateNotification.title }}</span>
+            <span class="headline">{{ languageStrings.forms.notify.title }}</span>
           </v-card-title>
           <v-card-text>
             <v-row>
               <v-col cols="12">
-                {{ languageStrings.forms.updateNotification.description }}
+                {{ languageStrings.forms.notify.description }}
                 <v-alert v-if="error !== null" dense dismissible outlined type="error">
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                      <span v-bind="attrs" v-on="on">{{ languageStrings.validationErrorMessages.unableToUpdateNotification }}</span>
+                      <span v-bind="attrs" v-on="on">{{ languageStrings.validationErrorMessages.unableToNotify }}</span>
                     </template>
                     <span>{{ error.message }}</span>
                   </v-tooltip>
@@ -66,15 +66,14 @@
               <v-col sm="12" md="8" cols="12">
                 <v-text-field
                   v-model="notification.subject"
-                  :readonly="! modifiableFields.subject"
                   :label="languageStrings.forms.fields.subject"
                   :error-messages="subjectErrors"
+                  autofocus
                   @input="$v.notification.subject.$touch()"
                   @blur="$v.notification.subject.$touch()"
                 />
                 <v-textarea
                   v-model="notification.message"
-                  :readonly="! modifiableFields.message"
                   rows="8"
                   :label="languageStrings.forms.fields.message"
                   :error-messages="messageErrors"
@@ -96,19 +95,18 @@
                         <v-text-field
                           v-model="resultantStartDate"
                           v-bind="attrs"
-                          :clearable="modifiableFields.startDate"
                           :label="languageStrings.forms.fields.startDate"
                           prepend-icon="mdi-calendar"
                           readonly
+                          clearable
                           hide-details
-                          v-on="modifiableFields.startDate ? on : null"
+                          v-on="on"
                         />
                       </template>
                       <v-date-picker
                         v-model="notification.startDate"
                         :max="notification.endDate"
                         no-title
-                        :readonly="!modifiableFields.startDate"
                         scrollable
                         :width="typeof $refs.startDateMenu !== 'undefined' ? $refs.startDateMenu.dimensions.activator.width : null"
                       />
@@ -119,11 +117,12 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                           v-model="resultantEndDate"
+                          v-bind="attrs"
                           :label="languageStrings.forms.fields.endDate"
                           prepend-icon="mdi-calendar"
                           readonly
                           clearable
-                          v-bind="attrs"
+                          hide-details
                           v-on="on"
                         />
                       </template>
@@ -131,7 +130,7 @@
                     </v-menu>
                   </v-col>
                   <v-col cols="12">
-                    <v-checkbox v-model="resultantSendAsEmail" :readonly="! modifiableFields.sendAsEmail" :label="languageStrings.forms.fields.sendAsEmail" />
+                    <v-checkbox v-model="resultantSendAsEmail" :label="languageStrings.forms.fields.sendAsEmail" />
                   </v-col>
                 </v-row>
               </v-col>
@@ -142,8 +141,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="primary" small :disabled="$v.$anyError" @click="updateNotification">
-              {{ languageStrings.forms.buttons.update }}
+            <v-btn color="primary" small :disabled="$v.$anyError" @click="notify">
+              {{ languageStrings.forms.buttons.notify }}
             </v-btn>
             <v-btn color="error" small @click="hideForm">
               {{ languageStrings.forms.buttons.cancel }}
@@ -160,6 +159,21 @@ import { Promised } from 'vue-promised'
 import { required, maxLength } from 'vuelidate/lib/validators'
 import { mapActions } from 'vuex'
 
+const notificationDefaults = {
+  targetUser: null,
+  targetTenant: null,
+  emailBatch: null,
+  status: 1,
+  type: 2,
+  priority: { id: null, name: 'normal', order: null },
+  creationDate: null,
+  startDate: null,
+  endDate: null,
+  subject: null,
+  message: null,
+  allowDismissal: true
+}
+
 export default {
   components: {
     Promised
@@ -169,21 +183,27 @@ export default {
       type: Object,
       required: true
     },
+    targetUsers: {
+      type: Array,
+      required: false,
+      default: null
+    },
+    targetTenants: {
+      type: Array,
+      required: false,
+      default: null
+    },
     visible: {
       type: Boolean,
-      required: true,
-      default: true
-    },
-    notification: {
-      type: Object,
-      default: null
+      required: true
     }
   },
   data () {
     return {
+      notifyPromise: Promise.resolve(),
       showStartDateMenu: false,
       showEndDateMenu: false,
-      updateNotificationPromise: Promise.resolve()
+      notification: { ...notificationDefaults }
     }
   },
   validations: {
@@ -199,26 +219,27 @@ export default {
   },
   computed: {
     resultantTo () {
-      if (typeof this.notification === 'undefined' || this.notification === null) {
-        return {}
-      }
-      if (this.notification.targetUser !== null) {
+      if (this.targetUsers !== null) {
+        const targetUserName = this.targetUsers.map(u => u.name).join('; ')
+
         return {
-          name: this.notification.targetUser.name,
+          name: targetUserName,
           icon: 'mdi-account',
-          tooltip: this.languageStrings.forms.updateNotification.tooltips.specificUser
+          tooltip: this.languageStrings.forms.notify.tooltips.specificUser
         }
-      } else if (this.notification.targetTenant !== null) {
+      } else if (this.targetTenants !== null) {
+        const targetTenantName = this.targetTenants.map(u => u.name).join('; ')
+
         return {
-          name: this.notification.targetTenant.name,
+          name: targetTenantName,
           icon: 'mdi-account-group',
-          tooltip: this.languageStrings.forms.updateNotification.tooltips.specificTenant
+          tooltip: this.languageStrings.forms.notify.tooltips.specificTenant
         }
       } else {
         return {
           name: this.languageStrings.notificationList.groupHeaders.allUsers,
           icon: 'mdi-account-group',
-          tooltip: this.languageStrings.forms.updateNotification.tooltips.allUsers
+          tooltip: this.languageStrings.forms.notify.tooltips.allUsers
         }
       }
     },
@@ -266,33 +287,6 @@ export default {
         }
       }
     },
-    modifiableFields () {
-      const sendAsEmailEnabled = this.resultantSendAsEmail
-      const parsedStartDate = new Date(this.notification.startDate)
-      const currentDate = new Date()
-      const retVal = {
-        startDate: true,
-        subject: true,
-        message: true,
-        sendAsEmail: true
-      }
-
-      // See core.usp_UpdateNotification for these rules
-      // NB: this means that someone could uncheck Send As Email, change all of these options,
-      // then re-check it. This'd look "weird", but it's not the end of the world. The API protects against
-      // this.
-      if (sendAsEmailEnabled) {
-        retVal.startDate = false
-
-        if (parsedStartDate < currentDate) {
-          retVal.subject = false
-          retVal.message = false
-          retVal.sendAsEmail = false
-        }
-      }
-
-      return retVal
-    },
     subjectErrors () {
       const errors = []
 
@@ -315,21 +309,40 @@ export default {
   },
   methods: {
     ...mapActions({
-      updateUserNotificationInternal: 'users/updateNotification'
+      notifyUsersInternal: 'users/notify'
     }),
     hideForm () {
       this.$emit('update:visible', false)
+      this.notification = { ...notificationDefaults }
     },
-    updateNotification () {
-      if (this.notification.targetTenant !== null) {
-        // todo: update a tenant notification
-      } else {
-        // If it's not targeting a tenant, it's targeting at least one user
-        const userId = this.notification.targetUser === null ? 'all' : this.notification.targetUser.id
+    notify () {
+      let notificationPromises = []
 
-        this.updateNotificationPromise = this.updateUserNotificationInternal({
-          userId,
-          notificationId: this.notification.id,
+      if (this.targetTenants !== null && this.targetTenants.length !== 0) {
+        // todo: target a tenant
+      } else if (this.targetUsers !== null && this.targetUsers.length !== 0) {
+        // Send this notification to one or more users
+        notificationPromises = this.targetUsers.map(u =>
+          this.notifyUsersInternal({
+            userId: u.id,
+            notification: {
+              status: this.notification.status,
+              type: this.notification.type,
+              priority: {
+                name: this.notification.priority.name
+              },
+              startDate: this.notification.startDate,
+              endDate: this.notification.endDate,
+              subject: this.notification.subject,
+              message: this.notification.message,
+              allowDismissal: this.notification.allowDismissal,
+              sendAsEmail: this.notification.resultantSendAsEmail
+            }
+          }))
+      } else {
+        // Send a notification to all users in the platform
+        notificationPromises.push(this.notifyUsersInternal({
+          userId: 'all',
           notification: {
             status: this.notification.status,
             type: this.notification.type,
@@ -343,11 +356,17 @@ export default {
             allowDismissal: this.notification.allowDismissal,
             sendAsEmail: this.notification.resultantSendAsEmail
           }
-        }).then((notification) => {
-          this.$emit('notification-updated', notification)
+        }))
+      }
+
+      this.notifyPromise = Promise.all(notificationPromises)
+        .then((values) => {
+          return values.flatMap(v => v.data)
+        })
+        .then((notification) => {
+          notification.forEach(n => this.$emit('notified', n))
           this.hideForm()
         })
-      }
     }
   }
 }

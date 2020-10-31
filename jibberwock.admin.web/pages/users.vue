@@ -24,11 +24,11 @@
                 <v-icon>mdi-lightning-bolt-outline</v-icon>
                 {{ languageStrings.pages.users.actions.disable }}
               </v-btn>
-              <v-btn depressed :disabled="shouldDisable || userDetails.selection.length === 0" class="pl-3">
+              <v-btn depressed :disabled="shouldDisable || userDetails.selection.length === 0" class="pl-3" @click="showNotifyForm(false)">
                 <v-icon>mdi-message-draw</v-icon>
                 {{ languageStrings.pages.users.actions.notify }}
               </v-btn>
-              <v-btn depressed class="pl-3">
+              <v-btn depressed class="pl-3" @click="showNotifyForm(true)">
                 <v-icon>mdi-message-draw</v-icon>
                 {{ languageStrings.pages.users.actions.notifyAll }}
               </v-btn>
@@ -64,7 +64,13 @@
       :visible.sync="updateNotification.showDialog"
       :language-strings="languageStrings"
       :notification="updateNotification.recordToUpdate"
-      :post-update-callback="updateNotification.postUpdateCallback"
+      @notification-updated="refreshNotificationList"
+    />
+    <NotifyForm
+      :visible.sync="notify.showDialog"
+      :language-strings="languageStrings"
+      :target-users="notify.notifyAllUsers ? null : userDetails.selection"
+      @notified="refreshNotificationList"
     />
     <ProgressDialog
       :language-strings="languageStrings"
@@ -93,13 +99,15 @@ import SearchableTable from '~/components/SearchableTable.vue'
 import NotificationList from '~/components/NotificationList.vue'
 import UpdateNotificationForm from '~/components/UpdateNotificationForm.vue'
 import ProgressDialog from '~/components/ProgressDialog.vue'
+import NotifyForm from '~/components/NotifyForm.vue'
 
 export default {
   components: {
     SearchableTable,
     NotificationList,
     UpdateNotificationForm,
-    ProgressDialog
+    ProgressDialog,
+    NotifyForm
   },
   props: {
     languageStrings: {
@@ -137,6 +145,11 @@ export default {
       userAccess: {
         enableUserPromiseFactory: null,
         disableUserPromiseFactory: null
+      },
+
+      notify: {
+        showDialog: false,
+        notifyAllUsers: false
       }
     }
   },
@@ -151,13 +164,17 @@ export default {
     updateSelection (value) {
       this.userDetails.selection = value
     },
-    showUpdateForm (notification, updateCallback) {
-      this.updateNotification.postUpdateCallback = () => {
-        this.updateNotification.showDialog = false
-        updateCallback()
-      }
+    showUpdateForm (notification) {
       this.updateNotification.recordToUpdate = { ...notification }
       this.updateNotification.showDialog = true
+    },
+    showNotifyForm (allUsers) {
+      this.notify.notifyAllUsers = allUsers
+      this.notify.showDialog = true
+    },
+    refreshNotificationList () {
+      // This isn't obvious: it's just re-triggering the population of the notification list
+      this.userDetails.selection = [...this.userDetails.selection]
     },
     formatPlural (languageString, collection) {
       const replacementPlural = collection.length === 1 ? '' : 's'

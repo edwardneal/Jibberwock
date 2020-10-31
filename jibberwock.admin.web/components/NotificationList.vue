@@ -38,7 +38,7 @@
           {{ typeof item.endDate !== 'undefined' && item.endDate !== null ? new Date(item.endDate).toLocaleDateString() : '-' }}
         </template>
         <template v-slot:item._actions="{ item }">
-          <v-btn icon color="primary" @click.stop="$emit('notification-selected', item, updateMasterNotificationPromise)">
+          <v-btn icon color="primary" @click.stop="$emit('notification-selected', item)">
             <v-icon>
               mdi-information
             </v-icon>

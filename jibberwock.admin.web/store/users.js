@@ -4,6 +4,7 @@ export const state = () => ({
   urls: {
     findUser: baseUrl + '/user?name={searchString}',
     controlAccess: baseUrl + '/user/{id}',
+    notify: baseUrl + '/user/{id}/notifications',
     getNotifications: baseUrl + '/user/{id}/notifications',
     updateNotification: baseUrl + '/user/{id}/notifications/{notificationId}'
   }
@@ -14,6 +15,15 @@ export const actions = {
     const findUrl = state.urls.findUser.replace('{searchString}', encodeURIComponent(searchString))
 
     return this.$axios.get(findUrl)
+  },
+  notify ({ state }, { userId, notification }) {
+    if (typeof userId === 'undefined' || userId === null || userId === '') {
+      userId = 'all'
+    }
+
+    const notificationUrl = state.urls.notify.replace('{id}', encodeURIComponent(userId))
+
+    return this.$axios.post(notificationUrl, notification)
   },
   getNotifications ({ state }, userId) {
     const notificationsUrl = state.urls.getNotifications.replace('{id}', encodeURIComponent(userId))

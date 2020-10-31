@@ -94,6 +94,12 @@ export default {
       return typeof this.activityPromiseFactory !== 'undefined' && this.activityPromiseFactory !== null
     }
   },
+  watch: {
+    activityPromiseFactory () {
+      this.promiseCompleted = false
+      this.cancelled = false
+    }
+  },
   methods: {
     confirm () {
       this.promiseCompleted = false
@@ -111,12 +117,6 @@ export default {
     cancel () {
       this.cancelled = true
       this.$emit('cancelled')
-    }
-  },
-  watch: {
-    activityPromiseFactory () {
-      this.promiseCompleted = false
-      this.cancelled = false
     }
   }
 }

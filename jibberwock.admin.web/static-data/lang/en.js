@@ -36,6 +36,7 @@ export default {
     searchStringTooLong: 'The value you\'re searching for is too long. Please search for a shorter value.',
     unableToUpdateNotification: 'Unable to update notification, please try again later.',
     unableToListNotifications: 'Unable to get the list of notifications, please try again later.',
+    unableToNotify: 'Unable to send this notification, please try again later.',
     unableToCompleteAction: 'Unable to complete this action, please try again later.',
     noSubject: 'Please provide a subject.',
     subjectTooLong: 'This subject is too long. Please provide a shorter subject.',
@@ -90,6 +91,15 @@ export default {
         specificTenant: 'This notification only appears to user accounts linked to this tenant.'
       }
     },
+    notify: {
+      title: 'Notify',
+      description: 'You can use the fields below to notify one or more users. When you\'re finished, hit Notify.',
+      tooltips: {
+        allUsers: 'This notification will appear to all users of all Jibberwock services.',
+        specificUser: 'This notification will only appear to this user account.',
+        specificTenant: 'This notification will only appear to user accounts linked to this tenant.'
+      }
+    },
     fields: {
       addressedTo: 'Addressed To',
       priority: 'Priority',
@@ -104,6 +114,7 @@ export default {
     },
     buttons: {
       update: 'Save',
+      notify: 'Notify',
       cancel: 'Cancel'
     }
   },

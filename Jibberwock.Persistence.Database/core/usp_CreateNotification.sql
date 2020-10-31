@@ -45,10 +45,12 @@ BEGIN
 
 		insert into core.[Notification] ([User_ID], Tenant_ID, Email_Batch_ID,
 			Status_ID, [Type_ID], Priority_ID, Creation_Date,
-			[Subject], [Message], Allow_Dismissal)
+			[Subject], [Message], Allow_Dismissal,
+			[Start_Date], End_Date)
 		select @User_ID, @Tenant_ID, @emailBatchId,
 			@Status_ID, @Type_ID, @priorityId, SYSDATETIMEOFFSET(),
-			@Subject, @Message, @Allow_Dismissal
+			@Subject, @Message, @Allow_Dismissal,
+			@Start_Date, @End_Date
 
 		select @notificationId = SCOPE_IDENTITY()
 
