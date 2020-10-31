@@ -359,5 +359,34 @@ namespace Jibberwock.Admin.API.Controllers.Security
             else
             { return NotFound(); }
         }
+
+        /// <summary>
+        /// Gets a specific <see cref="User"/>'s available tenants.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="User"/> to retrieve.</param>
+        /// <response code="200" nullable="false">The retrieved <see cref="User"/>'s available tenants.</response>
+        /// <response code="400" nullable="false">Unable to get the list of tenants for this <see cref="User"/>, see response for details.</response>
+        [Route("{id:int}/tenants")]
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Jibberwock.DataModels.Tenants.Tenant>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
+        public async Task<IActionResult> GetUserTenants([FromRoute] long id)
+        {
+            if (id == 0)
+            {
+                ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty);
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var getUserTenantsCommand = new Jibberwock.Persistence.DataAccess.Commands.Tenants.GetTenantsByUser(Logger,
+                new User() { Id = id });
+            var userTenants = await getUserTenantsCommand.Execute(SqlServerDataSource);
+
+            return Ok(userTenants);
+        }
     }
 }

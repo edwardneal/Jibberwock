@@ -52,10 +52,8 @@
             <NotificationList :language-strings="languageStrings" :users="userDetails.selection" @notification-selected="showUpdateForm" />
           </v-card-text>
           <v-card-subtitle>{{ languageStrings.pages.users.detailsPanel.tenants.title }}</v-card-subtitle>
-          <v-card-text>Tenants here</v-card-text>
           <v-card-text>
-            New API: GET /api/users/:id/tenants
-            (will need this for first non-admin page too)
+            <TenantList :language-strings="languageStrings" :users="userDetails.selection" />
           </v-card-text>
         </v-card>
       </v-col>
@@ -97,6 +95,7 @@
 import { mapActions } from 'vuex'
 import SearchableTable from '~/components/SearchableTable.vue'
 import NotificationList from '~/components/NotificationList.vue'
+import TenantList from '~/components/TenantList.vue'
 import UpdateNotificationForm from '~/components/UpdateNotificationForm.vue'
 import ProgressDialog from '~/components/ProgressDialog.vue'
 import NotifyForm from '~/components/NotifyForm.vue'
@@ -105,6 +104,7 @@ export default {
   components: {
     SearchableTable,
     NotificationList,
+    TenantList,
     UpdateNotificationForm,
     ProgressDialog,
     NotifyForm

@@ -13,7 +13,7 @@ namespace Jibberwock.DataModels.Security
         /// <summary>
         /// The unique internal reference for this <see cref="GroupMembership"/>.
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// Determines whether or not this <see cref="GroupMembership"/> takes effect.

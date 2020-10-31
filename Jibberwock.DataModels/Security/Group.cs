@@ -14,7 +14,7 @@ namespace Jibberwock.DataModels.Security
         /// <summary>
         /// The unique internal reference for this <see cref="Group"/>.
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// The visible name of this <see cref="Group"/>

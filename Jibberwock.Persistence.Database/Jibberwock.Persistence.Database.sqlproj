@@ -150,6 +150,7 @@
     <Build Include="core\usp_CompleteEmails.sql" />
     <Build Include="core\usp_CompleteEmailBatch.sql" />
     <Build Include="core\usp_GetNotificationEmailBatchByID.sql" />
+    <Build Include="tenants\usp_GetTenantsByUserId.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

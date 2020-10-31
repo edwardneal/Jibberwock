@@ -36,6 +36,7 @@ export default {
     searchStringTooLong: 'The value you\'re searching for is too long. Please search for a shorter value.',
     unableToUpdateNotification: 'Unable to update notification, please try again later.',
     unableToListNotifications: 'Unable to get the list of notifications, please try again later.',
+    unableToListTenants: 'Unable to get the list of tenants, please try again later.',
     unableToNotify: 'Unable to send this notification, please try again later.',
     unableToCompleteAction: 'Unable to complete this action, please try again later.',
     noSubject: 'Please provide a subject.',
@@ -51,6 +52,12 @@ export default {
     confirmationDialogHeader: 'Confirmation Required',
     enableUserConfirmation: 'Are you sure you want to enable {thisPlural} user{plural}?',
     disableUserConfirmation: 'Are you sure you want to disable {thisPlural} user{plural}?'
+  },
+  tenantList: {
+    headers: {
+      name: 'Name',
+      enabled: 'Membership Enabled?'
+    }
   },
   notificationList: {
     headers: {

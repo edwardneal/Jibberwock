@@ -6,7 +6,8 @@ export const state = () => ({
     controlAccess: baseUrl + '/user/{id}',
     notify: baseUrl + '/user/{id}/notifications',
     getNotifications: baseUrl + '/user/{id}/notifications',
-    updateNotification: baseUrl + '/user/{id}/notifications/{notificationId}'
+    updateNotification: baseUrl + '/user/{id}/notifications/{notificationId}',
+    getTenants: baseUrl + '/user/{id}/tenants'
   }
 })
 
@@ -43,5 +44,10 @@ export const actions = {
     const accessUrl = state.urls.controlAccess.replace('{id}', encodeURIComponent(userId))
 
     return this.$axios.put(accessUrl, { enabled })
+  },
+  getTenants ({ state }, userId) {
+    const tenantsUrl = state.urls.getTenants.replace('{id}', encodeURIComponent(userId))
+
+    return this.$axios.get(tenantsUrl)
   }
 }

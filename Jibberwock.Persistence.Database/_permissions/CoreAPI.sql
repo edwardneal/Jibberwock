@@ -81,3 +81,6 @@ GO
 
 GRANT EXECUTE ON [core].[usp_ListNotifications] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [tenants].[usp_GetTenantsByUserId] TO [CoreAPI]
+GO

@@ -10,31 +10,22 @@
         :items="started && !isPending && error === null ? data.data : undefined"
       >
         <template v-slot:top>
-          <v-tooltip bottom left :disabled="searchStringErrors.length === 0">
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                v-model="searchString"
-                :label="languageStrings.actions.search"
-                clearable
-                hide-details3
-                autofocus
-                :error-messages="searchStringErrors"
-                @input="$v.searchString.$touch()"
-                @blur="$v.searchString.$touch()"
-                @keyup.enter="if (! $v.$anyError) { findRecords() }"
-                v-on="on"
-              >
-                <template v-slot:append-outer>
-                  <v-btn color="primary" small :disabled="(started && isPending) || ($v.$anyError)" @click="findRecords">
-                    {{ languageStrings.pages.users.searchButton }}
-                  </v-btn>
-                </template>
-              </v-text-field>
+          <v-text-field
+            v-model="searchString"
+            :label="languageStrings.actions.search"
+            clearable
+            autofocus
+            :error-messages="searchStringErrors"
+            @input="$v.searchString.$touch()"
+            @blur="$v.searchString.$touch()"
+            @keyup.enter="if (! $v.$anyError) { findRecords() }"
+          >
+            <template v-slot:append-outer>
+              <v-btn color="primary" small :disabled="(started && isPending) || ($v.$anyError)" @click="findRecords">
+                {{ languageStrings.pages.users.searchButton }}
+              </v-btn>
             </template>
-            <template>
-              <span v-for="(sse, idx) in searchStringErrors" :key="idx">{{ sse }}</span>
-            </template>
-          </v-tooltip>
+          </v-text-field>
           <v-alert v-if="error !== null" dense dismissible outlined type="error">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
