@@ -218,7 +218,11 @@ export default {
   },
   head () {
     return {
-      title: this.languageStrings.pages.users.title
+      title: this.languageStrings.pages.users.title,
+      meta: [
+        { hid: 'og:title', content: this.languageStrings.pages.users.title + ' - Jibberwock Admin' },
+        { hid: 'apple-mobile-web-app-title', content: this.languageStrings.pages.users.title + ' - Jibberwock Admin' }
+      ]
     }
   }
 }

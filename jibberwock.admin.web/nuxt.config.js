@@ -16,12 +16,9 @@ export default {
     titleTemplate: '%s - Jibberwock Admin',
     title: 'Homepage',
     meta: [
-      { charset: 'utf-8' },
       { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { name: 'rating', content: 'General' },
 
-      { name: 'twitter:card', content: 'summary' },
       { name: 'twitter:dnt', content: 'on' },
       { name: 'twitter:image', content: 'https://admin.jibberwock.com/images/favicons/android-chrome-512x512.png' },
       { name: 'twitter:image:alt', content: 'Jibberwock logo' },
@@ -30,14 +27,9 @@ export default {
       { name: 'subject', content: 'Jibberwock Admin' },
       { name: 'application-name', content: 'Jibberwock Admin' },
 
-      { hid: 'og-title', property: 'og:title', content: 'Homepage - Jibberwock Admin' },
-      { property: 'og:site_name', content: 'Jibberwock Admin' },
-      { property: 'og:description', content: 'The Jibberwock admin page enables maintenance tasks for all Jibberwock projects.' },
-      { hid: 'og-url', property: 'og:url', content: 'https://admin.jibberwock.com' },
+      { hid: 'og:description', property: 'og:description', content: 'The Jibberwock admin page enables maintenance tasks for all Jibberwock projects.' },
       { name: 'og:image', content: 'https://admin.jibberwock.com/images/favicons/android-chrome-512x512.png' },
-      { property: 'og:type', content: 'website' },
 
-      { name: 'apple-mobile-web-app-capable', content: 'yes' },
       { name: 'msapplication-config', content: '/manifests/browserconfig.xml' },
     ],
     link: [
@@ -45,7 +37,8 @@ export default {
       { rel: 'shortcut icon', type: 'image/x-icon', href: '/favicon.ico' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&display=swap' },
       {
-        rel: 'stylesheet', crossorigin: 'anonymous', href: 'https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css'
+        rel: 'stylesheet', crossorigin: 'anonymous', integrity: 'sha512-x96qcyADhiw/CZY7QLOo7dB8i/REOEHZDhNfoDuJlyQ+yZzhdy91eAa4EkO7g3egt8obvLeJPoUKEKu5C5JYjA==',
+        href: 'https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.8.55/css/materialdesignicons.min.css'
       },
 
       { rel: 'apple-touch-icon', sizes: '180x180', href: '/images/favicons/apple-touch-icon.png' },
@@ -54,8 +47,6 @@ export default {
       { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/images/favicons/android-chrome-192x192.png' },
       { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/images/favicons/favicon-16x16.png' },
       { rel: 'mask-icon', color: '#5bbad5', href: '/images/favicons/safari-pinned-tab.svg' },
-
-      { rel: 'manifest', href: '/manifests/site.webmanifest' },
     ],
     metaInfo: {
       noscript: [
@@ -108,7 +99,10 @@ export default {
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
-    customVariables: ['~/assets/variables.scss']
+    customVariables: ['~/assets/variables.scss'],
+    theme: {
+      options: { cspNonce: 'nrKlSSBeSxaJ5FGaqwl9' }
+    }
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
@@ -146,4 +140,54 @@ export default {
       enableCorsCorrelation: true
     }
   },
+
+  pwa: {
+    meta: {
+      name: 'Jibberwock Admin',
+      mobileApp: true,
+      mobileAppIOS: true,
+      theme_color: '#ffffff',
+      ogHost: 'https://admin.jibberwock.com',
+      twitterCard: 'summary',
+      favicon: false
+    },
+    manifest: {
+      useWebmanifestExtension: true,
+      name: 'Jibberwock Admin',
+      short_name: 'Jibberwock Admin',
+      icons: [
+        {
+          src: '/images/favicons/android-chrome-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+          purpose: 'any maskable'
+        },
+        {
+          src: '/images/favicons/android-chrome-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'any maskable'
+        }
+      ],
+      start_url: ''
+    },
+    // Deliberately not using this part of nuxt-pwa.
+    // I've already generated the necessary icons, which are a much smaller size.
+    icon: false,
+    workbox: {
+      workboxURL: 'https://cdnjs.cloudflare.com/ajax/libs/workbox-sw/5.1.4/workbox-sw.min.js',
+      offlineAnalytics: true,
+      runtimeCaching: [
+        'https://fonts.googleapis.com/.*',
+        'https://fonts.gstatic.com/.*',
+        'https://cdnjs.cloudflare.com/.*'
+      ].map((u) => {
+        return {
+          urlPattern: u, handler: 'cacheFirst', method: 'GET', strategyOptions: {
+            cacheableResponse: { statuses: [0, 200] }
+          }
+        }
+      })
+    }
+  }
 }

@@ -1,5 +1,6 @@
 {
-  "name": "jibberwock.admin.web",
+  "name": "admin.jibberwock.com",
+  "description": "The Jibberwock admin page enables maintenance tasks for all Jibberwock projects.",
   "version": "1.0.0",
   "private": true,
   "scripts": {
