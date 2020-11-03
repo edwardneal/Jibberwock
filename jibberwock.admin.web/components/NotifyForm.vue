@@ -90,44 +90,10 @@
                     <v-checkbox v-model="notification.allowDismissal" :label="languageStrings.forms.fields.allowDismissal" />
                   </v-col>
                   <v-col sm="6" md="12" cols="6">
-                    <v-menu ref="startDateMenu" v-model="showStartDateMenu" offset-y>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="resultantStartDate"
-                          v-bind="attrs"
-                          :label="languageStrings.forms.fields.startDate"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          clearable
-                          hide-details
-                          v-on="on"
-                        />
-                      </template>
-                      <v-date-picker
-                        v-model="notification.startDate"
-                        :max="notification.endDate"
-                        no-title
-                        scrollable
-                        :width="typeof $refs.startDateMenu !== 'undefined' ? $refs.startDateMenu.dimensions.activator.width : null"
-                      />
-                    </v-menu>
+                    <CalendarDropdown :label="languageStrings.forms.fields.startDate" :selected-date.sync="notification.startDate" :max-date="notification.endDate" />
                   </v-col>
                   <v-col sm="6" md="12" cols="6">
-                    <v-menu ref="endDateMenu" v-model="showEndDateMenu" offset-y>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="resultantEndDate"
-                          v-bind="attrs"
-                          :label="languageStrings.forms.fields.endDate"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          clearable
-                          hide-details
-                          v-on="on"
-                        />
-                      </template>
-                      <v-date-picker v-model="notification.endDate" :min="notification.startDate" :width="typeof $refs.endDateMenu !== 'undefined' ? $refs.endDateMenu.dimensions.activator.width : null" no-title scrollable />
-                    </v-menu>
+                    <CalendarDropdown :label="languageStrings.forms.fields.endDate" :selected-date.sync="notification.endDate" :min-date="notification.startDate" />
                   </v-col>
                   <v-col cols="12">
                     <v-checkbox v-model="resultantSendAsEmail" :label="languageStrings.forms.fields.sendAsEmail" />
@@ -257,34 +223,6 @@ export default {
       },
       set (value) {
         this.notification.status = value ? 1 : 2
-      }
-    },
-    resultantStartDate: {
-      get () {
-        return typeof this.notification !== 'undefined' && this.notification !== null && this.notification.startDate !== null
-          ? new Date(this.notification.startDate).toLocaleDateString()
-          : null
-      },
-      set (value) {
-        if (typeof this.notification !== 'undefined' && this.notification !== null) {
-          this.notification.startDate = (typeof value === 'undefined' || value === null || value === '')
-            ? null
-            : new Date(value)
-        }
-      }
-    },
-    resultantEndDate: {
-      get () {
-        return typeof this.notification !== 'undefined' && this.notification !== null && this.notification.endDate !== null
-          ? new Date(this.notification.endDate).toLocaleDateString()
-          : null
-      },
-      set (value) {
-        if (typeof this.notification !== 'undefined' && this.notification !== null) {
-          this.notification.endDate = (typeof value === 'undefined' || value === null || value === '')
-            ? null
-            : new Date(value)
-        }
       }
     },
     subjectErrors () {

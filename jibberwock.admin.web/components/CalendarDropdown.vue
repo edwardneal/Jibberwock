@@ -5,17 +5,18 @@
         v-model="formattedDate"
         v-bind="attrs"
         :label="label"
+        :clearable="enabled"
         prepend-icon="mdi-calendar"
         readonly
-        clearable
         hide-details
-        v-on="on"
+        v-on="enabled ? on : null"
       />
     </template>
     <v-date-picker
       :value.sync="rawDate"
       :max="maxDate"
       :min="minDate"
+      :readonly="! enabled"
       no-title
       scrollable
       :width="typeof $refs.containingMenu !== 'undefined' ? $refs.containingMenu.dimensions.activator.width : null"
@@ -45,6 +46,11 @@ export default {
       type: String,
       required: false,
       default: null
+    },
+    enabled: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   },
   data () {
