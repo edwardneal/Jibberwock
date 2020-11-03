@@ -3,16 +3,16 @@
     <tbody>
       <tr>
         <td>{{ languageStrings.auditTrailEntries.editProduct.fields.id }}</td>
-        <td>{{ entry.type === 2 ? entryMetadata.Product.Id : entryMetadata.Id }}</td>
+        <td>{{ entry.type === 2 ? entryMetadata.product.id : entryMetadata.Id }}</td>
       </tr>
       <tr v-if="entry.type === 2">
         <td>{{ languageStrings.auditTrailEntries.editProduct.fields.identifier }}</td>
-        <td>{{ entryMetadata.Product.ResourceIdentifier }}</td>
+        <td>{{ entryMetadata.product.resourceIdentifier }}</td>
       </tr>
       <tr v-if="entry.type === 2">
         <td>{{ languageStrings.auditTrailEntries.editProduct.fields.creatingProduct }}</td>
         <td>
-          <v-chip v-if="entryMetadata.NewProduct" color="success" small>
+          <v-chip v-if="entryMetadata.newProduct" color="success" small>
             <v-icon small>
               mdi-check
             </v-icon>
@@ -26,19 +26,19 @@
       </tr>
       <tr v-if="entry.type === 2">
         <td>{{ languageStrings.auditTrailEntries.editProduct.fields.name }}</td>
-        <td>{{ entryMetadata.Product.Name }}</td>
+        <td>{{ entryMetadata.product.name }}</td>
       </tr>
       <tr v-if="entry.type === 2">
         <td>{{ languageStrings.auditTrailEntries.editProduct.fields.description }}</td>
-        <td>{{ entryMetadata.Product.Description }}</td>
+        <td>{{ entryMetadata.product.description }}</td>
       </tr>
       <tr v-if="entry.type === 2">
         <td>{{ languageStrings.auditTrailEntries.editProduct.fields.moreInformationUrl }}</td>
-        <td v-if="entryMetadata.Product.MoreInformationUrl === null || entryMetadata.Product.MoreInformationUrl === ''">
+        <td v-if="entryMetadata.product.moreInformationUrl === null || entryMetadata.product.moreInformationUrl === ''">
           (not set)
         </td>
         <td v-else>
-          <a :href="entryMetadata.Product.MoreInformationUrl" rel="noreferrer" target="_blank">{{ entryMetadata.Product.MoreInformationUrl }}</a>
+          <a :href="entryMetadata.product.moreInformationUrl" rel="noreferrer" target="_blank">{{ entryMetadata.product.moreInformationUrl }}</a>
         </td>
       </tr>
     </tbody>

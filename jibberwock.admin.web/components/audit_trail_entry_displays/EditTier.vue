@@ -4,21 +4,21 @@
       <tbody>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editTier.fields.id }}</td>
-          <td>{{ entryMetadata.Tier.Id }}</td>
+          <td>{{ entryMetadata.tier.id }}</td>
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editTier.fields.externalId }}</td>
-          <td v-if="entryMetadata.Tier.ExternalId === null || entryMetadata.Tier.ExternalId === ''">
+          <td v-if="entryMetadata.tier.externalId === null || entryMetadata.tier.externalId === ''">
             {{ languageStrings.noValue.externalTierId }}
           </td>
           <td v-else>
-            {{ entryMetadata.Tier.ExternalId }}
+            {{ entryMetadata.tier.externalId }}
           </td>
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editTier.fields.creatingTier }}</td>
           <td>
-            <v-chip v-if="entryMetadata.NewTier" color="success" small>
+            <v-chip v-if="entryMetadata.newTier" color="success" small>
               <v-icon small>
                 mdi-check
               </v-icon>
@@ -32,16 +32,16 @@
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editTier.fields.name }}</td>
-          <td>{{ entryMetadata.Tier.Name }}</td>
+          <td>{{ entryMetadata.tier.name }}</td>
         </tr>
-        <tr v-if="typeof entryMetadata.TierProduct !== 'undefined' && entryMetadata.Tier.Product !== null">
+        <tr v-if="typeof entryMetadata.tier.product !== 'undefined' && entryMetadata.tier.product !== null">
           <td>{{ languageStrings.auditTrailEntries.editTier.fields.productId }}</td>
-          <td>{{ entryMetadata.Tier.Product.Id }}</td>
+          <td>{{ entryMetadata.tier.product.id }}</td>
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editTier.fields.visible }}</td>
           <td>
-            <v-chip v-if="entryMetadata.Tier.Visible" color="success" small>
+            <v-chip v-if="entryMetadata.tier.visible" color="success" small>
               <v-icon small>
                 mdi-check
               </v-icon>
@@ -55,20 +55,20 @@
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editTier.fields.startDate }}</td>
-          <td v-if="entryMetadata.Tier.StartDate === null || entryMetadata.Tier.StartDate === ''">
+          <td v-if="entryMetadata.tier.startDate === null || entryMetadata.tier.startDate === ''">
             {{ languageStrings.noValue.tierStartDate }}
           </td>
           <td v-else>
-            {{ new Date(entryMetadata.Tier.StartDate).toLocaleDateString() }}
+            {{ new Date(entryMetadata.tier.startDate).toLocaleDateString() }}
           </td>
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editTier.fields.endDate }}</td>
-          <td v-if="entryMetadata.Tier.EndDate === null || entryMetadata.Tier.EndDate === ''">
+          <td v-if="entryMetadata.tier.endDate === null || entryMetadata.tier.endDate === ''">
             {{ languageStrings.noValue.tierEndDate }}
           </td>
           <td v-else>
-            {{ new Date(entryMetadata.Tier.EndDate).toLocaleDateString() }}
+            {{ new Date(entryMetadata.tier.endDate).toLocaleDateString() }}
           </td>
         </tr>
       </tbody>
@@ -81,12 +81,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(ch, chIdx) in entryMetadata.Tier.Characteristics" :key="chIdx">
+        <tr v-for="(ch, chIdx) in entryMetadata.tier.characteristics" :key="chIdx">
           <td>
-            {{ ch.ProductCharacteristic.Name }}
+            {{ ch.productCharacteristic.Name }}
           </td>
-          <td v-if="ch.ProductCharacteristic.ValueType === 2">
-            <v-chip v-if="ch.CharacteristicValue" color="success" small>
+          <td v-if="ch.productCharacteristic.valueType === 2">
+            <v-chip v-if="ch.characteristicValue" color="success" small>
               <v-icon small>
                 mdi-check
               </v-icon>
@@ -98,7 +98,7 @@
             </v-chip>
           </td>
           <td v-else>
-            {{ ch.CharacteristicValue }}
+            {{ ch.characteristicValue }}
           </td>
         </tr>
       </tbody>

@@ -4,12 +4,12 @@
       <tbody>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editNotification.fields.id }}</td>
-          <td>{{ entryMetadata.Notification.Id }}</td>
+          <td>{{ entryMetadata.notification.id }}</td>
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editNotification.fields.creatingNotification }}</td>
           <td>
-            <v-chip v-if="entryMetadata.NewNotification" color="success" small>
+            <v-chip v-if="entryMetadata.newNotification" color="success" small>
               <v-icon small>
                 mdi-check
               </v-icon>
@@ -40,7 +40,7 @@
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editNotification.fields.active }}</td>
           <td>
-            <v-chip v-if="entryMetadata.Notification.AllowDismissal" color="success" small>
+            <v-chip v-if="entryMetadata.notification.allowDismissal" color="success" small>
               <v-icon small>
                 mdi-check
               </v-icon>
@@ -55,7 +55,7 @@
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editNotification.fields.allowDismissal }}</td>
           <td>
-            <v-chip v-if="entryMetadata.Notification.Status === 1" color="success" small>
+            <v-chip v-if="entryMetadata.notification.status === 1" color="success" small>
               <v-icon small>
                 mdi-check
               </v-icon>
@@ -77,26 +77,26 @@
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editNotification.fields.startDate }}</td>
-          <td v-if="entryMetadata.Notification.StartDate === null || entryMetadata.Notification.StartDate === ''">
+          <td v-if="entryMetadata.notification.startDate === null || entryMetadata.notification.startDate === ''">
             {{ languageStrings.noValue.notificationStartDate }}
           </td>
           <td v-else>
-            {{ new Date(entryMetadata.Notification.StartDate).toLocaleDateString() }}
+            {{ new Date(entryMetadata.notification.startDate).toLocaleDateString() }}
           </td>
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editNotification.fields.endDate }}</td>
-          <td v-if="entryMetadata.Notification.EndDate === null || entryMetadata.Notification.EndDate === ''">
+          <td v-if="entryMetadata.notification.endDate === null || entryMetadata.notification.endDate === ''">
             {{ languageStrings.noValue.notificationEndDate }}
           </td>
           <td v-else>
-            {{ new Date(entryMetadata.Notification.EndDate).toLocaleDateString() }}
+            {{ new Date(entryMetadata.notification.endDate).toLocaleDateString() }}
           </td>
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editNotification.fields.sendAsEmail }}</td>
           <td>
-            <v-chip v-if="entryMetadata.SendAsEmail" color="success" small>
+            <v-chip v-if="entryMetadata.sendAsEmail" color="success" small>
               <v-icon small>
                 mdi-check
               </v-icon>
@@ -108,13 +108,13 @@
             </v-chip>
           </td>
         </tr>
-        <tr v-if="typeof entryMetadata.ServiceBusMessageId !== 'undefined' && entryMetadata.ServiceBusMessageId !== null && entryMetadata.ServiceBusMessageId !== ''">
+        <tr v-if="typeof entryMetadata.serviceBusMessageId !== 'undefined' && entryMetadata.serviceBusMessageId !== null && entryMetadata.serviceBusMessageId !== ''">
           <td>{{ languageStrings.auditTrailEntries.editNotification.fields.emailBatchId }}</td>
-          <td>{{ entryMetadata.ServiceBusMessageId }}</td>
+          <td>{{ entryMetadata.serviceBusMessageId }}</td>
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editNotification.fields.subject }}</td>
-          <td>{{ entryMetadata.Notification.Subject }}</td>
+          <td>{{ entryMetadata.notification.subject }}</td>
         </tr>
       </tbody>
     </v-simple-table>
@@ -123,7 +123,7 @@
         <v-expansion-panel-header class="pl-4">
           {{ languageStrings.auditTrailEntries.editNotification.fields.message }}
         </v-expansion-panel-header>
-        <v-expansion-panel-content>{{ entryMetadata.Notification.Message }}</v-expansion-panel-content>
+        <v-expansion-panel-content>{{ entryMetadata.notification.message }}</v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
   </div>
@@ -148,13 +148,13 @@ export default {
         : null
     },
     resultantTo () {
-      if (this.entryMetadata.Notification.TargetUser !== null) {
+      if (this.entryMetadata.notification.targetUser !== null) {
         return {
           name: this.languageStrings.auditTrailEntries.editNotification.formatStrings.singleUserTarget.replace('{name}', this.entry.relatedUser.name),
           icon: 'mdi-account',
           tooltip: this.languageStrings.forms.updateNotification.tooltips.specificUser
         }
-      } else if (this.entryMetadata.Notification.TargetTenant !== null) {
+      } else if (this.entryMetadata.notification.targetTenant !== null) {
         return {
           name: this.languageStrings.auditTrailEntries.editNotification.formatStrings.singleTenantTarget.replace('{name}', this.entry.relatedTenant.name),
           icon: 'mdi-account-group',
@@ -169,12 +169,12 @@ export default {
       }
     },
     resultantPriority () {
-      const priority = this.languageStrings.notificationList.notificationPriorities.find(np => np.name === this.entryMetadata.Notification.Priority.Name)
+      const priority = this.languageStrings.notificationList.notificationPriorities.find(np => np.name === this.entryMetadata.notification.priority.name)
 
       return priority.label
     },
     resultantType () {
-      const type = this.languageStrings.notificationList.notificationTypes.find(nt => nt.id === this.entryMetadata.Notification.Type)
+      const type = this.languageStrings.notificationList.notificationTypes.find(nt => nt.id === this.entryMetadata.notification.type)
 
       return type.label
     }
