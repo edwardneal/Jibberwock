@@ -113,11 +113,15 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
                 var messageToCreate = ServiceBusUtilities.GenerateMessage(new { Metadata = default(object) }, resultantNotification.EmailBatch.ServiceBusMessageId, Notification.StartDate);
 
                 await emailQueueClient.SendAsync(messageToCreate);
-                // Don't need to expose this to the clients though
-                Notification.EmailBatch.ServiceBusMessageId = null;
             }
 
+            // Make sure we don't expose the queue's message ID - clients don't need to care
+            provisionalAuditTrailEntry.ServiceBusMessageId = Notification.EmailBatch.ServiceBusMessageId;
+            Notification.EmailBatch.ServiceBusMessageId = null;
+
             provisionalAuditTrailEntry.Notification = Notification;
+            provisionalAuditTrailEntry.RelatedUser = Notification.TargetUser;
+            provisionalAuditTrailEntry.RelatedTenant = Notification.TargetTenant;
             provisionalAuditTrailEntry.NewNotification = false;
             provisionalAuditTrailEntry.SendAsEmail = SendAsEmail;
 

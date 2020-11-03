@@ -28,13 +28,18 @@ namespace Jibberwock.DataModels.Security.Audit.EntryTypes
         public bool SendAsEmail { get; set; }
 
         /// <summary>
+        /// If <see cref="SendAsEmail"/> is <c>true</c>, the ID of this message in the queue.
+        /// </summary>
+        public string ServiceBusMessageId { get; set; }
+
+        /// <summary>
         /// If <c>true</c>, this <see cref="Notification"/> is a new record.
         /// </summary>
         public bool NewNotification { get; set; }
 
         public override string Metadata
         {
-            get => JsonSerializer.Serialize(new { Notification, NewNotification, SendAsEmail });
+            get => JsonSerializer.Serialize(new { Notification, NewNotification, SendAsEmail, ServiceBusMessageId });
             set
             {
                 var jsonDoc = JsonDocument.Parse(value);
@@ -42,6 +47,11 @@ namespace Jibberwock.DataModels.Security.Audit.EntryTypes
                 NewNotification = jsonDoc.RootElement.GetProperty(nameof(NewNotification)).GetBoolean();
                 Notification = JsonSerializer.Deserialize<Notification>(jsonDoc.RootElement.GetProperty(nameof(Notification)).GetRawText());
                 SendAsEmail = jsonDoc.RootElement.GetProperty(nameof(SendAsEmail)).GetBoolean();
+
+                if (jsonDoc.RootElement.TryGetProperty(nameof(ServiceBusMessageId), out var serviceBusMessageIdElement))
+                {
+                    ServiceBusMessageId = serviceBusMessageIdElement.GetString();
+                }
             }
         }
     }

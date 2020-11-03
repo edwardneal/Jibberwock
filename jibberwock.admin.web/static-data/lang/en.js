@@ -37,6 +37,7 @@ export default {
     unableToUpdateNotification: 'Unable to update notification, please try again later.',
     unableToListNotifications: 'Unable to get the list of notifications, please try again later.',
     unableToListTenants: 'Unable to get the list of tenants, please try again later.',
+    unableToGetAuditTrail: 'Unable to get the audit trail, please try again later.',
     unableToNotify: 'Unable to send this notification, please try again later.',
     unableToCompleteAction: 'Unable to complete this action, please try again later.',
     noSubject: 'Please provide a subject.',
@@ -48,6 +49,13 @@ export default {
     confirm: 'Confirm',
     cancel: 'Cancel'
   },
+  noValue: {
+    notificationStartDate: '(not set)',
+    notificationEndDate: '(not set)',
+    externalTierId: '(not set)',
+    tierStartDate: '(not set)',
+    tierEndDate: '(not set)'
+  },
   dialogs: {
     confirmationDialogHeader: 'Confirmation Required',
     enableUserConfirmation: 'Are you sure you want to enable {thisPlural} user{plural}?',
@@ -57,6 +65,67 @@ export default {
     headers: {
       name: 'Name',
       enabled: 'Membership Enabled?'
+    }
+  },
+  auditTrailEntries: {
+    editCharacteristic: {
+      fields: {
+        id: 'Internal ID',
+        creatingCharacteristic: 'Creating Characteristic?',
+        name: 'Name',
+        description: 'Description',
+        enabled: 'Enabled?',
+        visible: 'Visible?'
+      }
+    },
+    editProduct: {
+      fields: {
+        id: 'Internal ID',
+        identifier: 'External Identifier',
+        creatingProduct: 'Creating Product?',
+        name: 'Name',
+        description: 'Description',
+        moreInformationUrl: 'More Info. URL'
+      }
+    },
+    editTier: {
+      fields: {
+        id: 'Internal ID',
+        externalId: 'Stripe Plan ID',
+        creatingTier: 'Creating Tier?',
+        name: 'Name',
+        productId: 'Internal Product ID',
+        visible: 'Visible?',
+        startDate: 'Start Date',
+        endDate: 'End Date'
+      },
+      tierCharacteristicValues: {
+        fields: {
+          name: 'Characteristic',
+          value: 'Value'
+        }
+      }
+    },
+    editNotification: {
+      fields: {
+        id: 'Internal ID',
+        creatingNotification: 'New Notification?',
+        target: 'Target',
+        active: 'Active?',
+        allowDismissal: 'Allow Dismissal?',
+        type: 'Type',
+        priority: 'Priority',
+        startDate: 'Start Date',
+        endDate: 'End Date',
+        sendAsEmail: 'Send as Email?',
+        emailBatchId: 'Email Batch Message ID',
+        subject: 'Subject',
+        message: 'Message'
+      },
+      formatStrings: {
+        singleUserTarget: 'User ({name})',
+        singleTenantTarget: 'Tenant ({name})'
+      }
     }
   },
   notificationList: {
@@ -160,6 +229,44 @@ export default {
       errorMessages: {
         selectUserForDetails: 'Search for and select a user (or users) to populate this panel.'
       }
+    },
+    audit_trail: {
+      title: 'Audit Trail',
+      instructions: 'Use the filter controls below to view the audit trail.',
+      fields: {
+        startDate: 'Start Date',
+        endDate: 'End Date',
+        performedBy: 'Performed By',
+        eventType: 'Event Type',
+        relatedUser: 'Related User',
+        relatedTenant: 'Related Tenant'
+      },
+      actions: {
+        showColumns: 'Columns'
+      },
+      headers: {
+        occurrence: 'Time',
+        relatedUser: 'Related User',
+        relatedTenant: 'Related Tenant',
+        performedBy: 'Performed By',
+        originatingConnectionId: 'Request ID',
+        originatingService: 'Service',
+        type: 'Event Type',
+        comment: 'Comment'
+      },
+      accordionHeaders: {
+        generalDetails: 'General',
+        specificDetails: 'Details ({type})'
+      },
+      eventTypes: [
+        { id: 1, label: 'Edit User', component: 'EditUser' },
+        { id: 2, label: 'Edit Product', component: 'EditProduct' },
+        { id: 3, label: 'Delete Product', component: 'EditProduct' },
+        { id: 4, label: 'Edit Characteristic', component: 'EditCharacteristic' },
+        { id: 5, label: 'Delete Characteristic', component: 'EditCharacteristic' },
+        { id: 6, label: 'Edit Tier', component: 'EditTier' },
+        { id: 7, label: 'Edit Notification', component: 'EditNotification' }
+      ]
     }
   }
 }

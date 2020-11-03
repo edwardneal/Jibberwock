@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer :clipped="false" fixed app>
+    <v-navigation-drawer :clipped="false" fixed app permanent>
       <v-layout column fill-height>
         <v-list v-if="$store.state.auth.loggedIn">
           <v-list-item to="/" router exact>
