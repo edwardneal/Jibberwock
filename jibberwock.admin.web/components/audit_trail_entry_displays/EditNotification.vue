@@ -77,13 +77,21 @@
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editNotification.fields.startDate }}</td>
-          <td v-if="entryMetadata.Notification.StartDate === null || entryMetadata.Notification.StartDate === ''">{{ languageStrings.noValue.notificationStartDate }}</td>
-          <td v-else>{{ new Date(entryMetadata.Notification.StartDate).toLocaleDateString() }}</td>
+          <td v-if="entryMetadata.Notification.StartDate === null || entryMetadata.Notification.StartDate === ''">
+            {{ languageStrings.noValue.notificationStartDate }}
+          </td>
+          <td v-else>
+            {{ new Date(entryMetadata.Notification.StartDate).toLocaleDateString() }}
+          </td>
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editNotification.fields.endDate }}</td>
-          <td v-if="entryMetadata.Notification.EndDate === null || entryMetadata.Notification.EndDate === ''">{{ languageStrings.noValue.notificationEndDate }}</td>
-          <td v-else>{{ new Date(entryMetadata.Notification.EndDate).toLocaleDateString() }}</td>
+          <td v-if="entryMetadata.Notification.EndDate === null || entryMetadata.Notification.EndDate === ''">
+            {{ languageStrings.noValue.notificationEndDate }}
+          </td>
+          <td v-else>
+            {{ new Date(entryMetadata.Notification.EndDate).toLocaleDateString() }}
+          </td>
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editNotification.fields.sendAsEmail }}</td>
@@ -112,7 +120,9 @@
     </v-simple-table>
     <v-expansion-panels :value="0" flat accordion>
       <v-expansion-panel>
-        <v-expansion-panel-header class="pl-4">{{ languageStrings.auditTrailEntries.editNotification.fields.message }}</v-expansion-panel-header>
+        <v-expansion-panel-header class="pl-4">
+          {{ languageStrings.auditTrailEntries.editNotification.fields.message }}
+        </v-expansion-panel-header>
         <v-expansion-panel-content>{{ entryMetadata.Notification.Message }}</v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>

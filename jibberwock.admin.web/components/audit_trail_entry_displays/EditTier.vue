@@ -8,8 +8,12 @@
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editTier.fields.externalId }}</td>
-          <td v-if="entryMetadata.Tier.ExternalId === null || entryMetadata.Tier.ExternalId === ''">{{ languageStrings.noValue.externalTierId }}</td>
-          <td v-else>{{ entryMetadata.Tier.ExternalId }}</td>
+          <td v-if="entryMetadata.Tier.ExternalId === null || entryMetadata.Tier.ExternalId === ''">
+            {{ languageStrings.noValue.externalTierId }}
+          </td>
+          <td v-else>
+            {{ entryMetadata.Tier.ExternalId }}
+          </td>
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editTier.fields.creatingTier }}</td>
@@ -51,13 +55,21 @@
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editTier.fields.startDate }}</td>
-          <td v-if="entryMetadata.Tier.StartDate === null || entryMetadata.Tier.StartDate === ''">{{ languageStrings.noValue.tierStartDate }}</td>
-          <td v-else>{{ new Date(entryMetadata.Tier.StartDate).toLocaleDateString() }}</td>
+          <td v-if="entryMetadata.Tier.StartDate === null || entryMetadata.Tier.StartDate === ''">
+            {{ languageStrings.noValue.tierStartDate }}
+          </td>
+          <td v-else>
+            {{ new Date(entryMetadata.Tier.StartDate).toLocaleDateString() }}
+          </td>
         </tr>
         <tr>
           <td>{{ languageStrings.auditTrailEntries.editTier.fields.endDate }}</td>
-          <td v-if="entryMetadata.Tier.EndDate === null || entryMetadata.Tier.EndDate === ''">{{ languageStrings.noValue.tierEndDate }}</td>
-          <td v-else>{{ new Date(entryMetadata.Tier.EndDate).toLocaleDateString() }}</td>
+          <td v-if="entryMetadata.Tier.EndDate === null || entryMetadata.Tier.EndDate === ''">
+            {{ languageStrings.noValue.tierEndDate }}
+          </td>
+          <td v-else>
+            {{ new Date(entryMetadata.Tier.EndDate).toLocaleDateString() }}
+          </td>
         </tr>
       </tbody>
     </v-simple-table>
