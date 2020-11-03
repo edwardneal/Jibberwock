@@ -247,7 +247,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      notifyUsersInternal: 'users/notify'
+      notifyUsersInternal: 'users/notify',
+      notifyTenantInternal: 'tenants/notify'
     }),
     hideForm () {
       this.$emit('update:visible', false)
@@ -257,7 +258,24 @@ export default {
       let notificationPromises = []
 
       if (this.targetTenants !== null && this.targetTenants.length !== 0) {
-        // todo: target a tenant
+        // Send this notification to one or more tenants
+        notificationPromises = this.targetTenants.map(t =>
+          this.notifyTenantInternal({
+            tenantId: t.id,
+            notification: {
+              status: this.notification.status,
+              type: this.notification.type,
+              priority: {
+                name: this.notification.priority.name
+              },
+              startDate: this.notification.startDate,
+              endDate: this.notification.endDate,
+              subject: this.notification.subject,
+              message: this.notification.message,
+              allowDismissal: this.notification.allowDismissal,
+              sendAsEmail: this.notification.resultantSendAsEmail
+            }
+          }))
       } else if (this.targetUsers !== null && this.targetUsers.length !== 0) {
         // Send this notification to one or more users
         notificationPromises = this.targetUsers.map(u =>

@@ -116,8 +116,11 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
             }
 
             // Make sure we don't expose the queue's message ID - clients don't need to care
-            provisionalAuditTrailEntry.ServiceBusMessageId = Notification.EmailBatch.ServiceBusMessageId;
-            Notification.EmailBatch.ServiceBusMessageId = null;
+            if (Notification.EmailBatch != null)
+            {
+                provisionalAuditTrailEntry.ServiceBusMessageId = Notification.EmailBatch.ServiceBusMessageId;
+                Notification.EmailBatch.ServiceBusMessageId = null;
+            }
 
             provisionalAuditTrailEntry.Notification = Notification;
             provisionalAuditTrailEntry.RelatedUser = Notification.TargetUser;

@@ -281,14 +281,36 @@ export default {
   },
   methods: {
     ...mapActions({
-      updateUserNotificationInternal: 'users/updateNotification'
+      updateUserNotificationInternal: 'users/updateNotification',
+      updateTenantNotificationInternal: 'tenants/updateNotification'
     }),
     hideForm () {
       this.$emit('update:visible', false)
     },
     updateNotification () {
       if (this.notification.targetTenant !== null) {
-        // todo: update a tenant notification
+        const tenantId = this.notification.targetTenant.id
+
+        this.updateNotificationPromise = this.updateTenantNotificationInternal({
+          tenantId,
+          notificationId: this.notification.id,
+          notification: {
+            status: this.notification.status,
+            type: this.notification.type,
+            priority: {
+              name: this.notification.priority.name
+            },
+            startDate: this.notification.startDate,
+            endDate: this.notification.endDate,
+            subject: this.notification.subject,
+            message: this.notification.message,
+            allowDismissal: this.notification.allowDismissal,
+            sendAsEmail: this.notification.resultantSendAsEmail
+          }
+        }).then((notification) => {
+          this.$emit('notification-updated', notification)
+          this.hideForm()
+        })
       } else {
         // If it's not targeting a tenant, it's targeting at least one user
         const userId = this.notification.targetUser === null ? 'all' : this.notification.targetUser.id

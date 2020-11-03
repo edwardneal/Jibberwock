@@ -8,6 +8,7 @@ using Jibberwock.Persistence.DataAccess.DependencyInjection;
 using Jibberwock.Shared.Configuration;
 using Jibberwock.Shared.Http.Authentication;
 using Jibberwock.Shared.Http.Middleware;
+using Jibberwock.Shared.Json;
 using MaximeRouiller.Azure.AppService.EasyAuth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -69,6 +70,8 @@ namespace Jibberwock.Admin.API
                 .AddJsonOptions(opts =>
                 {
                     opts.JsonSerializerOptions.Converters.Add(new Jibberwock.Shared.Http.JsonConverters.DictionaryConverter<Jibberwock.DataModels.Security.WellKnownGroupType, Jibberwock.DataModels.Security.Group>());
+
+                    opts.JsonSerializerOptions.MakeDefault();
                 });
         }
 

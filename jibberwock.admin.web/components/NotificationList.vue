@@ -128,7 +128,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      getUserNotificationsInternal: 'users/getNotifications'
+      getUserNotificationsInternal: 'users/getNotifications',
+      getTenantNotificationsInternal: 'tenants/getNotifications'
     }),
     updateMasterNotificationPromise () {
       const lookupUsers = {}
@@ -148,7 +149,10 @@ export default {
             lookupTenants[currTen.id] = currTen
           }
         }
-        // todo: this will need additional code when tenant notifications are implemented
+
+        allPromiseList = allPromiseList.concat(
+          this.tenants.map((item) => { return this.getTenantNotificationsInternal(item.id) })
+        )
       } else {
         allPromiseList.push(this.getUserNotificationsInternal('all'))
 

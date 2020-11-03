@@ -279,6 +279,22 @@ export default {
         Dns: 'DNS',
         ContinuousIntegration: 'Continuous Integration'
       }
+    },
+    tenants: {
+      title: 'Tenants',
+      instructions: 'To find tenants by their name, search below. You can then send notifications to their members. You can use an asterisk (*) as a wildcard if required.',
+      headers: {
+        tenantName: 'Name'
+      },
+      detailsPanel: {
+        title: 'Details',
+        notifications: {
+          title: 'Notifications'
+        }
+      },
+      errorMessages: {
+        selectTenantForDetails: 'Search for and select a tenant (or tenants) to populate this panel.'
+      }
     }
   }
 }
