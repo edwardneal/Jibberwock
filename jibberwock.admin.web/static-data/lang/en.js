@@ -40,6 +40,7 @@ export default {
     unableToGetAuditTrail: 'Unable to get the audit trail, please try again later.',
     unableToNotify: 'Unable to send this notification, please try again later.',
     unableToCompleteAction: 'Unable to complete this action, please try again later.',
+    unableToGetExternalComponentStatuses: 'Unable to get the cached status information of external components, please try again later.',
     noSubject: 'Please provide a subject.',
     subjectTooLong: 'This subject is too long. Please provide a shorter subject.',
     noMessage: 'Please provide a message.'
@@ -267,6 +268,17 @@ export default {
         { id: 6, label: 'Edit Tier', component: 'EditTier' },
         { id: 7, label: 'Edit Notification', component: 'EditNotification' }
       ]
+    },
+    status: {
+      title: 'Status',
+      tooltip: 'As of {date}',
+      externalComponentPurposes: {
+        EmailTrackingWebHooks: 'Email Status Tracking',
+        DomainRegistrar: 'Domain Registration',
+        ContentDistributionNetwork: 'Content Distribution Network',
+        Dns: 'DNS',
+        ContinuousIntegration: 'Continuous Integration'
+      }
     }
   }
 }
