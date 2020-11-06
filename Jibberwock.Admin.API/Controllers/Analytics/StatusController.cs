@@ -18,6 +18,7 @@ using Jibberwock.Shared.Http;
 using Jibberwock.Admin.API.ActionModels.Status;
 using Microsoft.Azure.ApplicationInsights;
 using System.Security.Cryptography.X509Certificates;
+using Jibberwock.DataModels.Core;
 
 namespace Jibberwock.Admin.API.Controllers.Analytics
 {
@@ -62,9 +63,9 @@ namespace Jibberwock.Admin.API.Controllers.Analytics
         [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
         public async Task<IActionResult> GetExceptions()
         {
-            if (string.IsNullOrWhiteSpace(_appInsightsConfiguration.AppId))
+            if (string.IsNullOrWhiteSpace(_appInsightsConfiguration?.AppId))
             { ModelState.AddModelError(ErrorResponses.MisconfiguredApplicationInsightsId, string.Empty); }
-            if (string.IsNullOrWhiteSpace(_appInsightsConfiguration.TenantId))
+            if (string.IsNullOrWhiteSpace(_appInsightsConfiguration?.TenantId))
             { ModelState.AddModelError(ErrorResponses.MisconfiguredApplicationInsightsTenant, string.Empty); }
 
             if (!ModelState.IsValid)
@@ -82,7 +83,11 @@ namespace Jibberwock.Admin.API.Controllers.Analytics
                                              Type = aiEx?.Exception?.Type,
                                              Message = string.IsNullOrWhiteSpace(aiEx?.Exception?.InnermostMessage)
                                                 ? aiEx?.Exception?.OuterMessage
-                                                : aiEx?.Exception?.InnermostMessage
+                                                : aiEx?.Exception?.InnermostMessage,
+                                             RoleName = aiEx.Cloud.RoleName,
+                                             UserId = aiEx.User.Id,
+                                             SessionId = aiEx.Session.Id,
+                                             Source = aiEx.Ai.SdkVersion.Split(':').FirstOrDefault()?.Trim()
                                          }).OrderBy(e => e.Timestamp).ToArray();
                 var serviceReport = new ServiceExceptionReport()
                 {
@@ -92,6 +97,50 @@ namespace Jibberwock.Admin.API.Controllers.Analytics
                 };
 
                 return Ok(serviceReport);
+            }
+        }
+
+        /// <summary>
+        /// Gets all failed HTTP requests in the last period of time.
+        /// </summary>
+        /// <response code="200" nullable="false">A <see cref="FailedRequestReport"/> containing a list of recent failed HTTP requests.</response>
+        [Route("requests")]
+        [HttpGet]
+        [ProducesResponseType(typeof(FailedRequestReport), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
+        public async Task<IActionResult> GetFailedRequests()
+        {
+            if (string.IsNullOrWhiteSpace(_appInsightsConfiguration?.AppId))
+            { ModelState.AddModelError(ErrorResponses.MisconfiguredApplicationInsightsId, string.Empty); }
+            if (string.IsNullOrWhiteSpace(_appInsightsConfiguration?.TenantId))
+            { ModelState.AddModelError(ErrorResponses.MisconfiguredApplicationInsightsTenant, string.Empty); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            using (var appInsightsClient = await Jibberwock.Shared.Telemetry.ApplicationInsightsDataClientFactory.CreateDataClientAsync(_appInsightsConfiguration.AppId, _appInsightsConfiguration.TenantId))
+            {
+                var aiRequestList = await appInsightsClient.GetRequestEventsAsync(_appInsightsConfiguration.ExceptionTimeRange, filter: "startswith(request/resultCode, '5')", cancellationToken: HttpContext.RequestAborted);
+                var failedRequests = (from aiR in aiRequestList.Value
+                                      select new FailedRequest()
+                                      {
+                                          Id = aiR.Id,
+                                          Timestamp = new DateTimeOffset(aiR.Timestamp.Value, TimeSpan.Zero),
+                                          RoleName = aiR.Cloud.RoleName,
+                                          DurationMS = aiR.Request?.Duration,
+                                          Name = aiR.Request.Name,
+                                          DurationBucket = aiR.Request?.PerformanceBucket,
+                                          ResultCode = aiR.Request.ResultCode
+                                      }).OrderBy(r => r.Timestamp).ToArray();
+                var requestReport = new FailedRequestReport()
+                {
+                    StartDate = DateTimeOffset.UtcNow - _appInsightsConfiguration.ExceptionTimeRange,
+                    EndDate = DateTimeOffset.UtcNow,
+                    FailedRequests = failedRequests
+                };
+
+                return Ok(requestReport);
             }
         }
 

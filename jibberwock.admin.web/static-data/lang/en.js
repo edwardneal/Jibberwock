@@ -41,6 +41,7 @@ export default {
     unableToNotify: 'Unable to send this notification, please try again later.',
     unableToCompleteAction: 'Unable to complete this action, please try again later.',
     unableToGetExternalComponentStatuses: 'Unable to get the cached status information of external components, please try again later.',
+    unableToGetExceptions: 'Unable to get the exception tracking information, please try again later.',
     noSubject: 'Please provide a subject.',
     subjectTooLong: 'This subject is too long. Please provide a shorter subject.',
     noMessage: 'Please provide a message.'
@@ -294,6 +295,57 @@ export default {
       },
       errorMessages: {
         selectTenantForDetails: 'Search for and select a tenant (or tenants) to populate this panel.'
+      }
+    },
+    exceptions: {
+      title: 'Exceptions',
+      jsExceptionsByPage: {
+        chartTitle: 'JavaScript errors by page over time',
+        detailsTemplate: 'Click or tap on a data point in the "JavaScript errors by page over time" chart to see all errors for a page on a given date.',
+        pageTemplate: 'Selected page: ',
+        headers: {
+          timestamp: 'Timestamp',
+          sessionId: 'Session',
+          message: 'Error'
+        }
+      },
+      failedRequestsByRoute: {
+        chartTitle: 'Bad API requests by route over time',
+        detailsTemplate: 'Click or tap on a data point in the "Bad API requests by route over time" chart to see all bad API requests for a route on a given date.',
+        pageTemplate: 'Selected route: ',
+        headers: {
+          timestamp: 'Timestamp',
+          resultCode: 'Result Code',
+          roleName: 'Azure Resource'
+        }
+      },
+      serverSideErrorsByResource: {
+        chartTitle: 'Server-side errors by Azure Resource over time',
+        detailsTemplate: 'Click or tap on a data point in the "Server-side errors by Azure Resource over time" chart to see all errors in an Azure resource based upon their operations and messages.',
+        pageTemplate: 'Selected resource: ',
+        detailsChart: {
+          chartTitle: 'Server-side errors for Azure Resource by operation'
+        }
+      },
+      serverSideErrorsByRoute: {
+        chartTitle: 'Server-side errors by route over time',
+        detailsTemplate: 'Click or tap on a data point in the "Server-side errors by route over time" chart to see all errors for a route on a given date.',
+        pageTemplate: 'Selected resource: ',
+        headers: {
+          timestamp: 'Timestamp',
+          type: 'Error Type',
+          message: 'Error'
+        },
+        errorTypeMappings: {
+          'System.ComponentModel.DataAnnotations.ValidationException': 'Validation',
+          'System.InvalidOperationException': 'Invalid Operation',
+          'Microsoft.Azure.AppService.Proxy.Common.Expressions.ExpressionParsingException': 'Expression Parsing',
+          'Newtonsoft.Json.JsonReaderException': 'JSON Parsing (Configuration)',
+          'System.Net.Sockets.SocketException': 'Socket',
+          'System.NullReferenceException': 'Null Reference',
+          'System.Data.SqlClient.SqlException': 'MSSQL Client',
+          'System.ObjectDisposedException': 'Object Disposed'
+        }
       }
     }
   }

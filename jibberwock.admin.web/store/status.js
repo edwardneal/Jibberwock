@@ -2,12 +2,20 @@ const baseUrl = process.env.NODE_ENV === 'production' ? 'https://admin.jibberwoc
 
 export const state = () => ({
   urls: {
-    getExternalComponents: baseUrl + '/status/externalcomponents'
+    getExternalComponents: baseUrl + '/status/externalcomponents',
+    getExceptions: baseUrl + '/status/exceptions',
+    getFailedRequests: baseUrl + '/status/requests'
   }
 })
 
 export const actions = {
   getExternalComponents ({ state }) {
     return this.$axios.get(state.urls.getExternalComponents)
+  },
+  getExceptions ({ state }) {
+    return this.$axios.get(state.urls.getExceptions)
+  },
+  getFailedRequests ({ state }) {
+    return this.$axios.get(state.urls.getFailedRequests)
   }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,5 +35,25 @@ namespace Jibberwock.Admin.API.ActionModels.Status
         /// Message associated with this exception.
         /// </summary>
         public string Message { get; set; }
+
+        /// <summary>
+        /// If present, the name of the Azure resource which triggered the error.
+        /// </summary>
+        public string RoleName { get; set; }
+
+        /// <summary>
+        /// A unique identifier for the person who triggered the error.
+        /// </summary>
+        public string UserId { get; set; }
+
+        /// <summary>
+        /// A unique identifier for the session.
+        /// </summary>
+        public string SessionId { get; set; }
+
+        /// <summary>
+        /// The soruce of this exception.
+        /// </summary>
+        public string Source { get; set; }
     }
 }
