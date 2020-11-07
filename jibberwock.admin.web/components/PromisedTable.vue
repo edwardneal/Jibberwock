@@ -19,7 +19,7 @@
             </v-tooltip>
           </v-alert>
           <v-toolbar dense>
-            <slot name="toolbar-actions" v-bind="{ shouldDisable: isPending || error !== null, refresh: resetState }" />
+            <slot name="toolbar-actions" v-bind="{ shouldDisable: isPending || error !== null }" />
           </v-toolbar>
         </template>
         <template v-slot:item.enabled="{ item }">
@@ -84,10 +84,10 @@ export default {
     }
   },
   mounted () {
-    this.resetState()
+    this.refresh()
   },
   methods: {
-    resetState () {
+    refresh () {
       this.started = true
       this.selectedRecords = []
       this.internalPromise = this.populateFunction()

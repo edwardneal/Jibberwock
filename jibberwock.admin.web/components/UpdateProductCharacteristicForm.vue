@@ -12,7 +12,7 @@
               <span>{{ error.message }}</span>
             </v-tooltip>
           </v-alert>
-          <v-row no-gutters>
+          <v-row dense>
             <v-col cols="12" md="6">
               <v-text-field
                 v-model="updatedCharacteristic.name"
@@ -33,6 +33,8 @@
                 hide-details
               />
             </v-col>
+          </v-row>
+          <v-row no-gutters>
             <v-col cols="12">
               <v-text-field
                 v-model="updatedCharacteristic.description"

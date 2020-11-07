@@ -8,14 +8,15 @@
     <v-row justify="center">
       <v-col sm="12" md="6" cols="12">
         <PromisedTable
+          ref="characteristicList"
           :language-strings="languageStrings"
           :headers="characteristicListHeaders"
           :populate-function="listCharacteristics"
           @selection-changed="updateSelection"
         >
-          <template v-slot:toolbar-actions="{ shouldDisable, refresh }">
+          <template v-slot:toolbar-actions="{ shouldDisable }">
             <v-toolbar-items>
-              <v-btn depressed :disabled="shouldDisable" class="pl-3" @click="refresh">
+              <v-btn depressed :disabled="shouldDisable" class="pl-3" @click="performRefresh">
                 <v-icon>mdi-refresh</v-icon>
                 {{ languageStrings.pages.characteristics.actions.refresh }}
               </v-btn>
@@ -46,6 +47,18 @@
         />
       </v-col>
     </v-row>
+    <CreateProductCharacteristicForm
+      :language-strings="languageStrings"
+      :visible.sync="createFormVisible"
+      @created="performRefresh"
+    />
+    <ProgressDialog
+      :language-strings="languageStrings"
+      :prompt="formatPlural(languageStrings.dialogs.deleteProductCharacteristicConfirmation, characteristicDetails.selection)"
+      :activity-promise-factory="deleteCharacteristicPromiseFactory"
+      :confirm-button-text="languageStrings.actions.confirm"
+      :cancel-button-text="languageStrings.actions.cancel"
+    />
   </v-sheet>
 </template>
 
@@ -53,11 +66,13 @@
 import { mapActions } from 'vuex'
 import PromisedTable from '~/components/PromisedTable.vue'
 import UpdateProductCharacteristicForm from '~/components/UpdateProductCharacteristicForm.vue'
+import CreateProductCharacteristicForm from '~/components/CreateProductCharacteristicForm.vue'
 
 export default {
   components: {
     PromisedTable,
-    UpdateProductCharacteristicForm
+    UpdateProductCharacteristicForm,
+    CreateProductCharacteristicForm
   },
   props: {
     languageStrings: {
@@ -74,7 +89,9 @@ export default {
       ],
       characteristicDetails: {
         selection: []
-      }
+      },
+      deleteCharacteristicPromiseFactory: null,
+      createFormVisible: false
     }
   },
   computed: {
@@ -98,14 +115,33 @@ export default {
   },
   methods: {
     ...mapActions({
-      listCharacteristics: 'product-characteristic/list'
+      listCharacteristics: 'product-characteristic/list',
+      deleteCharacteristic: 'product-characteristic/delete'
     }),
+    formatPlural (languageString, collection) {
+      const replacementPlural = collection.length === 1 ? '' : 's'
+      const replacementThis = collection.length === 1 ? 'this' : 'these'
+
+      return languageString.replace('{thisPlural}', replacementThis).replace('{plural}', replacementPlural)
+    },
+    performRefresh () {
+      this.$refs.characteristicList.refresh()
+    },
     updateSelection (value) {
       this.characteristicDetails.selection = value
     },
     showCreateForm () {
+      this.createFormVisible = true
     },
     showDeleteForm () {
+      const selectedCharacteristics = this.characteristicDetails.selection
+      const deleteSingleCharacteristic = (ch) => {
+        return this.deleteCharacteristic(ch.id)
+      }
+
+      this.deleteCharacteristicPromiseFactory = () => {
+        return Promise.all(selectedCharacteristics.map(deleteSingleCharacteristic))
+      }
     }
   },
   meta: {

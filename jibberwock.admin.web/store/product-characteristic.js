@@ -15,7 +15,7 @@ export const actions = {
 
     return this.$axios.get(listUrl)
   },
-  create ({ state }, { characteristic }) {
+  create ({ state }, characteristic) {
     const createUrl = state.urls.create
 
     return this.$axios.post(createUrl, characteristic)

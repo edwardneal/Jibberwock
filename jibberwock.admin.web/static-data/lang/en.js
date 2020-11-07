@@ -49,7 +49,8 @@ export default {
     unableToUpdateProductCharacteristic: 'Unable to update product characteristic, please try again later.',
     noName: 'Please provide a name.',
     nameTooLong: 'This name is too long. Please provide a shorter name.',
-    descriptionTooLong: 'This description is too long. Please provide a shorter description.'
+    descriptionTooLong: 'This description is too long. Please provide a shorter description.',
+    unableToCreateProductCharacteristic: 'Unable to create product characteristic, please try again later.'
   },
   actions: {
     search: 'Search',
@@ -66,7 +67,8 @@ export default {
   dialogs: {
     confirmationDialogHeader: 'Confirmation Required',
     enableUserConfirmation: 'Are you sure you want to enable {thisPlural} user{plural}?',
-    disableUserConfirmation: 'Are you sure you want to disable {thisPlural} user{plural}?'
+    disableUserConfirmation: 'Are you sure you want to disable {thisPlural} user{plural}?',
+    deleteProductCharacteristicConfirmation: 'Are you sure you want to delete {thisPlural} product characteristic{plural}?'
   },
   tenantList: {
     headers: {
@@ -183,6 +185,10 @@ export default {
         specificTenant: 'This notification will only appear to user accounts linked to this tenant.'
       }
     },
+    createProductCharacteristic: {
+      title: 'Create Product Characteristic',
+      description: 'Fill in the fields below to create a new product characteristic. When you\'re done, click Create.'
+    },
     fields: {
       addressedTo: 'Addressed To',
       priority: 'Priority',
@@ -203,7 +209,8 @@ export default {
     buttons: {
       update: 'Save',
       notify: 'Notify',
-      cancel: 'Cancel'
+      cancel: 'Cancel',
+      create: 'Create'
     }
   },
   pages: {
