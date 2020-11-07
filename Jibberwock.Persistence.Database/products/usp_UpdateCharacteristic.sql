@@ -21,7 +21,7 @@ BEGIN
 		if @@ROWCOUNT = 0
 			throw 50001, 'id_not_valid', 1;
 		else
-			select Characteristic_ID as Id, [Name], [Description], Visible, [Enabled]
+			select Characteristic_ID as Id, [Name], [Description], Visible, [Enabled], Value_Type_ID as ValueType
 			from [products].[Characteristic]
 			where Characteristic_ID = @Characteristic_ID
 

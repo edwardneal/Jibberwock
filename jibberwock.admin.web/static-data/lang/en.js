@@ -32,6 +32,7 @@ export default {
   },
   validationErrorMessages: {
     unableToSearch: 'Unable to search, please try again later.',
+    unableToLoadRecords: 'Unable to load records, please try again later.',
     noSearchString: 'Please provide something to search for.',
     searchStringTooLong: 'The value you\'re searching for is too long. Please search for a shorter value.',
     unableToUpdateNotification: 'Unable to update notification, please try again later.',
@@ -44,7 +45,11 @@ export default {
     unableToGetExceptions: 'Unable to get the exception tracking information, please try again later.',
     noSubject: 'Please provide a subject.',
     subjectTooLong: 'This subject is too long. Please provide a shorter subject.',
-    noMessage: 'Please provide a message.'
+    noMessage: 'Please provide a message.',
+    unableToUpdateProductCharacteristic: 'Unable to update product characteristic, please try again later.',
+    noName: 'Please provide a name.',
+    nameTooLong: 'This name is too long. Please provide a shorter name.',
+    descriptionTooLong: 'This description is too long. Please provide a shorter description.'
   },
   actions: {
     search: 'Search',
@@ -188,7 +193,12 @@ export default {
       allowDismissal: 'Allow Dismissal',
       startDate: 'Start Date',
       endDate: 'End Date',
-      sendAsEmail: 'Send as Email'
+      sendAsEmail: 'Send as Email',
+      name: 'Name',
+      valueType: 'Value Type',
+      description: 'Description',
+      enabled: 'Enabled?',
+      visible: 'Visible?'
     },
     buttons: {
       update: 'Save',
@@ -347,6 +357,33 @@ export default {
           'System.ObjectDisposedException': 'Object Disposed'
         }
       }
+    },
+    characteristics: {
+      title: 'Product Characteristics',
+      instructions: 'Review the list of product characteristics below. You can then edit or delete these characteristics, or create a new one.',
+      headers: {
+        name: 'Name',
+        description: 'Description',
+        enabled: 'Enabled?',
+        visible: 'Visible?',
+        valueType: 'Value Type'
+      },
+      actions: {
+        refresh: 'Refresh',
+        create: 'Create',
+        delete: 'Delete'
+      },
+      detailsPanel: {
+        title: 'Edit'
+      },
+      errorMessages: {
+        selectCharacteristicToEdit: 'Select a product characteristic to populate this panel.'
+      },
+      characteristicValueTypes: [
+        { id: 1, label: 'String' },
+        { id: 2, label: 'Boolean' },
+        { id: 3, label: 'Numeric' }
+      ]
     }
   }
 }

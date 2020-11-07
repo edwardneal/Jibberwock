@@ -77,7 +77,7 @@
 </template>
 
 <style>
-  #app-container .v-sheet:first-child { padding:16px; height: 100% }
+  #app-container > .v-sheet:first-child { padding:16px; height: 100% }
 </style>
 
 <script>
