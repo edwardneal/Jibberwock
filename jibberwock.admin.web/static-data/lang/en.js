@@ -50,7 +50,8 @@ export default {
     noName: 'Please provide a name.',
     nameTooLong: 'This name is too long. Please provide a shorter name.',
     descriptionTooLong: 'This description is too long. Please provide a shorter description.',
-    unableToCreateProductCharacteristic: 'Unable to create product characteristic, please try again later.'
+    unableToCreateProductCharacteristic: 'Unable to create product characteristic, please try again later.',
+    moreInformationUrlTooLong: 'This URL is too long. Please provide a shorter More Information URL.'
   },
   actions: {
     search: 'Search',
@@ -204,13 +205,15 @@ export default {
       valueType: 'Value Type',
       description: 'Description',
       enabled: 'Enabled?',
-      visible: 'Visible?'
+      visible: 'Visible?',
+      moreInformationUrl: 'More Information URL'
     },
     buttons: {
       update: 'Save',
       notify: 'Notify',
       cancel: 'Cancel',
-      create: 'Create'
+      create: 'Create',
+      add: 'Add'
     }
   },
   pages: {
@@ -391,6 +394,38 @@ export default {
         { id: 2, label: 'Boolean' },
         { id: 3, label: 'Numeric' }
       ]
+    },
+    products: {
+      title: 'Products',
+      instructions: 'Review the list of products below. You can then edit these products, create a new one, or create or edit product tiers.',
+      headers: {
+        name: 'Name',
+        description: 'Description',
+        visible: 'Visible?',
+        resourceIdentifier: 'External Identifier'
+      },
+      actions: {
+        refresh: 'Refresh',
+        create: 'Create'
+      },
+      detailsPanel: {
+        title: 'Edit',
+        tabs: {
+          general: {
+            title: 'General'
+          },
+          applicableCharacteristics: {
+            title: 'Applicable Characteristics',
+            associate: 'Associate Characteristic'
+          },
+          tiers: {
+            title: 'Tiers'
+          }
+        }
+      },
+      errorMessages: {
+        selectProductToEdit: 'Select a product to populate this panel.'
+      }
     }
   }
 }

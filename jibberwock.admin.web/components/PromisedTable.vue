@@ -34,6 +34,18 @@
             </v-icon>
           </v-chip>
         </template>
+        <template v-slot:item.visible="{ item }">
+          <v-chip v-if="item.visible" color="success" small>
+            <v-icon small>
+              mdi-check
+            </v-icon>
+          </v-chip>
+          <v-chip v-else color="error" small>
+            <v-icon small>
+              mdi-block-helper
+            </v-icon>
+          </v-chip>
+        </template>
       </v-data-table>
     </template>
   </Promised>
