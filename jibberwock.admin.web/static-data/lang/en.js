@@ -43,6 +43,7 @@ export default {
     unableToCompleteAction: 'Unable to complete this action, please try again later.',
     unableToGetExternalComponentStatuses: 'Unable to get the cached status information of external components, please try again later.',
     unableToGetExceptions: 'Unable to get the exception tracking information, please try again later.',
+    unableToGetProductTiers: 'Unable to get the list of this product\'s tiers, please try again later.',
     noSubject: 'Please provide a subject.',
     subjectTooLong: 'This subject is too long. Please provide a shorter subject.',
     noMessage: 'Please provide a message.',
@@ -419,7 +420,12 @@ export default {
             associate: 'Associate Characteristic'
           },
           tiers: {
-            title: 'Tiers'
+            title: 'Tiers',
+            headers: {
+              name: 'Name',
+              visible: 'Visible?',
+              available: 'Available?'
+            }
           }
         }
       },

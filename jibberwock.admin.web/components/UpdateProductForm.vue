@@ -107,9 +107,7 @@
             </v-card>
           </v-tab-item>
           <v-tab-item>
-            <v-card flat>
-              <v-card-text>TIERS</v-card-text>
-            </v-card>
+            <ProductTierList :language-strings="languageStrings" :product-id="product.id" />
           </v-tab-item>
         </v-tabs-items>
         <v-overlay :value="isPending" absolute>
@@ -134,10 +132,12 @@
 import { Promised } from 'vue-promised'
 import { required, maxLength } from 'vuelidate/lib/validators'
 import { mapActions } from 'vuex'
+import ProductTierList from '~/components/ProductTierList.vue'
 
 export default {
   components: {
-    Promised
+    Promised,
+    ProductTierList
   },
   props: {
     languageStrings: {
