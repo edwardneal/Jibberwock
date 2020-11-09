@@ -19,7 +19,7 @@
       :readonly="! enabled"
       no-title
       scrollable
-      :width="typeof $refs.containingMenu !== 'undefined' ? $refs.containingMenu.dimensions.activator.width : null"
+      :width="typeof $refs.containingMenu !== 'undefined' ? Math.max($refs.containingMenu.dimensions.activator.width, 250) : null"
       @input="rawDate = $event"
     />
   </v-menu>

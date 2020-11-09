@@ -48,11 +48,14 @@ export default {
     subjectTooLong: 'This subject is too long. Please provide a shorter subject.',
     noMessage: 'Please provide a message.',
     unableToUpdateProductCharacteristic: 'Unable to update product characteristic, please try again later.',
+    unableToUpdateProduct: 'Unable to update product, please try again later.',
     noName: 'Please provide a name.',
     nameTooLong: 'This name is too long. Please provide a shorter name.',
     descriptionTooLong: 'This description is too long. Please provide a shorter description.',
     unableToCreateProductCharacteristic: 'Unable to create product characteristic, please try again later.',
-    moreInformationUrlTooLong: 'This URL is too long. Please provide a shorter More Information URL.'
+    noMoreInformationUrl: 'Please provide a More Information URL',
+    moreInformationUrlTooLong: 'This URL is too long. Please provide a shorter More Information URL.',
+    externalIdTooLong: 'This external identifier is too long. Please provide a shorter identifier.'
   },
   actions: {
     search: 'Search',
@@ -191,6 +194,14 @@ export default {
       title: 'Create Product Characteristic',
       description: 'Fill in the fields below to create a new product characteristic. When you\'re done, click Create.'
     },
+    createProductTier: {
+      title: 'Create Tier',
+      description: 'Fill in the fields below to create a new tier for this product. When you\'re done, create Create, then save the product.'
+    },
+    updateProductTier: {
+      title: 'Update Tier',
+      description: 'Fill in the fields below to update this product tier. When you\'re done, create Save, then save the product.'
+    },
     fields: {
       addressedTo: 'Addressed To',
       priority: 'Priority',
@@ -207,7 +218,8 @@ export default {
       description: 'Description',
       enabled: 'Enabled?',
       visible: 'Visible?',
-      moreInformationUrl: 'More Information URL'
+      moreInformationUrl: 'More Information URL',
+      externalIdentifier: 'External Identifier'
     },
     buttons: {
       update: 'Save',
@@ -424,7 +436,15 @@ export default {
             headers: {
               name: 'Name',
               visible: 'Visible?',
-              available: 'Available?'
+              available: 'Available?',
+              characteristicValueName: 'Characteristic Name',
+              characteristicValue: 'Value'
+            },
+            actions: {
+              create: 'Create'
+            },
+            tooltips: {
+              canDeletePendingTier: 'This tier has not yet been created. Click here to prevent it from being created.'
             }
           }
         }

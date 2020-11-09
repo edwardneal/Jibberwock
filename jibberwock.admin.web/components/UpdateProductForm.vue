@@ -106,8 +106,13 @@
               </v-card-text>
             </v-card>
           </v-tab-item>
-          <v-tab-item>
-            <ProductTierList :language-strings="languageStrings" :product-id="product.id" />
+          <v-tab-item eager>
+            <ProductTierList
+              ref="tiers"
+              :language-strings="languageStrings"
+              :product="product"
+              :product-characteristics="updatedProductCharacteristics"
+            />
           </v-tab-item>
         </v-tabs-items>
         <v-overlay :value="isPending" absolute>
@@ -178,6 +183,7 @@ export default {
         maxLength: maxLength(256)
       },
       moreInformationUrl: {
+        required,
         maxLength: maxLength(256)
       }
     }
@@ -205,6 +211,9 @@ export default {
     moreInformationUrlErrors () {
       const errors = []
 
+      if (!this.$v.updatedProduct.moreInformationUrl.required) {
+        errors.push(this.languageStrings.validationErrorMessages.noMoreInformationUrl)
+      }
       if (!this.$v.updatedProduct.moreInformationUrl.maxLength) {
         errors.push(this.languageStrings.validationErrorMessages.moreInformationUrlTooLong)
       }
@@ -246,17 +255,24 @@ export default {
           visible: this.updatedProduct.visible,
           applicableCharacteristicIDs: this.updatedProductCharacteristics.map(c => c.id)
         }
-        // todo: add another then() for Promise.all which updates/creates tiers
-      }).then((retVal) => {
-        this.$emit('update:product', retVal.data)
-        this.$emit('product-updated', retVal.data)
-
-        return retVal
       })
+        .then((productResponse) => {
+          return this.$refs.tiers.syncTiers()
+            .then((tierResponses) => {
+              this.$emit('update:product', productResponse.data)
+              this.$emit('product-updated', productResponse.data)
+
+              return {
+                productResponse,
+                tierResponses
+              }
+            })
+        })
     },
     cancel () {
       this.updatedProduct = { ...this.product }
       this.updatedProductCharacteristics = [...this.product.applicableCharacteristics]
+      this.$refs.tiers.resetTierList()
     }
   }
 }
