@@ -456,7 +456,7 @@ export default {
     },
     emails: {
       title: 'Emails',
-      instructions: 'Use the filter controls below to view the emails sent and their events.',
+      instructions: 'Use the filter controls below to view the emails sent and their events. Please note that in order to be able to search by email address, you\'ll need to specify a start date.',
       actions: {
         showColumns: 'Show Columns'
       },

@@ -13,16 +13,18 @@
             <CalendarDropdown :label="languageStrings.pages.emails.fields.endDate" :selected-date.sync="searchCriteria.endTime" :min-date="searchCriteria.startTime" />
           </v-col>
           <v-col cols="6" md="3">
-            <Promised :promise="listEmailBatches()">
+            <Promised :promise="emailBatchListPromise">
               <template v-slot:combined="emailBatches">
                 <v-autocomplete
                   v-model="searchCriteria.batch"
-                  :items="typeof emailBatches.data !== 'undefined' && emailBatches.data !== null ? emailBatches.data : []"
+                  :items="typeof emailBatches.data !== 'undefined' && emailBatches.data !== null ? emailBatches.data.data : []"
                   :loading="emailBatches.isPending"
                   :label="languageStrings.pages.emails.fields.batch"
                   hide-no-data
-                  item-text=""
+                  item-text="serviceBusMessageId"
                   hide-details
+                  cache-items
+                  clearable
                   return-object
                   flat
                 />
@@ -32,7 +34,7 @@
               v-model="searchCriteria.batchType"
               :items="languageStrings.pages.emails.batchTypes"
               :label="languageStrings.pages.emails.fields.batchType"
-              :readonly="searchCriteria.batch !== null"
+              :disabled="typeof searchCriteria.batch !== 'undefined' && searchCriteria.batch !== null"
               item-text="label"
               item-value="id"
               hide-details
@@ -43,13 +45,14 @@
             <v-text-field
               v-model="searchCriteria.serviceBusMessageId"
               :label="languageStrings.pages.emails.fields.serviceBusMessageId"
-              :readonly="searchCriteria.batch !== null"
+              :disabled="typeof searchCriteria.batch !== 'undefined' && searchCriteria.batch !== null"
               hide-details
               clearable
             />
             <v-text-field
               v-model="searchCriteria.emailAddress"
               :label="languageStrings.pages.emails.fields.emailAddress"
+              :disabled="!(typeof searchCriteria.startTime !== 'undefined' && searchCriteria.startTime !== '' && searchCriteria.startTime !== null)"
               hide-details
               clearable
             />
@@ -90,11 +93,35 @@
               v-model="selectedEntries"
               :headers="resultantHeaders"
               :loading="isPending"
-              :items="typeof data !== 'undefined' && data !== null ? data.data : []"
+              :items="typeof data !== 'undefined' && data !== null ? data : []"
               fixed-header
               class="sticky-data-table"
               @click:row="selectRow"
             >
+              <template v-slot:item.sourceBatch.type.id="{ item }">
+                {{ languageStrings.pages.emails.batchTypes.filter(bt => bt.id === item.sourceBatch.type.id)[0].label }}
+              </template>
+              <template v-slot:item.sourceBatch.dateFirstProcessed="{ item }">
+                {{ item.sourceBatch.dateFirstProcessed ? new Date(item.sourceBatch.dateFirstProcessed).toLocaleString() : '-' }}
+              </template>
+              <template v-slot:item.sourceBatch.dateLastProcessed="{ item }">
+                {{ item.sourceBatch.dateLastProcessed ? new Date(item.sourceBatch.dateLastProcessed).toLocaleString() : '-' }}
+              </template>
+              <template v-slot:item.sourceBatch.processedSuccessfully="{ item }">
+                <v-chip v-if="item.sourceBatch.processedSuccessfully" color="success" small>
+                  <v-icon small>
+                    mdi-check
+                  </v-icon>
+                </v-chip>
+                <v-chip v-else color="error" small>
+                  <v-icon small>
+                    mdi-block-helper
+                  </v-icon>
+                </v-chip>
+              </template>
+              <template v-slot:item.sendDate="{ item }">
+                {{ item.sendDate ? new Date(item.sendDate).toLocaleString() : '-' }}
+              </template>
             </v-data-table>
           </v-col>
         </v-row>
@@ -138,7 +165,7 @@ export default {
         emailAddress: null
       },
       masterHeaders: [
-        { text: this.languageStrings.pages.emails.headers.batchType, value: 'sourceBatch.type.name', sortable: true, visible: true, mustAppear: true, class: 'sticky-element' },
+        { text: this.languageStrings.pages.emails.headers.batchType, value: 'sourceBatch.type.id', sortable: true, visible: true, mustAppear: true, class: 'sticky-element' },
         { text: this.languageStrings.pages.emails.headers.batchServiceBusMessageId, value: 'sourceBatch.serviceBusMessageId', sortable: true, visible: false, mustAppear: false, class: 'sticky-element' },
         { text: this.languageStrings.pages.emails.headers.batchFirstProcessed, value: 'sourceBatch.dateFirstProcessed', sortable: true, visible: false, mustAppear: false, class: 'sticky-element' },
         { text: this.languageStrings.pages.emails.headers.batchLastProcessed, value: 'sourceBatch.dateLastProcessed', sortable: true, visible: false, mustAppear: false, class: 'sticky-element' },
@@ -146,6 +173,7 @@ export default {
         { text: this.languageStrings.pages.emails.headers.sendDate, value: 'sendDate', sortable: true, visible: true, mustAppear: true, class: 'sticky-element' },
         { text: this.languageStrings.pages.emails.headers.externalId, value: 'externalEmailId', sortable: true, visible: false, mustAppear: false, class: 'sticky-element' }
       ],
+      emailBatchListPromise: this.listEmailBatches(),
       emailRecordSearchPromise: Promise.resolve(),
       selectedEntries: []
     }
@@ -161,10 +189,19 @@ export default {
       searchEmailsInternal: 'email/getEmailRecords'
     }),
     performSearch () {
+      // We need to flatten everything down a bit: away from the batch-first structure, into an email-first one
       this.emailRecordSearchPromise = this.searchEmailsInternal(this.searchCriteria)
+        .then((results) => {
+          return results.data.flatMap((batch) => {
+            for (let i = 0; i < batch.emails.length; i++) {
+              batch.emails[i].sourceBatch = batch
+            }
+            return batch.emails
+          })
+        })
     },
     selectRow (clickedItem) {
-      alert(clickedItem)
+      alert(clickedItem.externalEmailId)
     }
   },
   meta: {

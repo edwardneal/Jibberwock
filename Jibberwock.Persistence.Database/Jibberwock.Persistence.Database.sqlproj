@@ -151,6 +151,9 @@
     <Build Include="core\usp_CompleteEmailBatch.sql" />
     <Build Include="core\usp_GetNotificationEmailBatchByID.sql" />
     <Build Include="tenants\usp_GetTenantsByUserId.sql" />
+    <Build Include="core\usp_ListBatches.sql" />
+    <Build Include="core\usp_GetEmailHistory.sql" />
+    <Build Include="core\udt_ToAddressHash.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

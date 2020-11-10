@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Jibberwock.Shared.Cryptography
+namespace Jibberwock.Persistence.DataAccess.Utility.Interfaces
 {
     /// <summary>
     /// Provides an interface enabling the creation of hashes for an input string.

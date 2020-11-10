@@ -17,7 +17,7 @@ namespace Jibberwock.Shared.Cryptography
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
 
-            return services.AddScoped<IHashCalculator, HashCalculator>();
+            return services.AddScoped<Jibberwock.Persistence.DataAccess.Utility.Interfaces.IHashCalculator, HashCalculator>();
         }
     }
 }

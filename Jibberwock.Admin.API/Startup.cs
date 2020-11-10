@@ -6,6 +6,7 @@ using Jibberwock.Admin.API.WebHooks;
 using Jibberwock.Persistence.DataAccess.DataSources;
 using Jibberwock.Persistence.DataAccess.DependencyInjection;
 using Jibberwock.Shared.Configuration;
+using Jibberwock.Shared.Cryptography;
 using Jibberwock.Shared.Http.Authentication;
 using Jibberwock.Shared.Http.Middleware;
 using Jibberwock.Shared.Json;
@@ -64,7 +65,8 @@ namespace Jibberwock.Admin.API
 
             services.AddAuthentication("EasyAuth")
                 .AddEasyAuthAuthentication(o => { });
-            services.AddJibberwockSecurity();
+            services.AddJibberwockSecurity()
+                .AddJibberwockCryptography();
 
             services.AddControllers()
                 .AddJsonOptions(opts =>

@@ -7,7 +7,7 @@ namespace Jibberwock.Shared.Cryptography
     /// <summary>
     /// Calculates the Argon2 hash of an input string.
     /// </summary>
-    public sealed class HashCalculator : IHashCalculator
+    public sealed class HashCalculator : Jibberwock.Persistence.DataAccess.Utility.Interfaces.IHashCalculator
     {
         public HashCalculator()
         {

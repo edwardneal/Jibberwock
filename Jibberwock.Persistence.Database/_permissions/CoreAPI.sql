@@ -84,3 +84,12 @@ GO
 
 GRANT EXECUTE ON [tenants].[usp_GetTenantsByUserId] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [core].[usp_ListBatches] TO [CoreAPI]
+GO
+
+GRANT EXECUTE ON TYPE::[core].[udt_ToAddressHash] TO [CoreAPI]
+GO
+
+GRANT EXECUTE ON [core].[usp_GetEmailHistory] TO [CoreAPI]
+GO

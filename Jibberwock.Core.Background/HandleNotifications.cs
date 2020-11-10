@@ -1,6 +1,7 @@
 ﻿using Jibberwock.Core.Background.EmailBatchTypeHandlers;
 using Jibberwock.DataModels.Core;
 using Jibberwock.Persistence.DataAccess.DataSources;
+using Jibberwock.Persistence.DataAccess.Utility.Interfaces;
 using Jibberwock.Shared.Configuration;
 using Jibberwock.Shared.Cryptography;
 using Microsoft.Azure.ServiceBus;
