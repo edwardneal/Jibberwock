@@ -39,5 +39,10 @@ namespace Jibberwock.DataModels.Core
         /// or has it not been processed yet (<c>null</c>)
         /// </summary>
         public bool? ProcessedSuccessfully { get; set; }
+
+        /// <summary>
+        /// All emails sent as a result of processing this <see cref="EmailBatch"/>.
+        /// </summary>
+        public IEnumerable<Email> Emails { get; set; }
     }
 }

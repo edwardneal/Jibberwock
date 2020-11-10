@@ -39,6 +39,7 @@ export default {
     unableToListNotifications: 'Unable to get the list of notifications, please try again later.',
     unableToListTenants: 'Unable to get the list of tenants, please try again later.',
     unableToGetAuditTrail: 'Unable to get the audit trail, please try again later.',
+    unableToSearchEmails: 'Unable to search for email records, please try again later.',
     unableToNotify: 'Unable to send this notification, please try again later.',
     unableToCompleteAction: 'Unable to complete this action, please try again later.',
     unableToGetExternalComponentStatuses: 'Unable to get the cached status information of external components, please try again later.',
@@ -452,6 +453,33 @@ export default {
       errorMessages: {
         selectProductToEdit: 'Select a product to populate this panel.'
       }
+    },
+    emails: {
+      title: 'Emails',
+      instructions: 'Use the filter controls below to view the emails sent and their events.',
+      actions: {
+        showColumns: 'Show Columns'
+      },
+      fields: {
+        startDate: 'Start Date',
+        endDate: 'End Date',
+        batch: 'Batch',
+        batchType: 'Batch Type',
+        serviceBusMessageId: 'Batch Message ID',
+        emailAddress: 'Email Address'
+      },
+      headers: {
+        batchType: 'Batch: Type',
+        batchServiceBusMessageId: 'Batch: Message ID',
+        batchFirstProcessed: 'Batch: First Processed',
+        batchLastProcessed: 'Batch: Last Processed',
+        batchProcessedSuccessfully: 'Batch: Processed?',
+        sendDate: 'Send Date',
+        externalId: 'SendGrid Message ID'
+      },
+      batchTypes: [
+        { id: 1, label: 'Notification' }
+      ]
     }
   }
 }
