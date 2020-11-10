@@ -166,7 +166,7 @@ export default {
       },
       masterHeaders: [
         { text: this.languageStrings.pages.emails.headers.batchType, value: 'sourceBatch.type.id', sortable: true, visible: true, mustAppear: true, class: 'sticky-element' },
-        { text: this.languageStrings.pages.emails.headers.batchServiceBusMessageId, value: 'sourceBatch.serviceBusMessageId', sortable: true, visible: false, mustAppear: false, class: 'sticky-element' },
+        { text: this.languageStrings.pages.emails.headers.batchServiceBusMessageId, value: 'sourceBatch.serviceBusMessageId', sortable: true, visible: true, mustAppear: false, class: 'sticky-element' },
         { text: this.languageStrings.pages.emails.headers.batchFirstProcessed, value: 'sourceBatch.dateFirstProcessed', sortable: true, visible: false, mustAppear: false, class: 'sticky-element' },
         { text: this.languageStrings.pages.emails.headers.batchLastProcessed, value: 'sourceBatch.dateLastProcessed', sortable: true, visible: false, mustAppear: false, class: 'sticky-element' },
         { text: this.languageStrings.pages.emails.headers.batchProcessedSuccessfully, value: 'sourceBatch.processedSuccessfully', sortable: true, visible: true, mustAppear: false, class: 'sticky-element' },

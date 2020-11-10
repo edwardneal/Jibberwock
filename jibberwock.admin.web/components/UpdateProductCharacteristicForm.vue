@@ -131,6 +131,11 @@ export default {
       return errors
     }
   },
+  watch: {
+    characteristic (_value) {
+      this.cancel()
+    }
+  },
   methods: {
     ...mapActions({
       updateInternal: 'product-characteristic/update'

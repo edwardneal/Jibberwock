@@ -220,6 +220,11 @@ export default {
       return errors
     }
   },
+  watch: {
+    product (_value) {
+      this.cancel()
+    }
+  },
   methods: {
     ...mapActions({
       listProductCharacteristicsInternal: 'product-characteristic/list',
