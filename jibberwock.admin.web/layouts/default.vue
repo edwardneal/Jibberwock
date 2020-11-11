@@ -1,8 +1,8 @@
 <template>
   <v-app>
-    <v-navigation-drawer :clipped="false" fixed app permanent>
+    <v-navigation-drawer v-model="showSidebar" :clipped="false" fixed app>
       <v-layout column fill-height>
-        <v-list v-if="$store.state.auth.loggedIn">
+        <v-list v-if="$store.state.auth.loggedIn" expand>
           <v-list-item to="/" router exact>
             <v-list-item-action>
               <v-icon>mdi-wrench</v-icon>
@@ -19,11 +19,11 @@
               <v-list-item-title>{{ languageStrings.auth.logOut }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <template v-for="(section, s) in sections">
-            <v-subheader :key="'title.' + s">
-              {{ section.title }}
-            </v-subheader>
-            <v-divider :key="'divider.' + s" />
+
+          <v-list-group v-model="section.active" v-for="(section, s) in sections" :key="s">
+            <template v-slot:activator>
+              <v-list-item-title>{{ section.title }}</v-list-item-title>
+            </template>
             <v-list-item v-for="(item, i) in section.items" :key="'section' + s + '.item.' + i" :to="item.to" router exact>
               <v-list-item-action>
                 <v-icon>{{ item.icon }}</v-icon>
@@ -32,7 +32,7 @@
                 <v-list-item-title v-text="item.title" />
               </v-list-item-content>
             </v-list-item>
-          </template>
+          </v-list-group>
         </v-list>
         <v-list v-else>
           <v-list-item to="/" router exact>
@@ -56,13 +56,14 @@
         <v-list>
           <v-list-item>
             <v-list-item-content>
-              <v-checkbox v-model="$vuetify.theme.dark" label="Dark Mode" hide-details />
+              <v-checkbox v-model="$vuetify.theme.dark" :label="languageStrings.actions.darkMode" hide-details />
             </v-list-item-content>
           </v-list-item>
         </v-list>
       </v-layout>
     </v-navigation-drawer>
     <v-app-bar fixed app>
+      <v-app-bar-nav-icon v-if="$vuetify.breakpoint.xs" @click="showSidebar = true"></v-app-bar-nav-icon>
       <v-toolbar-title v-text="title" />
     </v-app-bar>
     <v-main>
@@ -94,7 +95,8 @@ export default {
           items: [
             { icon: 'mdi-account', title: lang.sections.users.items.users, to: '/users' },
             { icon: 'mdi-account-group', title: lang.sections.users.items.tenants, to: '/tenants' }
-          ]
+          ],
+          active: true
         },
         {
           title: lang.sections.service.title,
@@ -103,7 +105,8 @@ export default {
             { icon: 'mdi-email-search', title: lang.sections.service.items.emails, to: '/emails' },
             { icon: 'mdi-gauge', title: lang.sections.service.items.status, to: '/status' },
             { icon: 'mdi-shield-alert', title: lang.sections.service.items.exceptions, to: '/exceptions' }
-          ]
+          ],
+          active: true
         },
         {
           title: lang.sections.products.title,
@@ -111,10 +114,12 @@ export default {
             { icon: 'mdi-sticker', title: lang.sections.products.items.characteristics, to: '/characteristics' },
             { icon: 'mdi-package-variant-closed', title: lang.sections.products.items.products, to: '/products' },
             { icon: 'mdi-cloud-alert', title: lang.sections.products.items.allert, to: '/allert' }
-          ]
+          ],
+          active: true
         }
       ],
-      title: lang.productName
+      title: lang.productName,
+      showSidebar: undefined
     }
   },
   computed: {

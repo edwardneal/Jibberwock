@@ -61,7 +61,8 @@ export default {
   actions: {
     search: 'Search',
     confirm: 'Confirm',
-    cancel: 'Cancel'
+    cancel: 'Cancel',
+    darkMode: 'Dark Mode'
   },
   noValue: {
     notificationStartDate: '(not set)',
