@@ -4,7 +4,8 @@ export const state = () => ({
   urls: {
     getExternalComponents: baseUrl + '/status/externalcomponents',
     getExceptions: baseUrl + '/status/exceptions',
-    getFailedRequests: baseUrl + '/status/requests'
+    getFailedRequests: baseUrl + '/status/requests',
+    getKpis: baseUrl + '/status/kpis'
   }
 })
 
@@ -17,5 +18,8 @@ export const actions = {
   },
   getFailedRequests ({ state }) {
     return this.$axios.get(state.urls.getFailedRequests)
+  },
+  getKpis ({ state }) {
+    return this.$axios.get(state.urls.getKpis)
   }
 }

@@ -93,3 +93,6 @@ GO
 
 GRANT EXECUTE ON [core].[usp_GetEmailHistory] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [core].[usp_GetPlatformKPIs] TO [CoreAPI]
+GO

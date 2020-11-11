@@ -154,6 +154,7 @@
     <Build Include="core\usp_ListBatches.sql" />
     <Build Include="core\usp_GetEmailHistory.sql" />
     <Build Include="core\udt_ToAddressHash.sql" />
+    <Build Include="core\usp_GetPlatformKPIs.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

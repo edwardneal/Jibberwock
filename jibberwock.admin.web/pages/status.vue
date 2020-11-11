@@ -38,6 +38,9 @@
             </v-tooltip>
           </v-col>
         </v-row>
+        <v-overlay :value="isPending" absolute :opacity="0.8">
+          <v-progress-circular indeterminate size="64" />
+        </v-overlay>
       </template>
     </Promised>
   </v-sheet>

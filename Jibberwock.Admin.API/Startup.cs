@@ -72,6 +72,7 @@ namespace Jibberwock.Admin.API
                 .AddJsonOptions(opts =>
                 {
                     opts.JsonSerializerOptions.Converters.Add(new Jibberwock.Shared.Http.JsonConverters.DictionaryConverter<Jibberwock.DataModels.Security.WellKnownGroupType, Jibberwock.DataModels.Security.Group>());
+                    opts.JsonSerializerOptions.Converters.Add(new Jibberwock.Shared.Http.JsonConverters.DictionaryConverter<DateTime, long>());
 
                     opts.JsonSerializerOptions.MakeDefault();
                 });

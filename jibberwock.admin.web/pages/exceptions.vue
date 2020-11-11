@@ -14,17 +14,6 @@
             </v-alert>
           </v-col>
         </v-row>
-        <v-row style="display: none;">
-          <v-col cols="12">
-            Tie the colours of chart.js to the vuetify pallette?
-            https://material.io/design/communication/data-visualization.html#style
-            https://www.chartjs.org/docs/latest/general/fonts.html
-            https://github.com/d3/d3-scale-chromatic/blob/v2.0.0/README.md#schemeCategory10
-            &gt; light theme?
-            something else on same page
-            &gt; dark theme?
-          </v-col>
-        </v-row>
         <v-row v-if="!isPending && error === null">
           <v-col cols="12" md="6">
             <Chart
@@ -138,6 +127,9 @@
             </v-sheet>
           </v-col>
         </v-row>
+        <v-overlay :value="isPending" absolute :opacity="0.8">
+          <v-progress-circular indeterminate size="64" />
+        </v-overlay>
       </template>
     </Promised>
   </v-sheet>
@@ -146,37 +138,15 @@
 <script>
 import { mapActions } from 'vuex'
 import { Promised } from 'vue-promised'
+import { getDateBuckets } from '~/utility/date.js'
+import { groupBy } from '~/utility/collections.js'
 import Chart from '~/components/Chart.vue'
 import 'chartjs-plugin-colorschemes'
 
-function groupBy (array, key) {
-  return array.reduce((storage, currVal) => {
-    const val = key instanceof Function ? key(currVal) : currVal[key]
-    const ele = storage.find(r => r && r.key === val)
+function forceUtcDate (timestamp) {
+  const parsedDate = new Date(timestamp)
 
-    if (ele) {
-      ele.values.push(currVal)
-    } else {
-      storage.push({ key: val, values: [currVal] })
-    }
-    return storage
-  }, [])
-}
-
-function getDateBuckets (startDate, endDate) {
-  const roundedStartDate = new Date(new Date(startDate).toDateString())
-  const roundedEndDate = new Date(new Date(endDate).toDateString())
-  const dateBuckets = []
-
-  for (let currDate = roundedStartDate; currDate <= roundedEndDate; currDate = new Date(currDate.setDate(currDate.getDate() + 1))) {
-    dateBuckets.push({
-      t: currDate,
-      y: 0,
-      details: []
-    })
-  }
-
-  return dateBuckets
+  return new Date(Date.UTC(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate()))
 }
 
 function processExceptionDetails (responses) {
@@ -195,7 +165,7 @@ function processExceptionDetails (responses) {
 
         // Now that we've got a series of date buckets, fill them with the number of records
         operationGroup.values.forEach((op) => {
-          const forcedDate = new Date(new Date(op.timestamp).toDateString())
+          const forcedDate = forceUtcDate(op.timestamp)
           const matchingBucket = operationDateBuckets.find(b => b.t.getTime() === forcedDate.getTime())
 
           matchingBucket.y++
@@ -220,7 +190,7 @@ function processExceptionDetails (responses) {
 
         // Now that we've got a series of date buckets, fill them with the number of records
         routeGroup.values.forEach((rt) => {
-          const forcedDate = new Date(new Date(rt.timestamp).toDateString())
+          const forcedDate = forceUtcDate(rt.timestamp)
           const matchingBucket = requestDateBuckets.find(b => b.t.getTime() === forcedDate.getTime())
 
           matchingBucket.y++
@@ -245,7 +215,7 @@ function processExceptionDetails (responses) {
 
         // Now that we've got a series of date buckets, fill them with the number of records
         roleGroup.values.forEach((rl) => {
-          const forcedDate = new Date(new Date(rl.timestamp).toDateString())
+          const forcedDate = forceUtcDate(rl.timestamp)
           const matchingBucket = requestDateBuckets.find(b => b.t.getTime() === forcedDate.getTime())
 
           matchingBucket.y++
@@ -270,7 +240,7 @@ function processExceptionDetails (responses) {
 
         // Now that we've got a series of date buckets, fill them with the number of records
         operationGroup.values.forEach((op) => {
-          const forcedDate = new Date(new Date(op.timestamp).toDateString())
+          const forcedDate = forceUtcDate(op.timestamp)
           const matchingBucket = requestDateBuckets.find(b => b.t.getTime() === forcedDate.getTime())
 
           matchingBucket.y++

@@ -250,6 +250,14 @@ export default {
       unauthenticated: {
         header: 'Welcome to the Jibberwock Admin Site',
         comment: 'Please log in to this site using the "Log In" link on the left.'
+      },
+      authenticated: {
+        userCount: 'Users',
+        tenantCount: 'Tenants',
+        componentStatus: 'Component Status',
+        pendingEmailBatches: 'Pending Email Batches',
+        eventsOverTime: 'Events over time',
+        exceptionsOverTime: 'Exceptions over time'
       }
     },
     users: {

@@ -19,6 +19,7 @@ using Jibberwock.Admin.API.ActionModels.Status;
 using Microsoft.Azure.ApplicationInsights;
 using System.Security.Cryptography.X509Certificates;
 using Jibberwock.DataModels.Core;
+using Jibberwock.DataModels.Warehouse;
 
 namespace Jibberwock.Admin.API.Controllers.Analytics
 {
@@ -142,6 +143,28 @@ namespace Jibberwock.Admin.API.Controllers.Analytics
 
                 return Ok(requestReport);
             }
+        }
+
+        /// <summary>
+        /// Gets general platform KPI information
+        /// </summary>
+        /// <response code="200" nullable="false">A <see cref="KpiReport"/> containing platform KPI information.</response>
+        [Route("kpis")]
+        [HttpGet]
+        [ProducesResponseType(typeof(KpiReport), StatusCodes.Status200OK)]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs, Permission.Read)]
+        public async Task<IActionResult> GetPlatformKpis()
+        {
+            var endDate = DateTimeOffset.UtcNow.Date;
+            var getKpisCommand = new Jibberwock.Persistence.DataAccess.Commands.Warehouse.GetPlatformKpis(Logger, _appInsightsConfiguration.ExceptionTimeRange);
+            var kpis = await getKpisCommand.Execute(SqlServerDataSource);
+
+            return Ok(new KpiReport()
+            {
+                StartDate = endDate.Subtract(_appInsightsConfiguration.ExceptionTimeRange),
+                EndDate = endDate,
+                Kpi = kpis
+            });
         }
 
         /// <summary>
