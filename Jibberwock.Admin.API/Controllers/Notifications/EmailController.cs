@@ -1,4 +1,5 @@
-﻿using Jibberwock.DataModels.Core;
+﻿using Jibberwock.Admin.API.ActionModels.Notifications;
+using Jibberwock.DataModels.Core;
 using Jibberwock.DataModels.Security;
 using Jibberwock.Persistence.DataAccess.DataSources;
 using Jibberwock.Shared.Configuration;
@@ -9,6 +10,7 @@ using Jibberwock.Shared.Http.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.ApplicationInsights;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -24,6 +26,7 @@ namespace Jibberwock.Admin.API.Controllers.Notifications
     public class EmailController : JibberwockControllerBase
     {
         private readonly Jibberwock.Persistence.DataAccess.Utility.Interfaces.IHashCalculator _hashCalculator;
+        private readonly AppInsightsConfiguration _appInsightsConfiguration;
 
         public EmailController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource,
             IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever,
@@ -31,6 +34,7 @@ namespace Jibberwock.Admin.API.Controllers.Notifications
             : base(loggerFactory, sqlServerDataSource, options, currentUserRetriever)
         {
             _hashCalculator = hashCalculator;
+            _appInsightsConfiguration = options?.Value.AppInsightsConfiguration;
         }
 
         /// <summary>
@@ -62,6 +66,7 @@ namespace Jibberwock.Admin.API.Controllers.Notifications
         [Route("")]
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<EmailBatch>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
         public async Task<IActionResult> GetEmailHistory([FromQuery] DateTimeOffset? start, [FromQuery] DateTimeOffset? end,
             [FromQuery] long? batchId, [FromQuery] int? batchTypeId,
@@ -82,6 +87,53 @@ namespace Jibberwock.Admin.API.Controllers.Notifications
             var emailHistory = await getEmailHistoryCommand.Execute(SqlServerDataSource);
 
             return Ok(emailHistory);
+        }
+
+        /// <summary>
+        /// Get all events for this particular email.
+        /// </summary>
+        /// <param name="externalEmailId">The ID of this email in the external email system.</param>
+        /// <response code="200" nullable="false">The retrieved set of <see cref="EmailEvent"/> objects.</response>
+        [Route("events")]
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<EmailEvent>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.ReadLogs)]
+        public async Task<IActionResult> GetEvents([FromQuery] string externalEmailId)
+        {
+            if (string.IsNullOrWhiteSpace(externalEmailId))
+            { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
+
+            if (string.IsNullOrWhiteSpace(_appInsightsConfiguration?.AppId))
+            { ModelState.AddModelError(ErrorResponses.MisconfiguredApplicationInsightsId, string.Empty); }
+            if (string.IsNullOrWhiteSpace(_appInsightsConfiguration?.TenantId))
+            { ModelState.AddModelError(ErrorResponses.MisconfiguredApplicationInsightsTenant, string.Empty); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            using (var appInsightsClient = await Jibberwock.Shared.Telemetry.ApplicationInsightsDataClientFactory.CreateDataClientAsync(_appInsightsConfiguration.AppId, _appInsightsConfiguration.TenantId))
+            {
+                // All of these events are stored in Application Insights - so query that and return them
+                var oDataFilter = $"customDimensions/{WebApiConfiguration.SendGrid.EmailIdParameterName} eq '{externalEmailId.Replace("'", "''")}'";
+                var aiEventList = await appInsightsClient.GetCustomEventsAsync(filter: oDataFilter, cancellationToken: HttpContext.RequestAborted);
+
+                var emailEvents = (from evt in aiEventList.Value
+                                   let dynProps = (dynamic)evt.CustomDimensions.AdditionalProperties
+                                   let timestamp = evt.Timestamp.HasValue ? new DateTimeOffset(evt.Timestamp.Value) : DateTimeOffset.MinValue
+                                   select new EmailEvent()
+                                   {
+                                       Type = (string)dynProps.sendgrid_event_type,
+                                       SmtpMessageId = (string)dynProps.smtp_message_id,
+                                       Timestamp = timestamp,
+                                       SmtpBounceReason = (string)dynProps.smtp_bounce_reason,
+                                       SmtpBounceType = (string)dynProps.smtp_bounce_type,
+                                       SmtpDroppedReason = (string)dynProps.smtp_dropped_reason,
+                                       SmtpDeferredResponse = (string)dynProps.smtp_deferred_response
+                                   }).ToArray();
+
+                return Ok(emailEvents);
+            }
         }
     }
 }

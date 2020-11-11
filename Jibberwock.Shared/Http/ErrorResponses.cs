@@ -20,7 +20,7 @@ namespace Jibberwock.Shared.Http
         /// <summary>
         /// Start time is missing.
         /// </summary>
-        public const string MissingStartTime = "missing_start_Time";
+        public const string MissingStartTime = "missing_start_time";
         /// <summary>
         /// EasyAuth redirection type is invalid.
         /// </summary>

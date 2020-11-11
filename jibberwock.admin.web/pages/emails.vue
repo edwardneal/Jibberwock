@@ -87,10 +87,7 @@
                 <span>{{ error.message }}</span>
               </v-tooltip>
             </v-alert>
-            When an email is selected, show a list of events.
-            These events come from App Insights, and we want to see the sendgrid_event_type, smtp_message_id and timestamp all the time - then if possible, smtp_bounce_reason/type, smtp_dropped_reason, smtp_deferred_response
             <v-data-table
-              v-model="selectedEntries"
               :headers="resultantHeaders"
               :loading="isPending"
               :items="typeof data !== 'undefined' && data !== null ? data : []"
@@ -123,6 +120,7 @@
                 {{ item.sendDate ? new Date(item.sendDate).toLocaleString() : '-' }}
               </template>
             </v-data-table>
+            <EmailEventsForm :language-strings="languageStrings" :email="details.selectedEmail" :visible.sync="details.visible" />
           </v-col>
         </v-row>
       </v-sheet>
@@ -142,11 +140,13 @@
 import { Promised } from 'vue-promised'
 import { mapActions } from 'vuex'
 import CalendarDropdown from '@/components/CalendarDropdown.vue'
+import EmailEventsForm from '@/components/EmailEventsForm.vue'
 
 export default {
   components: {
     Promised,
-    CalendarDropdown
+    CalendarDropdown,
+    EmailEventsForm
   },
   props: {
     languageStrings: {
@@ -175,7 +175,10 @@ export default {
       ],
       emailBatchListPromise: this.listEmailBatches(),
       emailRecordSearchPromise: Promise.resolve(),
-      selectedEntries: []
+      details: {
+        selectedEmail: null,
+        visible: false
+      }
     }
   },
   computed: {
@@ -201,7 +204,8 @@ export default {
         })
     },
     selectRow (clickedItem) {
-      alert(clickedItem.externalEmailId)
+      this.details.selectedEmail = clickedItem
+      this.details.visible = true
     }
   },
   meta: {

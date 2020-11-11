@@ -45,6 +45,7 @@ export default {
     unableToGetExternalComponentStatuses: 'Unable to get the cached status information of external components, please try again later.',
     unableToGetExceptions: 'Unable to get the exception tracking information, please try again later.',
     unableToGetProductTiers: 'Unable to get the list of this product\'s tiers, please try again later.',
+    unableToGetEmailEvents: 'Unable to get the list of this email\'s events, please try again later.',
     noSubject: 'Please provide a subject.',
     subjectTooLong: 'This subject is too long. Please provide a shorter subject.',
     noMessage: 'Please provide a message.',
@@ -203,6 +204,18 @@ export default {
     updateProductTier: {
       title: 'Update Tier',
       description: 'Fill in the fields below to update this product tier. When you\'re done, create Save, then save the product.'
+    },
+    getEmailEvents: {
+      title: 'Email Events',
+      headers: {
+        type: 'Type',
+        smtpMessageId: 'SMTP: Message ID',
+        timestamp: 'Timestamp',
+        smtpBounceReason: 'SMTP: Bounce Reason',
+        smtpBounceType: 'SMTP: Bounce Type',
+        smtpDroppedReason: 'SMTP: Dropped Reason',
+        smtpDeferredResponse: 'SMTP: Deferred Response'
+      }
     },
     fields: {
       addressedTo: 'Addressed To',

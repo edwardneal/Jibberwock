@@ -3,7 +3,8 @@ const baseUrl = process.env.NODE_ENV === 'production' ? 'https://admin.jibberwoc
 export const state = () => ({
   urls: {
     getBatches: baseUrl + '/email/batches',
-    getEmailRecords: baseUrl + '/email'
+    getEmailRecords: baseUrl + '/email',
+    getEmailEvents: baseUrl + '/email/events'
   }
 })
 
@@ -40,5 +41,10 @@ export const actions = {
       queryStrings.join('&')
 
     return this.$axios.get(emailRecordUrl)
+  },
+  getEvents ({ state }, externalEmailId) {
+    const eventsUrl = state.urls.getEmailEvents + '?externalEmailId=' + encodeURIComponent(externalEmailId)
+
+    return this.$axios.get(eventsUrl)
   }
 }

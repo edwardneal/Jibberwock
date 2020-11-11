@@ -20,7 +20,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-group v-model="section.active" v-for="(section, s) in sections" :key="s" color="undef-color">
+          <v-list-group v-for="(section, s) in sections" :key="s" v-model="section.active" color="undef-color">
             <template v-slot:activator>
               <v-list-item-title>{{ section.title }}</v-list-item-title>
             </template>
@@ -63,7 +63,7 @@
       </v-layout>
     </v-navigation-drawer>
     <v-app-bar fixed app>
-      <v-app-bar-nav-icon v-if="$vuetify.breakpoint.xs" @click="showSidebar = true"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon v-if="$vuetify.breakpoint.xs" @click="showSidebar = true" />
       <v-toolbar-title v-text="title" />
     </v-app-bar>
     <v-main>
