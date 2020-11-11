@@ -20,7 +20,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-group v-model="section.active" v-for="(section, s) in sections" :key="s">
+          <v-list-group v-model="section.active" v-for="(section, s) in sections" :key="s" color="undef-color">
             <template v-slot:activator>
               <v-list-item-title>{{ section.title }}</v-list-item-title>
             </template>
