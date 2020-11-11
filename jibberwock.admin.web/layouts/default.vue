@@ -72,7 +72,7 @@
       </v-layout>
     </v-main>
     <v-footer app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+      <span>&copy; {{ new Date().getFullYear() }} <a href="https://www.jibberwock.com">Jibberwock</a></span>
     </v-footer>
   </v-app>
 </template>

@@ -386,7 +386,7 @@ export default {
       serverSideErrorsByRoute: {
         chartTitle: 'Server-side errors by route over time',
         detailsTemplate: 'Click or tap on a data point in the "Server-side errors by route over time" chart to see all errors for a route on a given date.',
-        pageTemplate: 'Selected resource: ',
+        pageTemplate: 'Selected route: ',
         headers: {
           timestamp: 'Timestamp',
           type: 'Error Type',
