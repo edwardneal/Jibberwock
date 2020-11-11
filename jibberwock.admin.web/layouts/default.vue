@@ -43,7 +43,7 @@
               <v-list-item-title>{{ languageStrings.productName }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item :href="getLogInUrl($route.fullPath)" router exact>
+          <v-list-item :href="$route.query.ReturnURL && $route.query.ReturnURL.startsWith('/') ? getLogInUrl($route.query.ReturnURL) : getLogInUrl($route.fullPath)" router exact>
             <v-list-item-action>
               <v-icon>mdi-login</v-icon>
             </v-list-item-action>
