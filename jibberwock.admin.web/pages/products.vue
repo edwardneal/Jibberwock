@@ -27,6 +27,11 @@
             </v-toolbar-items>
           </template>
         </PromisedTable>
+        <CreateProductForm
+          :language-strings="languageStrings"
+          :visible.sync="createProductFormVisible"
+          @created="performProductRefresh"
+        />
       </v-col>
       <v-col sm="12" md="6" cols="12">
         <v-card v-if="computedSelection === null" elevation="0">
@@ -49,10 +54,14 @@
 <script>
 import { mapActions } from 'vuex'
 import PromisedTable from '~/components/PromisedTable.vue'
+import CreateProductForm from '~/components/CreateProductForm.vue'
+import UpdateProductForm from '~/components/UpdateProductForm.vue'
 
 export default {
   components: {
-    PromisedTable
+    PromisedTable,
+    CreateProductForm,
+    UpdateProductForm
   },
   props: {
     languageStrings: {
@@ -70,7 +79,7 @@ export default {
       productDetails: {
         selection: []
       },
-      createProductFormVisible: true
+      createProductFormVisible: false
     }
   },
   computed: {

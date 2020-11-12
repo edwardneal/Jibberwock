@@ -57,7 +57,8 @@ export default {
     unableToCreateProductCharacteristic: 'Unable to create product characteristic, please try again later.',
     noMoreInformationUrl: 'Please provide a More Information URL',
     moreInformationUrlTooLong: 'This URL is too long. Please provide a shorter More Information URL.',
-    externalIdTooLong: 'This external identifier is too long. Please provide a shorter identifier.'
+    externalIdTooLong: 'This external identifier is too long. Please provide a shorter identifier.',
+    unableToCreateProduct: 'Unable to create product, please try again later.'
   },
   actions: {
     search: 'Search',
@@ -216,6 +217,10 @@ export default {
         smtpDroppedReason: 'SMTP: Dropped Reason',
         smtpDeferredResponse: 'SMTP: Deferred Response'
       }
+    },
+    createProduct: {
+      title: 'Create Product',
+      description: 'Fill in the fields below to create a new product. When you\'re done, click Create.'
     },
     fields: {
       addressedTo: 'Addressed To',
