@@ -68,7 +68,6 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
                 && (Notification.TargetTenant != null && Notification.TargetTenant.Id != 0))
                 throw new ArgumentOutOfRangeException(nameof(Notification), "A notification cannot target both a tenant and a user,"); ;
 
-            var emailQueueClient = SendAsEmail ? _queueDataSource.GetQueueClient(_emailQueueName) : null;
             var databaseConnection = await dataSource.GetDbConnection();
             // This is a multi-step approach. We create the record in the database, then generate
             // a message using the QueueClient, then return
@@ -103,16 +102,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
             var resultantNotification = createdNotifications.FirstOrDefault();
 
             Notification = resultantNotification;
-            if (resultantNotification.EmailBatch != null)
-            {
-                // If we've got an email batch, then we need to put the message onto the queue!
-                var messageToCreate = ServiceBusUtilities.GenerateMessage(new { Metadata = default(object) }, resultantNotification.EmailBatch.ServiceBusMessageId, Notification.StartDate);
-
-                await emailQueueClient.SendAsync(messageToCreate);
-                // Don't need to expose this to the clients though
-                provisionalAuditTrailEntry.ServiceBusMessageId = Notification.EmailBatch.ServiceBusMessageId;
-                Notification.EmailBatch.ServiceBusMessageId = null;
-            }
+            provisionalAuditTrailEntry.ServiceBusMessageId = Notification.EmailBatch?.ServiceBusMessageId;
 
             provisionalAuditTrailEntry.Notification = Notification;
             provisionalAuditTrailEntry.RelatedUser = Notification.TargetUser;
@@ -121,6 +111,21 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
             provisionalAuditTrailEntry.SendAsEmail = SendAsEmail;
 
             return Notification;
+        }
+
+        protected override async Task OnCommandCompleted(ModifyNotification auditTrailEntry, Notification result)
+        {
+            var emailQueueClient = SendAsEmail ? _queueDataSource.GetQueueClient(_emailQueueName) : null;
+
+            if (result.EmailBatch != null)
+            {
+                // If we've got an email batch, then we need to put the message onto the queue!
+                var messageToCreate = ServiceBusUtilities.GenerateMessage(new { Metadata = default(object) }, result.EmailBatch.ServiceBusMessageId, result.StartDate);
+
+                await emailQueueClient.SendAsync(messageToCreate);
+                // Don't need to expose this to the clients though
+                Notification.EmailBatch.ServiceBusMessageId = null;
+            }
         }
     }
 }

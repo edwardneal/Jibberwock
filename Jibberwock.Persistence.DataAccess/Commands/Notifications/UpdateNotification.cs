@@ -25,6 +25,8 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
         private readonly IQueueDataSource _queueDataSource;
         private readonly string _emailQueueName;
 
+        private bool _sendEmail = false;
+
         /// <summary>
         /// The notification to send (including target.)
         /// </summary>
@@ -67,7 +69,6 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
                 && (Notification.TargetTenant != null && Notification.TargetTenant.Id != 0))
                 throw new ArgumentOutOfRangeException(nameof(Notification), "A notification cannot target both a tenant and a user,"); ;
 
-            var emailQueueClient = SendAsEmail ? _queueDataSource.GetQueueClient(_emailQueueName) : null;
             var databaseConnection = await dataSource.GetDbConnection();
             // This is a multi-step approach. We create the record in the database, then generate
             // a message using the QueueClient, then return
@@ -106,21 +107,9 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
             var resultantNotification = updatedNotifications.FirstOrDefault();
 
             Notification = resultantNotification;
-            if (resultantNotification.EmailBatch != null
-                && updateNotificationParameters.Get<bool>("New_Email_Message_Required"))
-            {
-                // If we've created an email batch, then we need to put the message onto the queue!
-                var messageToCreate = ServiceBusUtilities.GenerateMessage(new { Metadata = default(object) }, resultantNotification.EmailBatch.ServiceBusMessageId, Notification.StartDate);
+            _sendEmail = updateNotificationParameters.Get<bool>("New_Email_Message_Required");
 
-                await emailQueueClient.SendAsync(messageToCreate);
-            }
-
-            // Make sure we don't expose the queue's message ID - clients don't need to care
-            if (Notification.EmailBatch != null)
-            {
-                provisionalAuditTrailEntry.ServiceBusMessageId = Notification.EmailBatch.ServiceBusMessageId;
-                Notification.EmailBatch.ServiceBusMessageId = null;
-            }
+            provisionalAuditTrailEntry.ServiceBusMessageId = Notification.EmailBatch?.ServiceBusMessageId;
 
             provisionalAuditTrailEntry.Notification = Notification;
             provisionalAuditTrailEntry.RelatedUser = Notification.TargetUser;
@@ -129,6 +118,25 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
             provisionalAuditTrailEntry.SendAsEmail = SendAsEmail;
 
             return Notification;
+        }
+
+        protected override async Task OnCommandCompleted(ModifyNotification auditTrailEntry, Notification result)
+        {
+            if (result.EmailBatch != null)
+            {
+                if (_sendEmail)
+                {
+                    var emailQueueClient = SendAsEmail ? _queueDataSource.GetQueueClient(_emailQueueName) : null;
+
+                    // If we've created an email batch, then we need to put the message onto the queue!
+                    var messageToCreate = ServiceBusUtilities.GenerateMessage(new { Metadata = default(object) }, result.EmailBatch.ServiceBusMessageId, result.StartDate);
+
+                    await emailQueueClient.SendAsync(messageToCreate);
+                }
+
+                // Make sure we don't expose the queue's message ID - clients don't need to care
+                result.EmailBatch.ServiceBusMessageId = null;
+            }
         }
     }
 }

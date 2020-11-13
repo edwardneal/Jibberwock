@@ -292,7 +292,7 @@ export default {
               subject: this.notification.subject,
               message: this.notification.message,
               allowDismissal: this.notification.allowDismissal,
-              sendAsEmail: this.notification.resultantSendAsEmail
+              sendAsEmail: this.resultantSendAsEmail
             }
           }))
       } else {
@@ -310,7 +310,7 @@ export default {
             subject: this.notification.subject,
             message: this.notification.message,
             allowDismissal: this.notification.allowDismissal,
-            sendAsEmail: this.notification.resultantSendAsEmail
+            sendAsEmail: this.resultantSendAsEmail
           }
         }))
       }

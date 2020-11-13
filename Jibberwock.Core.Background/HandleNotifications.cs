@@ -73,7 +73,7 @@ namespace Jibberwock.Core.Background
 
             var messageContents = Encoding.UTF8.GetString(notificationMessage.Body);
             dynamic parsedMessageContents = JsonSerializer.Deserialize<ExpandoObject>(messageContents);
-            var messageMetadataObject = parsedMessageContents.Metadata;
+            var messageMetadataObject = parsedMessageContents.metadata;
                 
             if (! _emailBatchTypeHandlers.TryGetValue(emailBatch.Type.Id, out var emailBatchTypeHandlerFactory)
                 || emailBatchTypeHandlerFactory == null)

@@ -37,7 +37,7 @@ namespace Jibberwock.Admin.API.Controllers.Products
         [Route("")]
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
-        [ResourcePermissions(SecurableResourceType.Product, Permission.Read)]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
         public async Task<IActionResult> GetProducts([FromQuery] bool includeHiddenProducts)
         {
             var currentUser = await CurrentUserRetriever.GetCurrentUserAsync();
@@ -60,6 +60,7 @@ namespace Jibberwock.Admin.API.Controllers.Products
         [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.CreateProduct)]
         [HttpPut]
         public async Task<IActionResult> UpdateProduct([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromBody] ProductCreationOptions updatedProduct)
         {
@@ -140,6 +141,7 @@ namespace Jibberwock.Admin.API.Controllers.Products
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Tier>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
         public async Task<IActionResult> GetProductTiers([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Read)] long id, [FromQuery] bool includeHiddenTiers)
         {
             if (id == 0)
@@ -169,6 +171,7 @@ namespace Jibberwock.Admin.API.Controllers.Products
         [ProducesResponseType(typeof(Tier), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.Read)]
         public async Task<IActionResult> GetSingleProductTier([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Read)] long id, [FromRoute] long tierId)
         {
             if (id == 0)
@@ -202,6 +205,7 @@ namespace Jibberwock.Admin.API.Controllers.Products
         [ProducesResponseType(typeof(Tier), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.CreateProduct)]
         public async Task<IActionResult> UpdateProductTier([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromRoute] long tierId, [FromBody] TierCreationOptions updatedTier)
         {
             if (id == 0)
@@ -250,6 +254,7 @@ namespace Jibberwock.Admin.API.Controllers.Products
         [HttpPost]
         [ProducesResponseType(typeof(Tier), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ResourcePermissions(SecurableResourceType.Service, Permission.CreateProduct)]
         public async Task<IActionResult> CreateProductTier([FromRoute, ResourcePermissions(SecurableResourceType.Product, Permission.Change)] long id, [FromBody] TierCreationOptions productTier)
         {
             if (id == 0)

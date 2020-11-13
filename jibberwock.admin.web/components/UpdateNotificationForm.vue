@@ -305,7 +305,7 @@ export default {
             subject: this.notification.subject,
             message: this.notification.message,
             allowDismissal: this.notification.allowDismissal,
-            sendAsEmail: this.notification.resultantSendAsEmail
+            sendAsEmail: this.resultantSendAsEmail
           }
         }).then((notification) => {
           this.$emit('notification-updated', notification)
@@ -329,7 +329,7 @@ export default {
             subject: this.notification.subject,
             message: this.notification.message,
             allowDismissal: this.notification.allowDismissal,
-            sendAsEmail: this.notification.resultantSendAsEmail
+            sendAsEmail: this.resultantSendAsEmail
           }
         }).then((notification) => {
           this.$emit('notification-updated', notification)

@@ -52,6 +52,11 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Auditing
 
         protected abstract Task<TResult> OnAuditedExecute(IReadWriteDataSource dataSource, IDbTransaction transaction, TAuditTrailEntry provisionalAuditTrailEntry);
 
+        protected virtual Task OnCommandCompleted(TAuditTrailEntry auditTrailEntry, TResult result)
+        {
+            return Task.CompletedTask;
+        }
+
         protected override async Task<AuditedCommandResult<TResult, TAuditTrailEntry>> OnExecute(IReadWriteDataSource dataSource)
         {
             // The audit trail entry and the command will execute in the same transaction
@@ -90,6 +95,10 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Auditing
 
                 // Commit the transaction
                 await dbTransaction.CommitAsync();
+
+                // Perform any post-commit activity. This handles situations where some work needs to be performed in an external system (like
+                // sending a message to Service Bus) which needs a database record to be created
+                await OnCommandCompleted(auditTrailEntry, result);
 
                 return new AuditedCommandResult<TResult, TAuditTrailEntry>(result, auditTrailEntry);
             }

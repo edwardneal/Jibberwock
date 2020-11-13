@@ -16,6 +16,7 @@ export default {
     titleTemplate: '%s - Jibberwock Admin',
     title: 'Homepage',
     meta: [
+      { hid: 'charset', charset: 'utf-8' },
       { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
       { name: 'rating', content: 'General' },
 
@@ -33,8 +34,8 @@ export default {
       { name: 'msapplication-config', content: '/manifests/browserconfig.xml' },
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'shortcut icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'icon', type: 'image/x-icon', href: '/images/favicons/favicon.ico' },
+      { rel: 'shortcut icon', type: 'image/x-icon', href: '/images/favicons/favicon.ico' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&display=swap' },
       {
         rel: 'stylesheet', crossorigin: 'anonymous', integrity: 'sha512-x96qcyADhiw/CZY7QLOo7dB8i/REOEHZDhNfoDuJlyQ+yZzhdy91eAa4EkO7g3egt8obvLeJPoUKEKu5C5JYjA==',
@@ -102,7 +103,8 @@ export default {
     customVariables: ['~/assets/variables.scss'],
     theme: {
       options: { cspNonce: 'nrKlSSBeSxaJ5FGaqwl9' }
-    }
+    },
+    defaultAssets: false
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
@@ -187,7 +189,9 @@ export default {
             cacheableResponse: { statuses: [0, 200] }
           }
         }
-      })
+      }).concat([
+        { urlPattern: '/.auth/.*', handler: 'networkFirst', method: 'GET' }
+      ])
     }
   }
 }

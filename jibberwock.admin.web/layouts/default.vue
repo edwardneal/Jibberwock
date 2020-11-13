@@ -63,7 +63,7 @@
       </v-layout>
     </v-navigation-drawer>
     <v-app-bar fixed app>
-      <v-app-bar-nav-icon v-if="!showSidebar" @click="showSidebar = true" />
+      <v-app-bar-nav-icon v-if="!showSidebar" @click="showSidebar = true" aria-label="Show menu" />
       <v-toolbar-title v-text="title" />
     </v-app-bar>
     <v-main>

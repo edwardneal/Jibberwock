@@ -94,6 +94,13 @@ namespace Jibberwock.Shared.Http.Authorization
                 var currentUser = await _currentUserRetriever.GetCurrentUserAsync();
                 var checkPermissionsCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.CheckPermissions(_logger, currentUser, resourcePermissionChecks);
 
+                if (currentUser == null)
+                {
+                    _logger.LogInformation("User is not currently logged in.");
+                    context.Fail();
+                    return;
+                }
+
                 var isAccessValid = await checkPermissionsCommand.Execute(_dataSource);
 
                 // If the user fails their permission checks, block access to the resource.

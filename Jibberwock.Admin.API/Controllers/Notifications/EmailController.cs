@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Jibberwock.Admin.API.Controllers.Notifications
@@ -115,25 +116,47 @@ namespace Jibberwock.Admin.API.Controllers.Notifications
             using (var appInsightsClient = await Jibberwock.Shared.Telemetry.ApplicationInsightsDataClientFactory.CreateDataClientAsync(_appInsightsConfiguration.AppId, _appInsightsConfiguration.TenantId))
             {
                 // All of these events are stored in Application Insights - so query that and return them
+                // Unfortunately the API doesn't allow us to access CustomDimensions very well, so work with the response directly if required
                 var oDataFilter = $"customDimensions/{WebApiConfiguration.SendGrid.EmailIdParameterName} eq '{externalEmailId.Replace("'", "''")}'";
-                var aiEventList = await appInsightsClient.GetCustomEventsAsync(filter: oDataFilter, cancellationToken: HttpContext.RequestAborted);
+                var aiEventList = await appInsightsClient.GetCustomEventsWithHttpMessagesAsync(filter: oDataFilter, cancellationToken: HttpContext.RequestAborted);
+                var rawResponse = await aiEventList.Response.Content.ReadAsStringAsync();
+                var parsedResponse = JsonDocument.Parse(rawResponse);
 
-                var emailEvents = (from evt in aiEventList.Value
-                                   let dynProps = (dynamic)evt.CustomDimensions.AdditionalProperties
+                var emailEvents = (from evt in aiEventList.Body.Value
+                                   let propsDict = getEventDimensions(parsedResponse, evt.Id)
                                    let timestamp = evt.Timestamp.HasValue ? new DateTimeOffset(evt.Timestamp.Value) : DateTimeOffset.MinValue
                                    select new EmailEvent()
                                    {
-                                       Type = (string)dynProps.sendgrid_event_type,
-                                       SmtpMessageId = (string)dynProps.smtp_message_id,
+                                       Type = propsDict["sendgrid_event_type"],
+                                       SmtpMessageId = propsDict["smtp_message_id"],
                                        Timestamp = timestamp,
-                                       SmtpBounceReason = (string)dynProps.smtp_bounce_reason,
-                                       SmtpBounceType = (string)dynProps.smtp_bounce_type,
-                                       SmtpDroppedReason = (string)dynProps.smtp_dropped_reason,
-                                       SmtpDeferredResponse = (string)dynProps.smtp_deferred_response
+                                       SmtpBounceReason = propsDict.ContainsKey("smtp_bounce_reason") ? propsDict["smtp_bounce_reason"] : null,
+                                       SmtpBounceType = propsDict.ContainsKey("smtp_bounce_type") ? propsDict["smtp_bounce_type"] : null,
+                                       SmtpDroppedReason = propsDict.ContainsKey("smtp_dropped_reason") ? propsDict["smtp_dropped_reason"] : null,
+                                       SmtpDeferredResponse = propsDict.ContainsKey("smtp_deferred_response") ? propsDict["smtp_deferred_response"] : null
                                    }).ToArray();
 
                 return Ok(emailEvents);
             }
+        }
+
+        private static Dictionary<string, string> getEventDimensions(JsonDocument response, string eventId)
+        {
+            var valueArray = response.RootElement.GetProperty("value");
+
+            foreach(var aiEvent in valueArray.EnumerateArray())
+            {
+                var aiId = aiEvent.GetProperty("id").GetString();
+
+                if (eventId.Equals(aiId, StringComparison.OrdinalIgnoreCase))
+                {
+                    return aiEvent.GetProperty("customDimensions")
+                        .EnumerateObject()
+                        .ToDictionary(p => p.Name.ToLower(), p => p.Value.GetString());
+                }
+            }
+
+            return null;
         }
     }
 }
