@@ -128,7 +128,7 @@ namespace Jibberwock.Admin.API.Controllers.Notifications
                                    select new EmailEvent()
                                    {
                                        Type = propsDict["sendgrid_event_type"],
-                                       SmtpMessageId = propsDict["smtp_message_id"],
+                                       SmtpMessageId = propsDict.ContainsKey("smtp_message_id") ? propsDict["smtp_message_id"] : null,
                                        Timestamp = timestamp,
                                        SmtpBounceReason = propsDict.ContainsKey("smtp_bounce_reason") ? propsDict["smtp_bounce_reason"] : null,
                                        SmtpBounceType = propsDict.ContainsKey("smtp_bounce_type") ? propsDict["smtp_bounce_type"] : null,
