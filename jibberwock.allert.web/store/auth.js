@@ -1,3 +1,5 @@
+const baseRedirectUrl = process.env.NODE_ENV === 'production' ? 'https://allert.jibberwock.com' : 'http://localhost:3000'
+
 export const state = () => ({
   urls: {
     logIn: 'https://www.jibberwock.com/.auth/login/aad?post_login_redirect_url={redirectTo}',
@@ -21,10 +23,10 @@ export const mutations = {
 
 export const getters = {
   getLogInUrl: state => (url) => {
-    return state.urls.logIn.replace('{redirectTo}', encodeURIComponent(url))
+    return state.urls.logIn.replace('{redirectTo}', encodeURIComponent(baseRedirectUrl + url))
   },
   getLogOutUrl: state => (url) => {
-    return state.urls.logOut.replace('{redirectTo}', encodeURIComponent(url))
+    return state.urls.logOut.replace('{redirectTo}', encodeURIComponent(baseRedirectUrl + url))
   }
 }
 

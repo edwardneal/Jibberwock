@@ -26,8 +26,12 @@
           </v-btn>
         </div>
         <div class="pt-2">
-          <v-btn>{{ languageStrings.auth.signUp }}</v-btn>
-          <v-btn>{{ languageStrings.auth.logIn }}</v-btn>
+          <v-btn nuxt to="/sign-up">
+            {{ languageStrings.auth.signUp }}
+          </v-btn>
+          <v-btn :href="$route.query.ReturnURL && $route.query.ReturnURL.startsWith('/') ? getLogInUrl($route.query.ReturnURL) : getLogInUrl($route.fullPath)">
+            {{ languageStrings.auth.logIn }}
+          </v-btn>
         </div>
       </div>
       <div class="bottom-icon">
@@ -44,6 +48,8 @@
 </style>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   components: {
   },
@@ -54,6 +60,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      getLogInUrl: 'auth/getLogInUrl' //,
+      // getLogOutUrl: 'auth/getLogOutUrl'
+    })
   },
   meta: {
     auth: { required: false }
