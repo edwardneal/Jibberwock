@@ -20,7 +20,16 @@ namespace Jibberwock.Core.API
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>()
+                        .ConfigureAppConfiguration((webHostCtx, iConfigBuilder) =>
+                        {
+                            var config = iConfigBuilder.Build();
+                            var keyVaultName = config.GetValue<string>("Configuration:SensitiveSettingKeyVaultName", null);
+
+                            // Quick sanity check, protecting against obscure errors if the configuration setting isn't present
+                            if (!string.IsNullOrEmpty(keyVaultName))
+                                iConfigBuilder.AddAzureKeyVault($"https://{keyVaultName}.vault.azure.net/");
+                        });
                 });
     }
 }

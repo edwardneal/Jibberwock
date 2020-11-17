@@ -5,5 +5,15 @@
     <UserSecretsId>830b7ebc-e261-4dd8-95f3-30749d273f30</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MaximeRouiller.Azure.AppService.EasyAuth" Version="1.0.0-ci141" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.16.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="3.1.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Jibberwock.Shared\Jibberwock.Shared.csproj" />
+  </ItemGroup>
+
 
 </Project>
