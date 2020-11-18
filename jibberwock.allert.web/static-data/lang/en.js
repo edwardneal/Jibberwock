@@ -62,6 +62,28 @@ export default {
       add: 'Add'
     }
   },
+  notificationList: {
+    sections: {
+      invitations: {
+        title: 'Invitations'
+      },
+      notifications: {
+        title: 'Notifications',
+        priorityFormat: '{label} priority'
+      }
+    },
+    notificationTypes: [
+      { id: 1, label: 'Alert', alertType: 'info' },
+      { id: 2, label: 'Information', alertType: 'info' },
+      { id: 3, label: 'Error', alertType: 'error' },
+      { id: 4, label: 'Warning', alertType: 'warning' }
+    ],
+    notificationPriorities: [
+      { id: 1, label: 'Low' },
+      { id: 2, label: 'Normal' },
+      { id: 3, label: 'High' }
+    ]
+  },
   pages: {
     homepage: {
       title: 'Homepage',

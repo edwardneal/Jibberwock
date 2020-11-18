@@ -1,6 +1,12 @@
 <template>
   <v-sheet v-if="$store.state.auth.loggedIn">
-    YOU ARE LOGGED IN
+    YOU ARE LOGGED IN.
+
+    <p>to do:</p>
+    <ol>
+      <li>change the api to only return active notifications where the start/end dates fit</li>
+      <li>create a "details" form</li>
+    </ol>
   </v-sheet>
   <v-container v-else fill-height fluid class="pa-0 blue darken-3">
     <v-container fill-height fluid class="blue darken-4 rounded-br-pill">
