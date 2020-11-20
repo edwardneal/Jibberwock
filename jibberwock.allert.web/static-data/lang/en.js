@@ -69,6 +69,7 @@ export default {
       },
       notifications: {
         title: 'Notifications',
+        emptyList: 'You have no notifications.',
         priorityFormat: '{label} priority'
       }
     },

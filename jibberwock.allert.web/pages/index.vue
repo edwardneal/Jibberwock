@@ -5,7 +5,7 @@
     <p>to do:</p>
     <ol>
       <li>change the api to only return active notifications where the start/end dates fit</li>
-      <li>create a "details" form</li>
+      <li>add dismissal api logic to the notifications pane and overlay</li>
     </ol>
   </v-sheet>
   <v-container v-else fill-height fluid class="pa-0 blue darken-3">

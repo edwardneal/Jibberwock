@@ -46,6 +46,27 @@ export const mutations = {
     })
 
     state.notificationsByPriority = groupedNotifications
+  },
+  removeNotification (state, notification) {
+    const notificationGroup = state.notificationsByPriority.find(np => np.priorityId === notification.priority.id)
+    const notificationPositionInGroup = notificationGroup.notifications.indexOf(notification)
+
+    const masterNotificationPosition = state.notifications.indexOf(notification)
+
+    // If this notification is the only thing in the group, we can just remove the entire group
+    if (notificationGroup.notifications.length === 1) {
+      const notificationGroupPosition = state.notificationsByPriority.indexOf(notificationGroup)
+
+      if (notificationGroupPosition !== -1) {
+        state.notificationsByPriority.splice(notificationGroupPosition, 1)
+      }
+    } else {
+      notificationGroup.notifications.splice(notificationPositionInGroup, 1)
+    }
+
+    if (masterNotificationPosition !== -1) {
+      state.notifications.splice(masterNotificationPosition, 1)
+    }
   }
 }
 
