@@ -49,14 +49,10 @@ namespace Jibberwock.Core.API.Controllers.Users
         {
             var currUser = await CurrentUserRetriever.GetCurrentUserAsync();
 
-            var listGlobalNotificationsCommand = new Jibberwock.Persistence.DataAccess.Commands.Notifications.ListNotifications(Logger);
-            var listUserNotificationsCommand = new Jibberwock.Persistence.DataAccess.Commands.Notifications.ListNotifications(Logger, currUser);
+            var listNotificationsCommand = new Jibberwock.Persistence.DataAccess.Commands.Notifications.ListClientNotifications(Logger, currUser);
+            var allNotifications = await listNotificationsCommand.Execute(SqlServerDataSource);
 
-            var allNotifications = await Task.WhenAll(
-                listGlobalNotificationsCommand.Execute(SqlServerDataSource),
-                listUserNotificationsCommand.Execute(SqlServerDataSource));
-
-            return Ok(allNotifications.SelectMany(n => n));
+            return Ok(allNotifications);
         }
     }
 }

@@ -41,7 +41,7 @@
                 border="left"
               >
                 <template v-slot:close>
-                  <Promised :promise="notif.dismissalPromise">
+                  <Promised v-if="notif.allowDismissal" :promise="notif.dismissalPromise">
                     <template v-slot:combined="dpSlot">
                       <v-tooltip left>
                         <template v-slot:activator="{ on, attrs }">

@@ -155,6 +155,7 @@
     <Build Include="core\usp_GetEmailHistory.sql" />
     <Build Include="core\udt_ToAddressHash.sql" />
     <Build Include="core\usp_GetPlatformKPIs.sql" />
+    <Build Include="core\usp_ListClientNotifications.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

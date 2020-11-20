@@ -4,7 +4,7 @@
 
     <p>to do:</p>
     <ol>
-      <li>change the api to only return active notifications where the start/end dates fit</li>
+      <li>Switch the high-priority overlay to become a top-of-page carousel/v-window</li>
       <li>add dismissal api logic to the notifications pane and overlay</li>
     </ol>
   </v-sheet>

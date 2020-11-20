@@ -96,3 +96,6 @@ GO
 
 GRANT EXECUTE ON [core].[usp_GetPlatformKPIs] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [core].[usp_ListClientNotifications] TO [CoreAPI]
+GO
