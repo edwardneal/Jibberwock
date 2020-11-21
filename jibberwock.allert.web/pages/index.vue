@@ -4,7 +4,9 @@
 
     <p>to do:</p>
     <ol>
-      <li>add dismissal api logic to the notifications pane and overlay</li>
+      <li>test dismissal api logic</li>
+      <li>add a username banner at the top-right</li>
+      <li>figure out the user story. they need to log in, then create a tenant - can i simplify this?</li>
     </ol>
   </v-sheet>
   <v-container v-else fill-height fluid class="pa-0 blue darken-3">

@@ -150,6 +150,7 @@ import EditProduct from '@/components/audit_trail_entry_displays/EditProduct.vue
 import EditCharacteristic from '@/components/audit_trail_entry_displays/EditCharacteristic.vue'
 import EditTier from '@/components/audit_trail_entry_displays/EditTier.vue'
 import EditNotification from '@/components/audit_trail_entry_displays/EditNotification.vue'
+import DismissNotification from '@/components/audit_trail_entry_displays/DismissNotification.vue'
 
 export default {
   components: {
@@ -161,7 +162,8 @@ export default {
     EditProduct,
     EditCharacteristic,
     EditTier,
-    EditNotification
+    EditNotification,
+    DismissNotification
   },
   props: {
     languageStrings: {
