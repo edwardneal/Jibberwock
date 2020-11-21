@@ -7,7 +7,7 @@
       <div v-if="$store.state.auth.loggedIn" id="messageButtonContainer">
         <v-menu v-model="showProfileDropdown" offset-y auto>
           <template v-slot:activator="{ on }">
-            <v-btn text v-on="on" class="text-capitalize">
+            <v-btn text class="text-capitalize" v-on="on">
               <v-icon left>
                 {{ languageStrings.dropdownValues.identityProvider.find(idp => idp.id === $store.state.auth.userInfo.identityProvider).icon }}
               </v-icon>
