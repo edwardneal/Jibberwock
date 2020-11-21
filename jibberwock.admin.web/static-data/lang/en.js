@@ -328,7 +328,8 @@ export default {
         { id: 4, label: 'Edit Characteristic', component: 'EditCharacteristic' },
         { id: 5, label: 'Delete Characteristic', component: 'EditCharacteristic' },
         { id: 6, label: 'Edit Tier', component: 'EditTier' },
-        { id: 7, label: 'Edit Notification', component: 'EditNotification' }
+        { id: 7, label: 'Edit Notification', component: 'EditNotification' },
+        { id: 8, label: 'Dismiss Notification', component: 'DismissNotification' }
       ]
     },
     status: {

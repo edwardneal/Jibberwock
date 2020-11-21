@@ -156,6 +156,8 @@
     <Build Include="core\udt_ToAddressHash.sql" />
     <Build Include="core\usp_GetPlatformKPIs.sql" />
     <Build Include="core\usp_ListClientNotifications.sql" />
+    <Build Include="core\NotificationDismissal.sql" />
+    <Build Include="core\usp_DismissNotification.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

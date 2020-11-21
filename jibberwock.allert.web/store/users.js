@@ -82,5 +82,10 @@ export const actions = {
       .then((res) => {
         commit('processNotifications', res.data)
       })
+  },
+  dismissNotification ({ state }, notificationId) {
+    const deleteNotificationUrl = state.urls.dismissNotification.replace('{notificationId}', encodeURIComponent(notificationId))
+
+    return this.$axios.delete(deleteNotificationUrl)
   }
 }

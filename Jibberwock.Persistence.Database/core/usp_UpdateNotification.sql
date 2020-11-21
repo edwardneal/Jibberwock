@@ -17,6 +17,7 @@ BEGIN
 
 	declare @priorityId int
 	declare @currentDate datetimeoffset(7)
+	declare @shouldRevokeDismissal bit = 0
 
 	select @priorityId = Notification_Priority_ID from [core].[NotificationPriority] where [Name] = @Priority_Name
 	select @currentDate = SYSDATETIMEOFFSET()
@@ -32,6 +33,14 @@ BEGIN
 		-- ** Send_As_Email cannot be unset
 		-- Alternatively, if the notification does not have an associated email batch,
 		-- Start_Date has passed and Send_As_Email is set to 1, we should create the email batch.
+		-- Besides this, if Allow_Dismissal transitions to 0, or if Subject/Message change, we need to revoke any
+		-- user dismissals (because the message itself has changed.)
+		if exists (select 1
+			from core.[Notification]
+			where Notification_ID = @Notification_ID
+				and Allow_Dismissal = 1
+				and @Allow_Dismissal = 0)
+			set @shouldRevokeDismissal = 1
 
 		-- This means that we can always update the five fields below:
 		update core.[Notification]
@@ -55,6 +64,10 @@ BEGIN
 			[Message] = @Message
 		where Notification_ID = @Notification_ID
 			and ((Email_Batch_ID is not null and [Start_Date] >= @currentDate) or (Email_Batch_ID is null))
+			and ([Subject] <> @Subject or [Message] <> @Message)
+
+		if @@ROWCOUNT <> 0 and @shouldRevokeDismissal = 0
+			set @shouldRevokeDismissal = 1
 
 		set @New_Email_Message_Required = 0
 		-- Fourth-stage update to handle Send_As_Email
@@ -101,6 +114,10 @@ BEGIN
 				set @New_Email_Message_Required = 1
 			end
 		end
+
+		if @shouldRevokeDismissal = 1
+			delete from core.NotificationDismissal
+			where Notification_ID = @Notification_ID
 
 		exec core.usp_GetNotificationByID @Notification_ID = @Notification_ID
 

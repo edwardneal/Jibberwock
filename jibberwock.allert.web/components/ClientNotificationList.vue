@@ -132,6 +132,7 @@
 
 <script>
 import { Promised } from 'vue-promised'
+import { mapActions } from 'vuex'
 
 export default {
   components: {
@@ -176,6 +177,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      dismissNotificationInternal: 'users/dismissNotification'
+    }),
     showNotificationDetails (notification) {
       this.selectedNotification = notification
       this.showSingleNotification = true
@@ -186,7 +190,7 @@ export default {
     dismissNotification (notification) {
       const nestedThis = this
 
-      notification.dismissalPromise = Promise.resolve()
+      notification.dismissalPromise = this.dismissNotificationInternal(notification.id)
         .then(() => {
           nestedThis.$store.commit('users/removeNotification', notification)
 

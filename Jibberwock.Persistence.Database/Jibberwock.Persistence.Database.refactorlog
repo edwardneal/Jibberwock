@@ -231,4 +231,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Creation_Date" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="c7b4cbd1-4245-4b9f-94d5-bb3751935f3e" ChangeDateTime="11/21/2020 02:07:12">
+    <Property Name="ElementName" Value="[core].[NotificationDismissal].[IX_NotificationDismissal_Column]" />
+    <Property Name="ElementType" Value="SqlIndex" />
+    <Property Name="ParentElementName" Value="[core].[NotificationDismissal]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[UQ_NotificationDismissal_NotificationUser]" />
+  </Operation>
 </Operations>

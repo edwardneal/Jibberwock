@@ -43,6 +43,8 @@ BEGIN
 	-- Check #4: notification must not be cancelled
 	) and (
 		n.Status_ID <> 2
+	-- Check #5: notification must not have been dismissed
+	) and (
+		n.Notification_ID not in (select Notification_ID from core.NotificationDismissal where [User_ID] = @Calling_User_ID)
 	)
-	-- Check #5 (TODO): notification must not have been dismissed
 END

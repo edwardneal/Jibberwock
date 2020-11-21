@@ -54,5 +54,25 @@ namespace Jibberwock.Core.API.Controllers.Users
 
             return Ok(allNotifications);
         }
+
+        /// <summary>
+        /// Dismisses a <see cref="Notification"/> for the current <see cref="User"/>.
+        /// </summary>
+        /// <param name="notificationId">The ID of the <see cref="Notification"/> to dismiss.</param>
+        /// <response code="204" nullable="false">The <see cref="Notification"/> has been dismissed.</response>
+        [Route("me/notifications/{notificationId}")]
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> DismissNotification([FromRoute] long notificationId)
+        {
+            var currUser = await CurrentUserRetriever.GetCurrentUserAsync();
+
+            var dismissNotificationCommand = new Jibberwock.Persistence.DataAccess.Commands.Notifications.Dismiss(Logger, currUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, null,
+                new Notification() { Id = notificationId });
+
+            await dismissNotificationCommand.Execute(SqlServerDataSource);
+
+            return NoContent();
+        }
     }
 }

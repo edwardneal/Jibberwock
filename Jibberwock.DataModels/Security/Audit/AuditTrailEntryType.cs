@@ -36,6 +36,10 @@ namespace Jibberwock.DataModels.Security.Audit
         /// <summary>
         /// Entry is a <see cref="Jibberwock.DataModels.Security.Audit.EntryTypes.ModifyNotification"/> record.
         /// </summary>
-        ModifyNotification = 7
+        ModifyNotification = 7,
+        /// <summary>
+        /// Entry is a <see cref="Jibberwock.DataModels.Security.Audit.EntryTypes.DismissNotification"/> record.
+        /// </summary>
+        DismissNotification = 8
     }
 }
