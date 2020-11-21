@@ -4,7 +4,9 @@ export default {
   auth: {
     logIn: 'Log In',
     logOut: 'Log Out',
-    signUp: 'Sign Up'
+    signUp: 'Sign Up',
+    editProfile: 'Edit Profile',
+    resetPassword: 'Change Password'
   },
   validationErrorMessages: {
     unableToLoadAvailableProductList: 'We can\'t download the list of available products right now. You can still create a tenant, but will need to enable the Allert functionality later.',
@@ -22,7 +24,7 @@ export default {
       { id: 'google.com', label: 'Google', icon: 'mdi-google' },
       { id: 'live.com', label: 'Microsoft', icon: 'mdi-microsoft' },
       { id: 'github.com', label: 'GitHub', icon: 'mdi-github' },
-      { id: 'idp', label: '(new account)', icon: 'mdi-account' }
+      { id: 'Azure Active Directory', label: '(new account)', icon: 'mdi-account' }
     ]
   },
   actions: {

@@ -5,6 +5,44 @@
       <v-breadcrumbs :items="breadcrumbs" large divider=">" />
       <v-spacer />
       <div v-if="$store.state.auth.loggedIn" id="messageButtonContainer">
+        <v-menu v-model="showProfileDropdown" offset-y auto>
+          <template v-slot:activator="{ on }">
+            <v-btn text v-on="on" class="text-capitalize">
+              <v-icon left>
+                {{ languageStrings.dropdownValues.identityProvider.find(idp => idp.id === $store.state.auth.userInfo.identityProvider).icon }}
+              </v-icon>
+              {{ effectiveUsername }}
+              <v-icon v-if="! showProfileDropdown" right>
+                mdi-menu-down
+              </v-icon>
+              <v-icon v-if="showProfileDropdown" right>
+                mdi-menu-up
+              </v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item :href="getEditProfileUrl($route.fullPath)" link class="text-justify">
+              <v-list-item-icon>
+                <v-icon>mdi-account-edit</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{ languageStrings.auth.editProfile }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item :href="getResetPasswordUrl($route.fullPath)" link class="text-justify">
+              <v-list-item-icon>
+                <v-icon>mdi-account-key</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{ languageStrings.auth.resetPassword }}</v-list-item-title>
+            </v-list-item>
+            <v-divider />
+            <v-list-item :href="getLogOutUrl($route.fullPath)" link class="text-justify">
+              <v-list-item-icon>
+                <v-icon>mdi-account-arrow-left</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{ languageStrings.auth.logOut }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        <v-divider inset vertical />
         <Promised :promise="notificationsPromise">
           <template v-slot:combined="{ isPending, error }">
             <v-btn v-if="! error" icon @click="showNotificationsBar = !showNotificationsBar">
@@ -107,7 +145,7 @@
 
 <script>
 import { Promised } from 'vue-promised'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import ClientNotificationList from '~/components/ClientNotificationList.vue'
 import lang from '~/static-data/lang/en'
 
@@ -122,10 +160,16 @@ export default {
       title: lang.productName,
       notificationsPromise: Promise.resolve(),
       showNotificationsBar: false,
-      visibleNotification: 0
+      visibleNotification: 0,
+      showProfileDropdown: false
     }
   },
   computed: {
+    ...mapGetters({
+      getLogOutUrl: 'auth/getLogOutUrl',
+      getEditProfileUrl: 'auth/getEditProfileUrl',
+      getResetPasswordUrl: 'auth/getResetPasswordUrl'
+    }),
     breadcrumbs () {
       const crumbs = []
 
@@ -166,6 +210,18 @@ export default {
     },
     highPriorityNotifications () {
       return this.$store.state.users.notifications.filter(n => n.priority.id === 3)
+    },
+    effectiveUsername () {
+      const maxLength = 18
+      // If the username is more than 18 characters long, it'll overflow on small screens.
+      // To bypass that, if it's too long then only take the first 15 characters and some ellipses
+      const userName = this.$store.state.auth.userInfo.name
+
+      if (userName.length > maxLength && this.$vuetify.breakpoint.xs) {
+        return userName.substring(0, maxLength - '...'.length) + '...'
+      }
+
+      return userName
     }
   },
   mounted () {
