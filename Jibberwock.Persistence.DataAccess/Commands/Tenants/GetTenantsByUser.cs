@@ -24,10 +24,16 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Tenants
         [Required]
         public User User { get; set; }
 
-        public GetTenantsByUser(ILogger logger, User user)
+        /// <summary>
+        /// If <c>true</c>, this will only account for currently-active group memberships.
+        /// </summary>
+        public bool ActiveMembershipsOnly { get; set; }
+
+        public GetTenantsByUser(ILogger logger, User user, bool activeMembershipsOnly)
             : base(logger)
         {
             User = user;
+            ActiveMembershipsOnly = activeMembershipsOnly;
         }
 
         protected override async Task<IEnumerable<Tenant>> OnExecute(IReadableDataSource dataSource)
@@ -56,7 +62,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Tenants
 
                     return ten;
                 },
-                new { User_ID = User.Id },
+                new { User_ID = User.Id, Active_Memberships_Only = ActiveMembershipsOnly },
                 commandType: System.Data.CommandType.StoredProcedure, commandTimeout: 30);
 
             return userTenants;

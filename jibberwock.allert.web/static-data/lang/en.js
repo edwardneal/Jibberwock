@@ -17,7 +17,8 @@ export default {
     emailAddressTooLong: 'This email address is too long. Please provide a shorter email address.',
     noTier: 'Please select a product tier.',
     noIdentityProvider: 'Please select a sign-in provider.',
-    identityProviderTooLong: 'This sign-in provider name is too long. Please provide a shorter sign-in provider.'
+    identityProviderTooLong: 'This sign-in provider name is too long. Please provide a shorter sign-in provider.',
+    unableToLoadTenantList: 'We can\'t get the list of tenants right now. Please try again later.'
   },
   dropdownValues: {
     identityProvider: [
@@ -100,6 +101,7 @@ export default {
       tenants: {
         title: 'Tenants',
         noTenants: 'Your account isn\'t a member of any tenants. Use the Create button to create one.',
+        loading: 'Loading your account\'s list of tenants...',
         buttons: {
           subscriptions: 'Subscriptions',
           security: 'Security',

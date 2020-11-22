@@ -55,8 +55,8 @@
             </v-btn>
             <v-tooltip v-else left>
               <template v-slot:activator="{ on, attrs }">
-                <v-icon large v-bind="attrs" v-on="on">
-                  mdi-alert-circle-outline
+                <v-icon large color="error" v-bind="attrs" v-on="on">
+                  mdi-alert
                 </v-icon>
               </template>
               {{ error }}

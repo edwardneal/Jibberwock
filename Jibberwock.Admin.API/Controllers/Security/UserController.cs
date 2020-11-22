@@ -383,7 +383,7 @@ namespace Jibberwock.Admin.API.Controllers.Security
             }
 
             var getUserTenantsCommand = new Jibberwock.Persistence.DataAccess.Commands.Tenants.GetTenantsByUser(Logger,
-                new User() { Id = id });
+                new User() { Id = id }, false);
             var userTenants = await getUserTenantsCommand.Execute(SqlServerDataSource);
 
             return Ok(userTenants);

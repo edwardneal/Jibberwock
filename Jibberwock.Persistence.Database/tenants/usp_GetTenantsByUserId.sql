@@ -1,5 +1,6 @@
 ﻿CREATE PROCEDURE [tenants].[usp_GetTenantsByUserId]
-	@User_ID bigint
+	@User_ID bigint,
+	@Active_Memberships_Only bit
 AS
 BEGIN
 	set nocount on;
@@ -18,4 +19,5 @@ BEGIN
 		on (sgm.Security_Group_ID = grp.Security_Group_ID)
 	where tenWkg.Well_Known_Group_Type_ID = 6
 		and sgm.[User_ID] = @User_ID
+		and ((@Active_Memberships_Only = 1 and sgm.[Enabled] = 1) or (@Active_Memberships_Only = 0))
 END

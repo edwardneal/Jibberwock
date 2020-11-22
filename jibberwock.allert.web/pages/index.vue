@@ -49,14 +49,7 @@
           </v-card>
         </v-col>
         <v-col cols="12" md="5">
-          <v-card>
-            <v-card-title class="pb-0">
-              {{ languageStrings.tenantList.sections.tenants.title }}
-            </v-card-title>
-            <v-card-text>
-              <ClientTenantList :language-strings="languageStrings" />
-            </v-card-text>
-          </v-card>
+          <ClientTenantList :language-strings="languageStrings" />
         </v-col>
         <v-spacer />
       </v-row>
@@ -105,6 +98,7 @@
 </style>
 
 <script>
+/* eslint vue/singleline-html-element-content-newline: "off" */
 import { mapGetters } from 'vuex'
 import ClientTenantList from '~/components/ClientTenantList.vue'
 
