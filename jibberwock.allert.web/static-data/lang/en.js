@@ -2,7 +2,7 @@ export default {
   productName: 'Jibberwock Allert',
   shortProductName: 'Allert',
   auth: {
-    logIn: 'Log In',
+    logIn: 'Sign Up / Log In',
     logOut: 'Log Out',
     signUp: 'Sign Up',
     editProfile: 'Edit Profile',
@@ -28,6 +28,7 @@ export default {
     ]
   },
   actions: {
+    create: 'Create'
   },
   dialogs: {
   },
@@ -61,7 +62,7 @@ export default {
     buttons: {
       previous: 'Previous',
       next: 'Next',
-      add: 'Add'
+      add: 'Create'
     }
   },
   notificationList: {
@@ -86,6 +87,26 @@ export default {
       { id: 2, label: 'Normal' },
       { id: 3, label: 'High' }
     ]
+  },
+  tenantList: {
+    sections: {
+      invitations: {
+        title: 'Invitations',
+        buttons: {
+          accept: 'Accept',
+          reject: 'Reject'
+        }
+      },
+      tenants: {
+        title: 'Tenants',
+        noTenants: 'Your account isn\'t a member of any tenants. Use the Create button to create one.',
+        buttons: {
+          subscriptions: 'Subscriptions',
+          security: 'Security',
+          allert: 'Allert Configuration'
+        }
+      }
+    }
   },
   pages: {
     homepage: {
