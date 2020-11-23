@@ -128,6 +128,9 @@ export default {
     },
     signUp: {
       title: 'Sign Up'
+    },
+    tenant: {
+      title: 'Tenant Details'
     }
   }
 }

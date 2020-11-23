@@ -91,7 +91,7 @@ export default {
 
   // Middleware
   router: {
-    middleware: 'auth',
+    middleware: ['auth', 'mandatory_params'],
     routeNameSplitter: '/'
   },
 

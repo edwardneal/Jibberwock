@@ -78,25 +78,29 @@
 
               <v-list-item v-if="! isPending && error" color="error">
                 <v-list-item-icon>
-                  <v-icon large color="error">mdi-alert</v-icon>
+                  <v-icon large color="error">
+                    mdi-alert
+                  </v-icon>
                 </v-list-item-icon>
-                <v-list-item-title class="error--text">{{ languageStrings.validationErrorMessages.unableToLoadTenantList }}</v-list-item-title>
+                <v-list-item-title class="error--text">
+                  {{ languageStrings.validationErrorMessages.unableToLoadTenantList }}
+                </v-list-item-title>
               </v-list-item>
 
-              <v-list-item v-for="(ten, tenIdx) in $store.state.tenants.tenants" :key="tenIdx">
+              <v-list-item v-for="(ten, tenIdx) in $store.state.tenants.tenants.filter(() => ! isPending)" :key="tenIdx" :to="{ name: 'tenants/id', params: { id: ten.id } }" nuxt>
                 <v-list-item-title>
                   {{ ten.name }}
                 </v-list-item-title>
 
                 <v-list-item-action>
                   <v-speed-dial
-                    v-model="ten.showDetails"
+                    v-model="display.tenantOptions[tenIdx].showDetails"
                     direction="left"
                     transition="slide-x-reverse-transition"
                   >
                     <template v-slot:activator>
-                      <v-btn v-model="ten.showDetails" icon>
-                        <v-icon v-if="ten.showDetails">
+                      <v-btn icon @click.capture.prevent.stop="display.tenantOptions[tenIdx].showDetails = ! display.tenantOptions[tenIdx].showDetails">
+                        <v-icon v-if="display.tenantOptions[tenIdx].showDetails">
                           mdi-close
                         </v-icon>
                         <v-icon v-else>
@@ -169,13 +173,17 @@ export default {
       ],
       display: {
         expandInvitations: true,
-        expandTenants: true
+        expandTenants: true,
+        tenantOptions: []
       },
       refreshPromise: null
     }
   },
   mounted () {
     this.refreshPromise = Promise.all([this.listTenants()])
+      .then(() => {
+        this.display.tenantOptions = this.$store.state.tenants.tenants.map(() => ({ showDetails: false }))
+      })
   },
   methods: {
     ...mapActions({
