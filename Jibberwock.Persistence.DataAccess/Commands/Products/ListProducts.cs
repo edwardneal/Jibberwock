@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Jibberwock.DataModels.Products;
+using Jibberwock.DataModels.Products.Configuration;
 using Jibberwock.DataModels.Users;
 using Jibberwock.Persistence.DataAccess.DataSources;
 using Jibberwock.Persistence.DataAccess.Utility;
@@ -50,11 +51,13 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Products
             // the list of products.
             var products = await resultSet.ReadAsync<Product>();
 
-            // The second result set is a bit trickier, since we've got to join them all together, then
-            // convert from a dynamic object into a product characteristic
+            // The second and third result sets are a bit trickier, since we've got to join them together, then
+            // convert from a dynamic object into a configuration or product characteristic
+            IEnumerable<dynamic> productConfigurations = await resultSet.ReadAsync();
             IEnumerable<dynamic> productCharacteristics = await resultSet.ReadAsync();
             var groupedCharacteristics = from prod in products
                                          join pC in productCharacteristics on prod.Id equals pC.ProductId into gj
+                                         join pConfig in productConfigurations on prod.Id equals pConfig.ProductId into gConfig
                                          select new
                                          {
                                              Product = prod,
@@ -67,12 +70,18 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Products
                                                                     Visible = pC.Visible,
                                                                     Enabled = pC.Enabled,
                                                                     ValueType = (ProductCharacteristicValueType)pC.ValueType
-                                                                }).ToArray()
+                                                                }).ToArray(),
+                                             Configuration = (from pConfig in gConfig
+                                                              select new RawProductConfiguration(pConfig.ConfigurationString as string)
+                                                              {
+                                                                  Id = pConfig.Id
+                                                              }).Single()
                                          };
 
             foreach (var prod in groupedCharacteristics)
             {
                 prod.Product.ApplicableCharacteristics = prod.Characteristics;
+                prod.Product.DefaultProductConfiguration = prod.Configuration;
             }
 
             return products;

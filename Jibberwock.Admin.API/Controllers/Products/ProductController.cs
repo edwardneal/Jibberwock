@@ -79,6 +79,8 @@ namespace Jibberwock.Admin.API.Controllers.Products
                 Description = updatedProduct.Description,
                 MoreInformationUrl = updatedProduct.MoreInformationUrl,
                 Visible = updatedProduct.Visible,
+                ConfigurationControlName = updatedProduct.ConfigurationControlName,
+                DefaultProductConfiguration = new Jibberwock.DataModels.Products.Configuration.RawProductConfiguration(updatedProduct.DefaultProductConfiguration),
                 ApplicableCharacteristics = updatedProduct.ApplicableCharacteristicIDs.Select(x => new ProductCharacteristic() { Id = x })
             };
             var currentUser = await CurrentUserRetriever.GetCurrentUserAsync();
@@ -119,6 +121,8 @@ namespace Jibberwock.Admin.API.Controllers.Products
                 Description = product.Description,
                 MoreInformationUrl = product.MoreInformationUrl,
                 Visible = product.Visible,
+                ConfigurationControlName = product.ConfigurationControlName,
+                DefaultProductConfiguration = new Jibberwock.DataModels.Products.Configuration.RawProductConfiguration(product.DefaultProductConfiguration),
                 ApplicableCharacteristics = product.ApplicableCharacteristicIDs?.Select(i => new Jibberwock.DataModels.Products.ProductCharacteristic() { Id = i }).ToArray()
             };
 

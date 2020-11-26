@@ -15,12 +15,19 @@ BEGIN
 
 	select p.Product_ID as Id, p.[Name], p.[Description],
 		p.More_Information_URL as MoreInformationUrl,
-		p.Visible, sr.Identifier as ResourceIdentifier,
+		p.Visible, p.Configuration_Control_Name as ConfigurationControlName, sr.Identifier as ResourceIdentifier,
 		sr.[Type_ID] as ResourceType
 	from [products].[Product] as p
 	inner join [security].[SecurableResource] as sr
 		on (sr.Securable_Resource_ID = p.Product_ID)
 	where sr.Securable_Resource_ID in (select Securable_Resource_ID from @availableSecurableResources)
+		and ((@Include_Hidden = 0 and Visible = 1) or (@Include_Hidden = 1))
+
+	select p.Product_ID as ProductId, pc.Product_Configuration_ID as Id, pc.Configuration_String as ConfigurationString
+	from [products].[Product] as p
+	inner join [products].[ProductConfiguration] as pc
+		on (pc.Product_Configuration_ID = p.Default_Configuration_ID)
+	where p.Product_ID in (select Securable_Resource_ID from @availableSecurableResources)
 		and ((@Include_Hidden = 0 and Visible = 1) or (@Include_Hidden = 1))
 
 	select p.Product_ID as ProductId, c.Characteristic_ID as Id, c.[Name], c.[Description], c.Visible, c.[Enabled], c.Value_Type_ID as ValueType

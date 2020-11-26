@@ -4,6 +4,8 @@
 	@Description nvarchar(256),
 	@More_Information_URL nvarchar(256),
 	@Visible bit,
+	@Configuration_Control_Name varchar(64),
+	@Configuration_String nvarchar(max),
 	@Characteristics [products].[udt_ProductCharacteristic] readonly
 AS
 BEGIN
@@ -17,14 +19,20 @@ BEGIN
 		-- We secure this by allowing service administrators, product administrators and
 		-- service readers to read the product details.
 		declare @productId bigint
+		declare @productConfigurationId bigint
 		declare @serviceAdministratorsGroup bigint
 		declare @productAdministratorsGroup bigint
 		declare @serviceReadersGroup bigint
 
+		insert into [products].[ProductConfiguration] (Configuration_String)
+		values (@Configuration_String)
+
+		select @productConfigurationId = SCOPE_IDENTITY()
+
 		exec [security].[usp_CreateSecurableResource] @Securable_Resource_Type_ID = 3, @Created_Securable_Resource_ID = @productId output
 
-		insert into [products].[Product] ([Product_ID], [Name], [Description], More_Information_URL, Visible)
-		values (@productId, @Name, @Description, @More_Information_URL, @Visible)
+		insert into [products].[Product] ([Product_ID], [Name], [Description], More_Information_URL, Visible, Configuration_Control_Name, Default_Configuration_ID)
+		values (@productId, @Name, @Description, @More_Information_URL, @Visible, @Configuration_Control_Name, @productConfigurationId)
 
 		insert into [products].[ApplicableProductCharacteristic] (Product_ID, Characteristic_ID)
 			select distinct @productId, Characteristic_ID
@@ -44,12 +52,14 @@ BEGIN
 
 		select p.Product_ID as Id, p.[Name], p.[Description],
 			p.More_Information_URL as MoreInformationUrl,
-			p.Visible, sr.Identifier as ResourceIdentifier,
+			p.Visible, p.Configuration_Control_Name as ConfigurationControlName, sr.Identifier as ResourceIdentifier,
 			sr.[Type_ID] as ResourceType
 		from [products].[Product] as p
 		inner join [security].[SecurableResource] as sr
 			on (sr.Securable_Resource_ID = p.Product_ID)
 		where p.Product_ID = @productId
+
+		select @productConfigurationId as Id, @Configuration_String as ConfigurationString
 
 		select c.Characteristic_ID as Id, c.[Name], c.Visible, c.[Enabled], c.Value_Type_ID as ValueType
 		from [products].[ApplicableProductCharacteristic] as apc

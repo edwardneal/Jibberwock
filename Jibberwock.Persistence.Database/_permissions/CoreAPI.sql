@@ -102,3 +102,6 @@ GO
 
 GRANT EXECUTE ON [core].[usp_DismissNotification] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [products].[usp_ListPublicProducts] TO [CoreAPI]
+GO

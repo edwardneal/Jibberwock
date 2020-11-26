@@ -238,4 +238,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="[UQ_NotificationDismissal_NotificationUser]" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="7241c72c-1bb8-43ca-a489-42c34dc796d9" ChangeDateTime="11/25/2020 21:20:42">
+    <Property Name="ElementName" Value="[dbo].[ProductConfiguration].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ProductConfiguration]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Product_Configuration_ID" />
+  </Operation>
 </Operations>

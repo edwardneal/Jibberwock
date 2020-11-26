@@ -36,6 +36,16 @@ namespace Jibberwock.DataModels.Products
         public bool Visible { get; set; }
 
         /// <summary>
+        /// The default configuration for this <see cref="Product"/>.
+        /// </summary>
+        public Configuration.ProductConfigurationBase DefaultProductConfiguration { get; set; }
+
+        /// <summary>
+        /// Name of the control used by the front-end to configure this <see cref="Product"/> on a <see cref="Subscription"/>.
+        /// </summary>
+        public string ConfigurationControlName { get; set; }
+
+        /// <summary>
         /// All <see cref="ProductCharacteristic"/>s available to be linked to this <see cref="Product"/>'s billing tiers.
         /// </summary>
         public IEnumerable<ProductCharacteristic> ApplicableCharacteristics { get; set; }

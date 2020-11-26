@@ -158,6 +158,8 @@
     <Build Include="core\usp_ListClientNotifications.sql" />
     <Build Include="core\NotificationDismissal.sql" />
     <Build Include="core\usp_DismissNotification.sql" />
+    <Build Include="products\usp_ListPublicProducts.sql" />
+    <Build Include="products\ProductConfiguration.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

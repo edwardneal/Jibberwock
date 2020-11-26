@@ -25,6 +25,13 @@ BEGIN
 		where p.Product_ID = @Product_ID
 			and p.Product_ID in (select Securable_Resource_ID from @availableSecurableResources)
 
+		select pc.Product_Configuration_ID as Id, pc.Configuration_String as ConfigurationString
+		from [products].[ProductConfiguration] as pc
+		inner join [products].[Product] as p
+			on (p.Default_Configuration_ID = pc.Product_Configuration_ID)
+		where p.Product_ID = @Product_ID
+			and p.Product_ID in (select Securable_Resource_ID from @availableSecurableResources)
+
 		select c.Characteristic_ID as Id, c.[Name], c.Visible, c.[Enabled], c.Value_Type_ID as ValueType
 		from [products].[ApplicableProductCharacteristic] as apc
 		inner join [products].[Characteristic] as c

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Jibberwock.DataModels.Products;
+using Jibberwock.DataModels.Products.Configuration;
 using Jibberwock.DataModels.Users;
 using Jibberwock.Persistence.DataAccess.DataSources;
 using Jibberwock.Persistence.DataAccess.Utility;
@@ -53,9 +54,11 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Products
                 },
                 commandType: System.Data.CommandType.StoredProcedure, commandTimeout: 30);
             var resultantProduct = await productRetrieval.ReadSingleOrDefaultAsync<Product>();
+            var resultantProductConfig = await productRetrieval.ReadSingleOrDefaultAsync<RawProductConfiguration>();
             var resultantCharacteristics = await productRetrieval.ReadAsync<ProductCharacteristic>();
 
             resultantProduct.ApplicableCharacteristics = resultantCharacteristics;
+            resultantProduct.DefaultProductConfiguration = resultantProductConfig;
 
             Product = resultantProduct;
 

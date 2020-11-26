@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Jibberwock.DataModels.Products;
+using Jibberwock.DataModels.Products.Configuration;
 using Jibberwock.DataModels.Users;
 using Jibberwock.Persistence.DataAccess.Commands.Auditing;
 using Jibberwock.Persistence.DataAccess.DataSources;
@@ -41,6 +42,14 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Products
                 throw new ArgumentOutOfRangeException(nameof(Product), "Product.Name must have a value");
             if (string.IsNullOrWhiteSpace(Product.MoreInformationUrl))
                 throw new ArgumentOutOfRangeException(nameof(Product), "Product.MoreInformationUrl must have a value");
+            if (string.IsNullOrWhiteSpace(Product.ConfigurationControlName))
+                throw new ArgumentOutOfRangeException(nameof(Product), "Product.ConfigurationControlName must have a value");
+            if (Product.DefaultProductConfiguration == null)
+                throw new ArgumentOutOfRangeException(nameof(Product), "Product.DefaultProductConfiguration must have a value");
+            if (Product.DefaultProductConfiguration.Id != 0)
+                throw new ArgumentOutOfRangeException(nameof(Product), "Product.DefaultProductConfiguration.Id must not have a value");
+            if (string.IsNullOrWhiteSpace(Product.DefaultProductConfiguration.ConfigurationString))
+                throw new ArgumentOutOfRangeException(nameof(Product), "Product.DefaultProductConfiguration.ConfigurationString must have a value");
 
             var databaseConnection = await dataSource.GetDbConnection();
 
@@ -55,12 +64,16 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Products
                     Description = Product.Description,
                     More_Information_URL = Product.MoreInformationUrl,
                     Visible = Product.Visible,
+                    Configuration_Control_Name = Product.ConfigurationControlName,
+                    Configuration_String = Product.DefaultProductConfiguration.ConfigurationString,
                     Characteristics = characteristicParameter
                 },
                 transaction: transaction, commandType: System.Data.CommandType.StoredProcedure, commandTimeout: 30);
             var resultantProduct = await productCreationBatch.ReadSingleOrDefaultAsync<Product>();
+            var resultantProductConfig = await productCreationBatch.ReadSingleOrDefaultAsync<RawProductConfiguration>();
             var resultantCharacteristics = await productCreationBatch.ReadAsync<ProductCharacteristic>();
 
+            resultantProduct.DefaultProductConfiguration = resultantProductConfig;
             resultantProduct.ApplicableCharacteristics = resultantCharacteristics;
 
             Product = resultantProduct;

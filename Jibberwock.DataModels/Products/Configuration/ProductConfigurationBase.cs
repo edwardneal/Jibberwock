@@ -12,6 +12,19 @@ namespace Jibberwock.DataModels.Products.Configuration
         /// <summary>
         /// The unique identifier for this <see cref="ProductConfigurationBase"/> derivate.
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
+
+        /// <summary>
+        /// The raw, untyped configuration string which contains the data for this <see cref="ProductConfigurationBase"/> derivate.
+        /// </summary>
+        public abstract string ConfigurationString { get; set; }
+
+        public ProductConfigurationBase(ProductConfigurationBase sourceConfiguration)
+        {
+            this.Id = sourceConfiguration.Id;
+            this.ConfigurationString = sourceConfiguration.ConfigurationString;
+        }
+
+        protected ProductConfigurationBase() { }
     }
 }

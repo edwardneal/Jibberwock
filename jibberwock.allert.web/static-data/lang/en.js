@@ -130,7 +130,12 @@ export default {
       title: 'Sign Up'
     },
     tenant: {
-      title: 'Tenant Details'
+      title: 'Tenant Details',
+      tabs: {
+        alertDefinitionGroups: 'Alert Definition Groups',
+        alertDefinitions: 'Alert Definitions',
+        activeAlerts: 'Active Alerts'
+      }
     }
   }
 }

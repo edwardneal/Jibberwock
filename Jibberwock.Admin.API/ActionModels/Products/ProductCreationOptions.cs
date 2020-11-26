@@ -32,6 +32,16 @@ namespace Jibberwock.Admin.API.ActionModels.Products
         public bool Visible { get; set; }
 
         /// <summary>
+        /// The default configuration of this product if added to a tenant.
+        /// </summary>
+        public string DefaultProductConfiguration { get; set; }
+
+        /// <summary>
+        /// Name of the control used by the client-facing front-end to configure the product.
+        /// </summary>
+        public string ConfigurationControlName { get; set; }
+
+        /// <summary>
         /// The new, complete list of all applicable characteristics. Sending this will overwrite the previous list; invalid characteristic IDs will be ignored.
         /// </summary>
         public IEnumerable<int> ApplicableCharacteristicIDs { get; set; }
