@@ -41,6 +41,25 @@
           <a :href="entryMetadata.product.moreInformationUrl" rel="noreferrer" target="_blank">{{ entryMetadata.product.moreInformationUrl }}</a>
         </td>
       </tr>
+      <tr v-if="entry.type === 2 && entryMetadata.product.configurationControlName">
+        <td>{{ languageStrings.auditTrailEntries.editProduct.fields.configurationControlName }}</td>
+        <td>{{ entryMetadata.product.configurationControlName }}</td>
+      </tr>
+      <tr v-if="entry.type === 2 && entryMetadata.product.defaultProductConfiguration">
+        <td>{{ languageStrings.auditTrailEntries.editProduct.fields.configurationControlName }}</td>
+        <td>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-chip small v-bind="attrs" v-on="on">
+                <v-icon small>
+                  mdi-dots-horizontal
+                </v-icon>
+              </v-chip>
+            </template>
+            {{ entryMetadata.product.defaultProductConfiguration.configurationString }}
+          </v-tooltip>
+        </td>
+      </tr>
     </tbody>
   </v-simple-table>
 </template>

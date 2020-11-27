@@ -58,7 +58,10 @@ export default {
     noMoreInformationUrl: 'Please provide a More Information URL',
     moreInformationUrlTooLong: 'This URL is too long. Please provide a shorter More Information URL.',
     externalIdTooLong: 'This external identifier is too long. Please provide a shorter identifier.',
-    unableToCreateProduct: 'Unable to create product, please try again later.'
+    unableToCreateProduct: 'Unable to create product, please try again later.',
+    noConfigurationControl: 'Please provide a Configuration Control name.',
+    configurationControlTooLong: 'The Configuration Control name is too long. Please provide a shorter control name.',
+    noConfigurationString: 'Please provide a Default Configuration.'
   },
   actions: {
     search: 'Search',
@@ -103,7 +106,9 @@ export default {
         creatingProduct: 'Creating Product?',
         name: 'Name',
         description: 'Description',
-        moreInformationUrl: 'More Info. URL'
+        moreInformationUrl: 'More Info. URL',
+        configurationControlName: 'Config. Control',
+        defaultProductConfiguration: 'Default Configuration'
       }
     },
     editTier: {
@@ -239,7 +244,9 @@ export default {
       enabled: 'Enabled?',
       visible: 'Visible?',
       moreInformationUrl: 'More Information URL',
-      externalIdentifier: 'External Identifier'
+      externalIdentifier: 'External Identifier',
+      configurationControlName: 'Configuration Control Name',
+      defaultProductConfiguration: 'Default Configuration'
     },
     buttons: {
       update: 'Save',

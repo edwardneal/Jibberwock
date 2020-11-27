@@ -57,6 +57,20 @@
                   @input="$v.product.moreInformationUrl.$touch()"
                   @blur="$v.product.moreInformationUrl.$touch()"
                 />
+                <v-text-field
+                  v-model="product.configurationControlName"
+                  :label="languageStrings.forms.fields.configurationControlName"
+                  :error-messages="configurationControlNameErrors"
+                  @input="$v.product.configurationControlName.$touch()"
+                  @blur="$v.product.configurationControlName.$touch()"
+                />
+                <v-text-field
+                  v-model="product.defaultProductConfiguration"
+                  :label="languageStrings.forms.fields.defaultProductConfiguration"
+                  :error-messages="defaultProductConfigurationErrors"
+                  @input="$v.product.defaultProductConfiguration.$touch()"
+                  @blur="$v.product.defaultProductConfiguration.$touch()"
+                />
               </v-col>
               <v-col cols="12" md="8">
                 <v-data-table
@@ -126,7 +140,9 @@ const productDefaults = {
   description: null,
   moreInformationUrl: null,
   visible: true,
-  applicableCharacteristics: []
+  applicableCharacteristics: [],
+  configurationControlName: null,
+  defaultProductConfiguration: '{}'
 }
 
 export default {
@@ -167,6 +183,13 @@ export default {
       moreInformationUrl: {
         required,
         maxLength: maxLength(256)
+      },
+      configurationControlName: {
+        required,
+        maxLength: maxLength(64)
+      },
+      defaultProductConfiguration: {
+        required
       }
     }
   },
@@ -198,6 +221,25 @@ export default {
       }
       if (!this.$v.product.moreInformationUrl.maxLength) {
         errors.push(this.languageStrings.validationErrorMessages.moreInformationUrlTooLong)
+      }
+      return errors
+    },
+    configurationControlNameErrors () {
+      const errors = []
+
+      if (!this.$v.product.configurationControlName.required) {
+        errors.push(this.languageStrings.validationErrorMessages.noConfigurationControl)
+      }
+      if (!this.$v.product.configurationControlName.maxLength) {
+        errors.push(this.languageStrings.validationErrorMessages.configurationControlTooLong)
+      }
+      return errors
+    },
+    defaultProductConfigurationErrors () {
+      const errors = []
+
+      if (!this.$v.product.defaultProductConfiguration.required) {
+        errors.push(this.languageStrings.validationErrorMessages.noConfigurationString)
       }
       return errors
     }
@@ -236,6 +278,8 @@ export default {
         description: this.product.description,
         moreInformationUrl: this.product.moreInformationUrl,
         visible: this.product.visible,
+        defaultProductConfiguration: this.product.defaultProductConfiguration,
+        configurationControlName: this.product.configurationControlName,
         applicableCharacteristicIds: this.product.applicableCharacteristics.map(ch => ch.id)
       })
         .then((prod) => {

@@ -56,7 +56,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Products
             var characteristicParameter = (from c in Product.ApplicableCharacteristics
                                            select new Jibberwock.Persistence.DataAccess.TableTypes.Products.ProductCharacteristic(c.Id))
                                            .AsTableValuedParameter("products.udt_ProductCharacteristic");
-            var productCreationBatch = await databaseConnection.QueryMultipleAsync("products.usp_CreateProduct",
+            using var productCreationBatch = await databaseConnection.QueryMultipleAsync("products.usp_CreateProduct",
                 new
                 {
                     Service_ID = OriginatingService.Id,

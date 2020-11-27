@@ -19,6 +19,12 @@ namespace Jibberwock.DataModels.Products.Configuration
             ConfigurationString = configurationString;
         }
 
+        public RawProductConfiguration(long id, string configurationString)
+            :this(configurationString)
+        {
+            Id = id;
+        }
+
         public override string ConfigurationString { get; set; }
     }
 }
