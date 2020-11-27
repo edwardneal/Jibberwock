@@ -1,4 +1,5 @@
-﻿using Jibberwock.DataModels.Tenants;
+﻿using Jibberwock.Core.API.ActionModels.Tenants;
+using Jibberwock.DataModels.Tenants;
 using Jibberwock.DataModels.Users;
 using Jibberwock.Persistence.DataAccess.DataSources;
 using Jibberwock.Shared.Configuration;
@@ -39,6 +40,19 @@ namespace Jibberwock.Core.API.Controllers.Tenants
             var allTenants = await getTenantsCommand.Execute(SqlServerDataSource);
 
             return Ok(allTenants);
+        }
+
+        /// <summary>
+        /// Create a <see cref="Tenant"/>.
+        /// </summary>
+        /// <param name="creationOptions">The information needed to create the <see cref="Tenant"/>.</param>
+        /// <response code="201" nullable="false">The created <see cref="Tenant"/>.</response>
+        [Route("")]
+        [HttpPost]
+        [ProducesResponseType(typeof(Tenant), StatusCodes.Status200OK)]
+        public async Task<IActionResult> CreateTenant([FromBody] TenantCreationOptions creationOptions)
+        {
+            return Ok();
         }
     }
 }

@@ -2,7 +2,8 @@ const baseUrl = process.env.NODE_ENV === 'production' ? 'https://www.jibberwock.
 
 export const state = () => ({
   urls: {
-    listTenants: baseUrl + '/tenant'
+    listTenants: baseUrl + '/tenant',
+    createTenant: baseUrl + '/tenant'
   },
   tenants: []
 })
@@ -21,5 +22,8 @@ export const actions = {
 
         return res
       })
+  },
+  createTenant ({ state }, tenant) {
+    return this.$axios.post(state.urls.createTenant, tenant)
   }
 }
