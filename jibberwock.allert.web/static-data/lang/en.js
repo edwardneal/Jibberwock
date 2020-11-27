@@ -44,6 +44,10 @@ export default {
         summary: 'The "{tenant}" tenant will now be created.',
         somePaidPlans: 'When you click Sign Up, you will be redirected to a payment page. Once you complete this payment, you will be redirected to the tenant\'s home page.',
         noPaidPlans: 'When you click Sign Up, you will be redirected to the tenant\'s home page.'
+      },
+      tooltips: {
+        freeTier: 'This product tier is free to use.',
+        paidTier: 'This product tier will require payment.'
       }
     },
     fields: {

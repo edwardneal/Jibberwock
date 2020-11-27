@@ -10,6 +10,9 @@
           <th class="text-left">
             Name
           </th>
+          <th class="text-left">
+            Description
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -19,6 +22,9 @@
           </td>
           <td>
             <v-text-field v-model="productConfiguration.defaultProductConfiguration.configuration.alertPriorityNames[prop].name" hide-details solo flat dense />
+          </td>
+          <td>
+            <v-text-field v-model="productConfiguration.defaultProductConfiguration.configuration.alertPriorityNames[prop].description" hide-details solo flat dense />
           </td>
         </tr>
       </tbody>

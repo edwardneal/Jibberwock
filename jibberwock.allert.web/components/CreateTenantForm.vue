@@ -12,7 +12,7 @@
       <v-stepper-step :rules="getInvitationDetailsError()" :step="steps.length + 2" editable>
         {{ languageStrings.forms.createTenant.steps.invitations }}
       </v-stepper-step>
-      <v-stepper-step :step="steps.length + 3" editable>
+      <v-stepper-step :step="steps.length + 3" :editable="! $v.tenant.$invalid">
         {{ languageStrings.forms.createTenant.steps.readyToCreate }}
       </v-stepper-step>
     </v-stepper-header>
@@ -93,7 +93,7 @@
           </v-card-title>
           <v-card-text>
             <v-select
-              v-model="step.selectedPlan"
+              v-model="step.selectedTier"
               :items="step.tiers"
               :label="languageStrings.forms.fields.tenant.selectedProductTier"
               :error-messages="getProductPlanMessages(stepIdx)"
@@ -104,9 +104,12 @@
             >
               <template v-slot:item="{ item, on, attrs }">
                 <v-list-item v-bind="attrs" v-on="on">
-                  <v-list-item-icon v-if="item.externalId">
-                    <v-icon>
-                      mdi-credit-card-outline
+                  <v-list-item-icon>
+                    <v-icon v-if="item.externalId">
+                      mdi-credit-card
+                    </v-icon>
+                    <v-icon v-else>
+                      mdi-credit-card-off-outline
                     </v-icon>
                   </v-list-item-icon>
                   <v-list-item-content>
@@ -116,9 +119,25 @@
                   </v-list-item-content>
                 </v-list-item>
               </template>
-              <template v-slot:prepend-inner>
-                <v-icon v-if="step.selectedPlan && step.selectedPlan.externalId" left>
-                  mdi-credit-card-outline
+              <template v-slot:prepend>
+                <v-tooltip v-if="step.selectedTier && step.selectedTier.externalId" top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-icon left v-bind="attrs" v-on="on">
+                      mdi-credit-card
+                    </v-icon>
+                  </template>
+                  {{ languageStrings.forms.createTenant.tooltips.paidTier }}
+                </v-tooltip>
+                <v-tooltip v-if="step.selectedTier && ! step.selectedTier.externalId" top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-icon left v-bind="attrs" v-on="on">
+                      mdi-credit-card-off-outline
+                    </v-icon>
+                  </template>
+                  {{ languageStrings.forms.createTenant.tooltips.freeTier }}
+                </v-tooltip>
+                <v-icon v-if="! step.selectedTier" left color="error">
+                  mdi-alert
                 </v-icon>
               </template>
             </v-select>
@@ -199,7 +218,7 @@
             {{ languageStrings.forms.buttons.previous }}
           </v-btn>
           <v-spacer />
-          <v-btn text @click="moveNext">
+          <v-btn :disabled="$v.tenant.$invalid" text @click="moveNext">
             {{ languageStrings.forms.buttons.next }}
           </v-btn>
         </v-card-actions>
@@ -213,7 +232,7 @@
         <v-card-text>
           <p>
             {{ languageStrings.forms.createTenant.creationMessages.summary.replace('{tenant}', tenant.name) }}
-            {{ (tenant.selectedProducts.some(p => p.selectedPlan && p.selectedPlan.externalId)) ? languageStrings.forms.createTenant.creationMessages.somePaidPlans : languageStrings.forms.createTenant.creationMessages.noPaidPlans }}
+            {{ (tenant.selectedProducts.some(p => p.selectedTier && p.selectedTier.externalId)) ? languageStrings.forms.createTenant.creationMessages.somePaidPlans : languageStrings.forms.createTenant.creationMessages.noPaidPlans }}
           </p>
         </v-card-text>
         <v-card-actions>
@@ -302,7 +321,7 @@ export default {
       },
       selectedProducts: {
         $each: {
-          selectedPlan: {
+          selectedTier: {
             required
           }
         }
@@ -395,7 +414,15 @@ export default {
               p.defaultProductConfiguration.configuration = JSON.parse(p.defaultProductConfiguration.configurationString)
             }
           })
+
           this.tenant.selectedProducts = this.availableProducts.filter(p => p.name && p.name.toLowerCase() === this.languageStrings.shortProductName.toLowerCase())
+          this.tenant.selectedProducts.forEach((p) => {
+            const freeTiers = p.tiers.filter(t => !t.externalId)
+
+            if (freeTiers.length > 0) {
+              p.selectedTier = freeTiers[0]
+            }
+          })
         })
     },
     getProductComponent (prod) {
@@ -431,7 +458,7 @@ export default {
     getProductPlanMessages (idx) {
       const errors = []
 
-      if (!this.$v.tenant.selectedProducts.$each[idx].selectedPlan.required) {
+      if (!this.$v.tenant.selectedProducts.$each[idx].selectedTier.required) {
         errors.push(this.languageStrings.validationErrorMessages.noTier)
       }
       return errors
