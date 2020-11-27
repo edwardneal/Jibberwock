@@ -18,7 +18,7 @@
             {{ prop }}
           </td>
           <td>
-            <v-text-field v-model="productConfiguration.config.alertPriorityNames[prop]" hide-details solo flat dense />
+            <v-text-field v-model="productConfiguration.defaultProductConfiguration.configuration.alertPriorityNames[prop].name" hide-details solo flat dense />
           </td>
         </tr>
       </tbody>

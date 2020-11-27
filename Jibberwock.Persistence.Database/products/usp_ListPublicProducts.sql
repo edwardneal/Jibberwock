@@ -8,7 +8,7 @@ BEGIN
 
 		select p.Product_ID as Id, p.[Name], p.[Description], p.More_Information_URL as MoreInformationUrl,
 			p.Visible, sr.Identifier as ResourceIdentifier, sr.[Type_ID] as ResourceType,
-			p.Configuration_Control_Name as Configuration_Control_Name,
+			p.Configuration_Control_Name as ConfigurationControlName,
 			pc.Product_Configuration_ID as Id, pc.Configuration_String as ConfigurationString
 		from products.Product as p
 		inner join [security].SecurableResource as sr

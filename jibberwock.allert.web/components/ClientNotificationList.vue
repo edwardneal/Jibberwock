@@ -5,6 +5,7 @@
     clipped
     right
     width="320"
+    disable-resize-watcher
   >
     <v-list expand>
       <v-list-group v-model="showInvitationsList" color="undef-color" prepend-icon="mdi-account-group">

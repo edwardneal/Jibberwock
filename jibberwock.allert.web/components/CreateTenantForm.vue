@@ -1,12 +1,12 @@
 <template>
-  <v-stepper v-model="selectedTab" style="min-width: 420px; max-width: 620px;">
+  <v-stepper v-model="selectedTab" style="min-width: 420px;">
     <v-stepper-header>
       <v-stepper-step :rules="getTenantDetailsError()" step="1" editable>
         {{ languageStrings.forms.createTenant.steps.tenantDetails }}
       </v-stepper-step>
       <template v-for="(step, stepIdx) in steps">
         <v-stepper-step :key="'h.' + stepIdx" :rules="getProductDetailsError(stepIdx)" :step="stepIdx + 2" editable>
-          {{ step.label }}
+          {{ step.name }}
         </v-stepper-step>
       </template>
       <v-stepper-step :rules="getInvitationDetailsError()" :step="steps.length + 2" editable>
@@ -69,7 +69,7 @@
                 :label="languageStrings.forms.fields.tenant.selectedProducts"
                 :loading="isPending"
                 :items="availableProducts"
-                item-text="label"
+                item-text="name"
                 return-object
                 multiple
                 chips
@@ -89,23 +89,44 @@
       <v-stepper-content :key="'c.' + stepIdx" :step="stepIdx + 2" class="pa-0">
         <v-card flat class="rounded-t-0">
           <v-card-title class="text-h5">
-            {{ step.label }}
+            {{ step.name }}
           </v-card-title>
           <v-card-text>
             <v-select
               v-model="step.selectedPlan"
-              :items="step.availablePlans"
+              :items="step.tiers"
               :label="languageStrings.forms.fields.tenant.selectedProductTier"
               :error-messages="getProductPlanMessages(stepIdx)"
-              item-text="label"
+              item-text="name"
               return-object
               @input="$v.tenant.selectedProducts.$each[stepIdx].$touch()"
               @blur="$v.tenant.selectedProducts.$each[stepIdx].$touch()"
-            />
+            >
+              <template v-slot:item="{ item, on, attrs }">
+                <v-list-item v-bind="attrs" v-on="on">
+                  <v-list-item-icon v-if="item.externalId">
+                    <v-icon>
+                      mdi-credit-card-outline
+                    </v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ item.name }}
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+              <template v-slot:prepend-inner>
+                <v-icon v-if="step.selectedPlan && step.selectedPlan.externalId" left>
+                  mdi-credit-card-outline
+                </v-icon>
+              </template>
+            </v-select>
             <component
               :is="getProductComponent(step)"
+              v-if="step.configurationControlName"
               :language-strings="languageStrings"
-              :product-configuration="step"
+              :product-configuration.sync="step"
             />
           </v-card-text>
           <v-card-actions>
@@ -192,7 +213,7 @@
         <v-card-text>
           <p>
             {{ languageStrings.forms.createTenant.creationMessages.summary.replace('{tenant}', tenant.name) }}
-            {{ (tenant.selectedProducts.some(p => p.selectedPlan !== null && !p.selectedPlan.isFree)) ? languageStrings.forms.createTenant.creationMessages.somePaidPlans : languageStrings.forms.createTenant.creationMessages.noPaidPlans }}
+            {{ (tenant.selectedProducts.some(p => p.selectedPlan && p.selectedPlan.externalId)) ? languageStrings.forms.createTenant.creationMessages.somePaidPlans : languageStrings.forms.createTenant.creationMessages.noPaidPlans }}
           </p>
         </v-card-text>
         <v-card-actions>
@@ -200,7 +221,7 @@
             {{ languageStrings.forms.buttons.previous }}
           </v-btn>
           <v-spacer />
-          <v-btn color="primary">
+          <v-btn :disabled="$v.tenant.$invalid" color="primary">
             {{ languageStrings.auth.signUp }}
           </v-btn>
         </v-card-actions>
@@ -224,20 +245,7 @@
 <script>
 import { required, requiredUnless, maxLength, email } from 'vuelidate/lib/validators'
 import { Promised } from 'vue-promised'
-
-const products = [
-  {
-    id: 1,
-    label: 'Allert',
-    config: { alertPriorityNames: { 0: 'N/A', 1: 'Very Low', 2: 'Low', 3: 'Medium', 4: 'High', 5: 'Very High' } },
-    configControlName: 'Allert',
-    availablePlans: [
-      { id: 1, label: 'Not Free', isFree: false },
-      { id: 2, label: 'Free', isFree: true }
-    ],
-    selectedPlan: null
-  }
-]
+import { mapActions } from 'vuex'
 
 export default {
   components: {
@@ -251,7 +259,7 @@ export default {
   },
   data () {
     return {
-      productPromise: Promise.resolve(products).then(this.processProducts),
+      productPromise: this.listProducts(),
       availableProducts: null,
       tenant: {
         name: '',
@@ -375,12 +383,23 @@ export default {
     }
   },
   methods: {
-    processProducts (products) {
-      this.availableProducts = products
-      this.tenant.selectedProducts = [...this.availableProducts]
+    ...mapActions({
+      listProductsInternal: 'products/listProducts'
+    }),
+    listProducts () {
+      return this.listProductsInternal()
+        .then((products) => {
+          this.availableProducts = products.data
+          this.availableProducts.forEach((p) => {
+            if (p.defaultProductConfiguration && p.defaultProductConfiguration.configurationString) {
+              p.defaultProductConfiguration.configuration = JSON.parse(p.defaultProductConfiguration.configurationString)
+            }
+          })
+          this.tenant.selectedProducts = this.availableProducts.filter(p => p.name && p.name.toLowerCase() === this.languageStrings.shortProductName.toLowerCase())
+        })
     },
     getProductComponent (prod) {
-      return require('~/components/product-configuration/' + prod.configControlName + '.vue').default
+      return require('~/components/product-configuration/' + prod.configurationControlName + '.vue').default
     },
     moveNext () {
       this.selectedTab++
