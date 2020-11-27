@@ -17,9 +17,8 @@ BEGIN
 			on (pc.Product_Configuration_ID = p.Default_Configuration_ID)
 		where p.[Visible] = 1
 
-		select t.Tier_ID as Id, t.External_Identifier as ExternalId, t.[Name],
-			t.[Visible], t.[Start_Date] as StartDate, t.End_Date as EndDate,
-			p.Product_ID as Id
+		select p.Product_ID as ProductId, t.Tier_ID as Id, t.External_Identifier as ExternalId, t.[Name],
+			t.[Visible], t.[Start_Date] as StartDate, t.End_Date as EndDate
 		from products.Tier as t
 		inner join products.Product as p
 			on (p.Product_ID = t.Product_ID)
