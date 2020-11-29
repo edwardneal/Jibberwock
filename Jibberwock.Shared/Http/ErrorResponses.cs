@@ -14,6 +14,22 @@ namespace Jibberwock.Shared.Http
         /// </summary>
         public const string MissingBody = "missing_body";
         /// <summary>
+        /// Tenant contact email address is missing.
+        /// </summary>
+        public const string MissingContactEmailAddress = "missing_contact_email_address";
+        /// <summary>
+        /// Tenant contact name is missing.
+        /// </summary>
+        public const string MissingContactName = "missing_contact_name";
+        /// <summary>
+        /// Invitation email address is missing
+        /// </summary>
+        public const string MissingInvitationEmailAddress = "missing_invitation_email_address";
+        /// <summary>
+        /// Invitation identity provider name is missing
+        /// </summary>
+        public const string MissingInvitationIdentityProvider = "missing_invitation_identity_provider";
+        /// <summary>
         /// EasyAuth redirection type is missing.
         /// </summary>
         public const string MissingRedirectionType = "missing_type";
@@ -21,6 +37,10 @@ namespace Jibberwock.Shared.Http
         /// Start time is missing.
         /// </summary>
         public const string MissingStartTime = "missing_start_time";
+        /// <summary>
+        /// Tenant name is missing.
+        /// </summary>
+        public const string MissingTenantName = "missing_tenant_name";
         /// <summary>
         /// EasyAuth redirection type is invalid.
         /// </summary>

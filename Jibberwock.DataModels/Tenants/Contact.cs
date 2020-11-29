@@ -12,7 +12,7 @@ namespace Jibberwock.DataModels.Tenants
         /// <summary>
         /// The unique internal reference for this <see cref="Contact"/>.
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// The name of the person in question.

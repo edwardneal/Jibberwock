@@ -10,24 +10,28 @@ namespace Jibberwock.DataModels.Products
     public enum SubscriptionStatus
     {
         /// <summary>
+        /// The <see cref="Subscription"/> is waiting to receive the first payment.
+        /// </summary>
+        PaymentPending = 1,
+        /// <summary>
         /// The <see cref="Subscription"/> is currently in its trial period.
         /// </summary>
-        Trial = 1,
+        Trial = 2,
         /// <summary>
         /// The <see cref="Subscription"/> is active. This is its normal status.
         /// </summary>
-        Active = 2,
+        Active = 3,
         /// <summary>
         /// The <see cref="Subscription"/> has expired without renewal.
         /// </summary>
-        Expired = 3,
+        Expired = 4,
         /// <summary>
         /// The <see cref="Subscription"/> is active, but card details have expired and the next invoice cannot be paid.
         /// </summary>
-        BillingDetailsExpired = 4,
+        BillingDetailsExpired = 5,
         /// <summary>
         /// The last invoice for this <see cref="Subscription"/> has not been paid.
         /// </summary>
-        Unpaid = 5
+        Unpaid = 6
     }
 }

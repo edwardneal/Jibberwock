@@ -160,6 +160,8 @@
     <Build Include="core\usp_DismissNotification.sql" />
     <Build Include="products\usp_ListPublicProducts.sql" />
     <Build Include="products\ProductConfiguration.sql" />
+    <Build Include="tenants\usp_CreateTenant.sql" />
+    <Build Include="security\usp_CreateSecurityGroup.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

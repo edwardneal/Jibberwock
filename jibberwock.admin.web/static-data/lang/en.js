@@ -149,6 +149,13 @@ export default {
         singleUserTarget: 'User ({name})',
         singleTenantTarget: 'Tenant ({name})'
       }
+    },
+    editTenant: {
+      fields: {
+        name: 'Name',
+        contactName: 'Contact Name',
+        creatingTenant: 'New Tenant?'
+      }
     }
   },
   notificationList: {
@@ -336,7 +343,8 @@ export default {
         { id: 5, label: 'Delete Characteristic', component: 'EditCharacteristic' },
         { id: 6, label: 'Edit Tier', component: 'EditTier' },
         { id: 7, label: 'Edit Notification', component: 'EditNotification' },
-        { id: 8, label: 'Dismiss Notification', component: 'DismissNotification' }
+        { id: 8, label: 'Dismiss Notification', component: 'DismissNotification' },
+        { id: 9, label: 'Edit Tenant', component: 'EditTenant' }
       ]
     },
     status: {

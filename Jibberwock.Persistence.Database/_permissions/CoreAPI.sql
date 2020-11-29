@@ -105,3 +105,9 @@ GO
 
 GRANT EXECUTE ON [products].[usp_ListPublicProducts] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [tenants].[usp_CreateTenant] TO [CoreAPI]
+GO
+
+GRANT EXECUTE ON [security].[usp_CreateSecurityGroup] TO [CoreAPI]
+GO
