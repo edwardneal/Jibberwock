@@ -304,7 +304,8 @@ export default {
       invitationToAdd: {
         emailAddress: '',
         identityProvider: 'google.com',
-        sendEmail: true
+        sendEmail: true,
+        loginRedirectUrl: window.location.origin
       }
     }
   },

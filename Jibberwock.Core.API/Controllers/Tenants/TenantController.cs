@@ -24,10 +24,14 @@ namespace Jibberwock.Core.API.Controllers.Tenants
     [Route("api/[controller]")]
     public class TenantController : JibberwockControllerBase
     {
+        private readonly IQueueDataSource _queueDataSource;
+
         public TenantController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource,
-            IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever)
+            IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever, IQueueDataSource queueDataSource)
             : base(loggerFactory, sqlServerDataSource, options, currentUserRetriever)
-        { }
+        {
+            _queueDataSource = queueDataSource;
+        }
 
         /// <summary>
         /// Gets all <see cref="Tenant"/>s which the current <see cref="User"/> has access to.
@@ -127,6 +131,14 @@ namespace Jibberwock.Core.API.Controllers.Tenants
             var createdTenant = await createTenantCommand.Execute(SqlServerDataSource);
 
             // ...invite users to this tenant, sending emails as needed...
+            foreach (var invitation in creationOptions.Invitations)
+            {
+                var inviteUserCommand = new Jibberwock.Persistence.DataAccess.Commands.Tenants.Invite(Logger, currUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, null,
+                    new Invitation() { EmailAddress = invitation.EmailAddress, ExternalIdentityProvider = invitation.IdentityProvider }, invitation.SendEmail,
+                    _queueDataSource, WebApiConfiguration.ServiceBus.Queues.Notifications, invitation.LoginRedirectUrl);
+
+                await inviteUserCommand.Execute(SqlServerDataSource);
+            }
             // ...add product subscriptions...
             // ...and set up a Stripe session if necessary
 

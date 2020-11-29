@@ -24,5 +24,11 @@ namespace Jibberwock.Core.API.ActionModels.Invitations
         /// If <c>true</c>, an invitation email will be sent to <see cref="EmailAddress"/>.
         /// </summary>
         public bool SendEmail { get; set; }
+
+        /// <summary>
+        /// If <see cref="SendEmail"/> is <c>true</c> and an email will be sent, this provides
+        /// the base URL for all login redirects.
+        /// </summary>
+        public string LoginRedirectUrl { get; set; }
     }
 }
