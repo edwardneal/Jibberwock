@@ -44,6 +44,10 @@ namespace Jibberwock.DataModels.Security.Audit
         /// <summary>
         /// Entry is a <see cref="Jibberwock.DataModels.Security.Audit.EntryTypes.ModifyTenant"/> record.
         /// </summary>
-        ModifyTenant = 9
+        ModifyTenant = 9,
+        /// <summary>
+        /// Entry is a <see cref="Jibberwock.DataModels.Security.Audit.EntryTypes.InviteUser"/> record.
+        /// </summary>
+        InviteUser = 10
     }
 }

@@ -29,7 +29,7 @@ namespace Jibberwock.DataModels.Tenants
         /// <summary>
         /// This <see cref="Invitation"/> will not be acceptable after this date.
         /// </summary>
-        public DateTimeOffset ExpirationDate { get; set; }
+        public DateTimeOffset? ExpirationDate { get; set; }
 
         /// <summary>
         /// The <see cref="Tenant"/> being invited to.

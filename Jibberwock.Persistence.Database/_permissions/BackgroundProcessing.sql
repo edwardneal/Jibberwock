@@ -30,3 +30,6 @@ GO
 
 GRANT EXECUTE ON [core].[usp_GetNotificationEmailBatchByID] TO [BackgroundProcessing]
 GO
+
+GRANT EXECUTE ON [core].[usp_GetInvitationEmailBatchByID] TO [BackgroundProcessing]
+GO

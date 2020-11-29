@@ -42,7 +42,8 @@ namespace Jibberwock.Core.Background
             // We have one TypeHandler per type, mapped in this dictionary.
             _emailBatchTypeHandlers = new Dictionary<int, Func<ILogger, EmailBatch, EmailBatchTypeHandlerBase>>()
                 {
-                    { 1, (log, eb) => new NotificationEmailBatchTypeHandler(log, _dataSource, eb, _webApiConfiguration.SendGrid) }
+                    { 1, (log, eb) => new NotificationEmailBatchTypeHandler(log, _dataSource, eb, _webApiConfiguration.SendGrid) },
+                    { 2, (log, eb) => new InvitationEmailBatchTypeHandler(log, _dataSource, eb, _webApiConfiguration.SendGrid) }
                 };
         }
 

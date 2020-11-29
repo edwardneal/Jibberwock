@@ -164,6 +164,8 @@
     <Build Include="security\usp_CreateSecurityGroup.sql" />
     <Build Include="tenants\Invitation.sql" />
     <Build Include="tenants\InvitationStatus.sql" />
+    <Build Include="tenants\usp_CreateInvitation.sql" />
+    <Build Include="core\usp_GetInvitationEmailBatchByID.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
