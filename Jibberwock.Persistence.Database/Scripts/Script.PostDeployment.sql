@@ -22,6 +22,7 @@ Post-Deployment Script Template
 :r .\Lookups\security.SecurableResourceType.sql
 :r .\Lookups\security.Permission.sql
 :r .\Lookups\security.WellKnownGroupType.sql
+:r .\Lookups\tenants.InvitationStatus.sql
 
 :r .\StaticData\components.ExternalComponent.sql
 :r .\StaticData\core.Service.sql

@@ -7,6 +7,7 @@ using Jibberwock.Shared.Configuration;
 using Jibberwock.Shared.Http;
 using Jibberwock.Shared.Http.Authentication;
 using Jibberwock.Shared.Http.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -19,6 +20,7 @@ using System.Threading.Tasks;
 namespace Jibberwock.Core.API.Controllers.Tenants
 {
     [ApiController]
+    [Authorize(AuthenticationSchemes = "EasyAuth")]
     [Route("api/[controller]")]
     public class TenantController : JibberwockControllerBase
     {
@@ -131,11 +133,6 @@ namespace Jibberwock.Core.API.Controllers.Tenants
             // Then, return the tenant's ID and the Stripe session ID
             createdTenant.ToString();
 
-            // create core tenant, set up well-known groups, acls, product-specific configuration
-            //  wellknowngroups = auditors, billing administrators, tenant members, tenant administrators, api key administrators
-            //      auditors = readlogs; billing administrators = change billing contact, change subscription billing; tenant members = read
-            //      tenant administrators = change, readlogs; api key administrators = create api key
-            //  add current user to tenant administrators, billing administrators, tenant members, auditors, api key administrators
             // perform invitations
             //      create a user record without an external identity
             //      create an invitation record pointing to this tenant, with the idp and the email address

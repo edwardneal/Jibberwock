@@ -245,4 +245,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Product_Configuration_ID" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="e9d8b973-d126-4440-848c-ab27aad232f1" ChangeDateTime="11/29/2020 15:37:06">
+    <Property Name="ElementName" Value="[tenants].[Invitation].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[tenants].[Invitation]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Invitation_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="00958395-fd02-4f31-b09c-daf19b775f85" ChangeDateTime="11/29/2020 16:11:54">
+    <Property Name="ElementName" Value="[dbo].[InvitationStatus].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[InvitationStatus]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Invitation_Status_ID" />
+  </Operation>
 </Operations>

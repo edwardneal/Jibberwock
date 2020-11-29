@@ -162,6 +162,8 @@
     <Build Include="products\ProductConfiguration.sql" />
     <Build Include="tenants\usp_CreateTenant.sql" />
     <Build Include="security\usp_CreateSecurityGroup.sql" />
+    <Build Include="tenants\Invitation.sql" />
+    <Build Include="tenants\InvitationStatus.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
@@ -182,5 +184,6 @@
     <None Include="Scripts\Lookups\core.NotificationType.sql" />
     <None Include="Scripts\Lookups\core.NotificationStatus.sql" />
     <None Include="Scripts\Lookups\core.NotificationPriority.sql" />
+    <None Include="Scripts\Lookups\tenants.InvitationStatus.sql" />
   </ItemGroup>
 </Project>

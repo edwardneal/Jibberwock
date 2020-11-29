@@ -112,6 +112,15 @@
   </v-container>
 </template>
 
+<style>
+  .v-card > .v-tabs > .v-tabs-bar > div > .v-tabs-bar__content > .v-tab:nth-child(2)::before{
+    border-top-left-radius: 4px;
+  }
+  .v-card > .v-tabs > .v-tabs-bar > div > .v-tabs-bar__content > .v-tab:nth-child(2) > .v-ripple__container {
+    border-top-left-radius: 4px;
+  }
+</style>
+
 <script>
 export default {
   components: {
