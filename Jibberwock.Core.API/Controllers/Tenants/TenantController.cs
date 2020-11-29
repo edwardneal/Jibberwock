@@ -69,7 +69,7 @@ namespace Jibberwock.Core.API.Controllers.Tenants
                 if (creationOptions.Contact.UseOwnDetails)
                 {
                     // Set the person's name and email address ourselves
-                    creationOptions.Contact.Name = User.Identity?.Name;
+                    creationOptions.Contact.Name = User.FindFirst("name")?.Value;
                     creationOptions.Contact.EmailAddress = User.FindFirst("emails")?.Value;
                 }
                 // We always need to have a contact name, and either an email address or phone number
@@ -129,6 +129,7 @@ namespace Jibberwock.Core.API.Controllers.Tenants
             // ...and set up a Stripe session if necessary
 
             // Then, return the tenant's ID and the Stripe session ID
+            createdTenant.ToString();
 
             // create core tenant, set up well-known groups, acls, product-specific configuration
             //  wellknowngroups = auditors, billing administrators, tenant members, tenant administrators, api key administrators
