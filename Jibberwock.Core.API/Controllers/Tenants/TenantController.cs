@@ -1,5 +1,7 @@
 ﻿using Jibberwock.Core.API.ActionModels.Invitations;
 using Jibberwock.Core.API.ActionModels.Tenants;
+using Jibberwock.DataModels.Products;
+using Jibberwock.DataModels.Products.Configuration;
 using Jibberwock.DataModels.Tenants;
 using Jibberwock.DataModels.Users;
 using Jibberwock.Persistence.DataAccess.DataSources;
@@ -139,16 +141,24 @@ namespace Jibberwock.Core.API.Controllers.Tenants
 
                 await inviteUserCommand.Execute(SqlServerDataSource);
             }
+
+            var subscriptionList = new List<Subscription>();
+
             // ...add product subscriptions...
+            foreach (var subsRequest in creationOptions.Subscriptions)
+            {
+                var subscribeCommand = new Jibberwock.Persistence.DataAccess.Commands.Tenants.Subscribe(Logger, currUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, null,
+                    new Subscription() { Tenant = tenant, ProductTier = new Tier() { Id = subsRequest.ProductTierId }, StartDate = DateTimeOffset.Now, Configuration = new RawProductConfiguration(subsRequest.ProductConfiguration) });
+                var subscription = await subscribeCommand.Execute(SqlServerDataSource);
+
+                subscriptionList.Add(subscription.Result);
+            }
+
             // ...and set up a Stripe session if necessary
 
             // Then, return the tenant's ID and the Stripe session ID
             createdTenant.ToString();
 
-            // perform invitations
-            //      create a user record without an external identity
-            //      create an invitation record pointing to this tenant, with the idp and the email address
-            //      create a specific type of notification
             // create subscriptions, set the status to PaymentPending for payable tiers, Started for free tiers
             // assemble stripe payment session if needed
             return Ok();

@@ -111,3 +111,6 @@ GO
 
 GRANT EXECUTE ON [security].[usp_CreateSecurityGroup] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [tenants].[usp_CreateSubscription] TO [CoreAPI]
+GO

@@ -259,4 +259,53 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Invitation_Status_ID" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="1aa4bb56-088b-442b-863e-eec2bc659203" ChangeDateTime="11/30/2020 20:15:47">
+    <Property Name="ElementName" Value="[dbo].[Subscription].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Subscription]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Subscription_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="8d9dc948-7247-4ffb-ac41-03e6e3617bf5" ChangeDateTime="11/30/2020 20:16:20">
+    <Property Name="ElementName" Value="[dbo].[Subscription].[External_Identity]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Subscription]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="External_Identifier" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="cc8a2c2b-9c12-40fa-9c1e-9f0caf79846c" ChangeDateTime="11/30/2020 20:18:58">
+    <Property Name="ElementName" Value="[tenants].[FK_Subscription_ToTable]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[tenants].[Subscription]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[FK_Subscription_Tenant]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="af1c8f77-69dc-4867-b69e-a53578312fb7" ChangeDateTime="11/30/2020 20:19:04">
+    <Property Name="ElementName" Value="[tenants].[FK_Subscription_ToTable_1]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[tenants].[Subscription]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[FK_Subscription_Tier]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="7f60e790-b045-4fb5-9173-217206def496" ChangeDateTime="11/30/2020 20:19:13">
+    <Property Name="ElementName" Value="[tenants].[FK_Subscription_ToTable_2]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[tenants].[Subscription]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[FK_Subscription_ProductConfiguration]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="bece4d22-b3fc-4454-80f7-37b09a6229e3" ChangeDateTime="11/30/2020 20:19:21">
+    <Property Name="ElementName" Value="[tenants].[FK_Subscription_ToTable_3]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[tenants].[Subscription]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[FK_Subscription_SubscriptionStatus]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="4f2c572b-15cc-47bd-ac32-32700d2f2882" ChangeDateTime="11/30/2020 20:21:43">
+    <Property Name="ElementName" Value="[tenants].[SubscriptionStatus].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[tenants].[SubscriptionStatus]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Subscription_Status_ID" />
+  </Operation>
 </Operations>

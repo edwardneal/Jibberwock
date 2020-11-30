@@ -14,7 +14,7 @@ namespace Jibberwock.DataModels.Products
         /// <summary>
         /// The unique identifier for this <see cref="Subscription"/>.
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// The unique identifier of this <see cref="Subscription"/> in the external billing system.

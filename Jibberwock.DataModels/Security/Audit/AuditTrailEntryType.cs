@@ -48,6 +48,10 @@ namespace Jibberwock.DataModels.Security.Audit
         /// <summary>
         /// Entry is a <see cref="Jibberwock.DataModels.Security.Audit.EntryTypes.InviteUser"/> record.
         /// </summary>
-        InviteUser = 10
+        InviteUser = 10,
+        /// <summary>
+        /// Entry is a <see cref="Jibberwock.DataModels.Security.Audit.EntryTypes.Subscription"/> record.
+        /// </summary>
+        Subscription = 11
     }
 }

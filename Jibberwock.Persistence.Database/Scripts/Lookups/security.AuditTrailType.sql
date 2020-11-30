@@ -37,3 +37,7 @@ if 9 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
 if 10 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
 	insert into [security].[AuditTrailType] ([Audit_Trail_Type_ID], [Name])
 	values (10, 'invite_user')
+
+if 11 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
+	insert into [security].[AuditTrailType] ([Audit_Trail_Type_ID], [Name])
+	values (11, 'subscription')

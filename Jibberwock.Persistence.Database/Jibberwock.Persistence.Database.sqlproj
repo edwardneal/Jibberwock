@@ -166,6 +166,10 @@
     <Build Include="tenants\InvitationStatus.sql" />
     <Build Include="tenants\usp_CreateInvitation.sql" />
     <Build Include="core\usp_GetInvitationEmailBatchByID.sql" />
+    <Build Include="tenants\Subscription.sql" />
+    <Build Include="tenants\SubscriptionStatus.sql" />
+    <Build Include="tenants\usp_CreateSubscription.sql" />
+    <Build Include="tenants\usp_StartPaidSubscription.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
@@ -187,5 +191,6 @@
     <None Include="Scripts\Lookups\core.NotificationStatus.sql" />
     <None Include="Scripts\Lookups\core.NotificationPriority.sql" />
     <None Include="Scripts\Lookups\tenants.InvitationStatus.sql" />
+    <None Include="Scripts\Lookups\tenants.SubscriptionStatus.sql" />
   </ItemGroup>
 </Project>
