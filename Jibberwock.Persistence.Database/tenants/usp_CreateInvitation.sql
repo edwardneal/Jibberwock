@@ -39,8 +39,8 @@ BEGIN
 
 		set @userId = SCOPE_IDENTITY()
 		-- Fold this user into the Tenant Members security group
-		insert into [security].[SecurityGroupMembership] (Security_Group_ID, [User_ID])
-			select wkg.Security_Group_ID, @userId
+		insert into [security].[SecurityGroupMembership] (Security_Group_ID, [User_ID], [Enabled])
+			select wkg.Security_Group_ID, @userId, 1
 			from [security].WellKnownGroup as wkg
 			where wkg.Securable_Resource_ID = @Tenant_ID
 				and wkg.Well_Known_Group_Type_ID = 6

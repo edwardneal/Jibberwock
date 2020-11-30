@@ -28,7 +28,7 @@ namespace Jibberwock.Core.Background.EmailBatchTypeHandlers
             {
                 tenant = new { name = _invitation.Tenant.Name },
                 idp = new { name = _invitation.ExternalIdentityProvider },
-                config = new { url = messageMetadata.baseUrl },
+                config = new { url = messageMetadata.GetProperty("baseUrl").GetString() },
                 invitation = new { id = _invitation.Id },
                 metadata = messageMetadata,
                 message_id = pers.CustomArgs[_sendGridConfiguration.EmailIdParameterName]

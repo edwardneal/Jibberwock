@@ -6,6 +6,7 @@ using Jibberwock.Persistence.DataAccess.Utility;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -47,7 +48,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Emails
                 commandType: System.Data.CommandType.StoredProcedure, commandTimeout: 30);
 
 
-            return invitation;
+            return invitation.FirstOrDefault();
         }
     }
 }

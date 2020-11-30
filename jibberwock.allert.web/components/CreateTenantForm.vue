@@ -232,6 +232,14 @@
               {{ languageStrings.forms.createTenant.steps.readyToCreate }}
             </v-card-title>
             <v-card-text>
+              <v-alert v-if="creationPromiseResults.error !== null" dense dismissible outlined type="error">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <span v-bind="attrs" v-on="on">{{ languageStrings.validationErrorMessages.unableToCreateTenant }}</span>
+                  </template>
+                  <span>{{ creationPromiseResults.error.message }}</span>
+                </v-tooltip>
+              </v-alert>
               <p>
                 {{ languageStrings.forms.createTenant.creationMessages.summary.replace('{tenant}', tenant.name) }}
                 {{ (tenant.selectedProducts.some(p => p.selectedTier && p.selectedTier.externalId)) ? languageStrings.forms.createTenant.creationMessages.somePaidPlans : languageStrings.forms.createTenant.creationMessages.noPaidPlans }}

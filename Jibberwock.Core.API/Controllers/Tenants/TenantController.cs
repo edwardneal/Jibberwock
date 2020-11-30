@@ -134,7 +134,7 @@ namespace Jibberwock.Core.API.Controllers.Tenants
             foreach (var invitation in creationOptions.Invitations)
             {
                 var inviteUserCommand = new Jibberwock.Persistence.DataAccess.Commands.Tenants.Invite(Logger, currUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, null,
-                    new Invitation() { EmailAddress = invitation.EmailAddress, ExternalIdentityProvider = invitation.IdentityProvider }, invitation.SendEmail,
+                    new Invitation() { EmailAddress = invitation.EmailAddress, ExternalIdentityProvider = invitation.IdentityProvider, Tenant = createdTenant.Result }, invitation.SendEmail,
                     _queueDataSource, WebApiConfiguration.ServiceBus.Queues.Notifications, invitation.LoginRedirectUrl);
 
                 await inviteUserCommand.Execute(SqlServerDataSource);

@@ -18,7 +18,8 @@ export default {
     noTier: 'Please select a product tier.',
     noIdentityProvider: 'Please select a sign-in provider.',
     identityProviderTooLong: 'This sign-in provider name is too long. Please provide a shorter sign-in provider.',
-    unableToLoadTenantList: 'We can\'t get the list of tenants right now. Please try again later.'
+    unableToLoadTenantList: 'We can\'t get the list of tenants right now. Please try again later.',
+    unableToCreateTenant: 'We can\'t create a tenant right now. Please try again later.'
   },
   dropdownValues: {
     identityProvider: [
