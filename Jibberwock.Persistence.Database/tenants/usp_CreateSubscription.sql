@@ -42,6 +42,7 @@ BEGIN
 			on (ten.Tenant_ID = sub.Tenant_ID)
 		inner join [products].[Tier] as tier
 			on (tier.Tier_ID = sub.Tier_ID)
+		where sub.Subscription_ID = @subscriptionId
 
 	commit transaction
 END

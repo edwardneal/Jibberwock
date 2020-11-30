@@ -155,12 +155,12 @@ namespace Jibberwock.Core.API.Controllers.Tenants
             }
 
             // ...and set up a Stripe session if necessary
+            // NB: Stripe will trigger webhooks in the administrator site. These webhooks will be triggered when somebody pays, and they'll call tenants.usp_StartPaidSubscription.
+            // To support this, we need to pass the subscription ID as metadata to the Stripe session.
 
             // Then, return the tenant's ID and the Stripe session ID
             createdTenant.ToString();
 
-            // create subscriptions, set the status to PaymentPending for payable tiers, Started for free tiers
-            // assemble stripe payment session if needed
             return Ok();
         }
     }
