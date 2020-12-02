@@ -27,12 +27,15 @@ namespace Jibberwock.Core.API.Controllers.Tenants
     public class TenantController : JibberwockControllerBase
     {
         private readonly IQueueDataSource _queueDataSource;
+        private readonly Jibberwock.Shared.Payments.IPaymentProvider _paymentProvider;
 
         public TenantController(ILoggerFactory loggerFactory, SqlServerDataSource sqlServerDataSource,
-            IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever, IQueueDataSource queueDataSource)
+            IOptions<WebApiConfiguration> options, ICurrentUserRetriever currentUserRetriever, IQueueDataSource queueDataSource,
+            Jibberwock.Shared.Payments.IPaymentProvider paymentProvider)
             : base(loggerFactory, sqlServerDataSource, options, currentUserRetriever)
         {
             _queueDataSource = queueDataSource;
+            _paymentProvider = paymentProvider;
         }
 
         /// <summary>
@@ -56,10 +59,10 @@ namespace Jibberwock.Core.API.Controllers.Tenants
         /// Create a <see cref="Tenant"/>.
         /// </summary>
         /// <param name="creationOptions">The information needed to create the <see cref="Tenant"/>.</param>
-        /// <response code="201" nullable="false">The created <see cref="Tenant"/>.</response>
+        /// <response code="201" nullable="false">A <see cref="CreateTenantResponse" /> containing information about the created <see cref="Tenant"/> and any next steps for payment.</response>
         [Route("")]
         [HttpPost]
-        [ProducesResponseType(typeof(Tenant), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CreateTenantResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateTenant([FromBody] TenantCreationOptions creationOptions)
         {
             // Filter out the worst possible results: completely missing fields
@@ -129,8 +132,10 @@ namespace Jibberwock.Core.API.Controllers.Tenants
                     TelephoneNumber = creationOptions.Contact.PhoneNumber
                 }
             };
-            var createTenantCommand = new Jibberwock.Persistence.DataAccess.Commands.Tenants.CreateTenant(Logger, currUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, null, tenant);
+            var createTenantCommand = new Jibberwock.Persistence.DataAccess.Commands.Tenants.CreateTenant(Logger, currUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, null,
+                tenant);
             var createdTenant = await createTenantCommand.Execute(SqlServerDataSource);
+            var creationResponse = new CreateTenantResponse() { TenantId = tenant.Id };
 
             // ...invite users to this tenant, sending emails as needed...
             foreach (var invitation in creationOptions.Invitations)
@@ -154,14 +159,32 @@ namespace Jibberwock.Core.API.Controllers.Tenants
                 subscriptionList.Add(subscription.Result);
             }
 
+            var paidSubscriptions = subscriptionList.Where(s => !string.IsNullOrWhiteSpace(s.ProductTier.ExternalId));
+
             // ...and set up a Stripe session if necessary
+            if (paidSubscriptions.Any())
+            {
+                // Make sure we create an external customer first, updating the ExternalId property to match
+                var createExternalCustomerCommand = new Jibberwock.Persistence.DataAccess.Commands.Payments.CreateExternalCustomer(Logger, tenant, _paymentProvider.CustomerDataSource);
+
+                tenant = await createExternalCustomerCommand.Execute(SqlServerDataSource);
+
+                // Set up the initial properties: the return URLs and the metadata
+                var resultantReturnUrl = creationOptions.PaymentUrlBase.Replace("{tenantId}", tenant.Id.ToString(), StringComparison.OrdinalIgnoreCase);
+                var joinedSubscriptionIds = string.Join(";", paidSubscriptions.Select(s => s.Id.ToString()));
+                var subscriptionMetadata = new Dictionary<string, string>()
+                { { "jibberwock_ids", joinedSubscriptionIds } };
+
+                // Create the session in Stripe.
+                // This means that a Stripe subscription will be a bundle of Jibberwock subscriptions which were bought at the same time.
+                creationResponse.StripeSessionId = await _paymentProvider.PaymentSessionFactory.CreateSubscriptionSession(resultantReturnUrl, tenant.ExternalId, paidSubscriptions.Select(s => s.ProductTier.ExternalId), subscriptionMetadata);
+                creationResponse.StripePublishableKey = WebApiConfiguration.Stripe.PublishableApiKey;
+                creationResponse.PaymentRequired = true;
+            }
+
             // NB: Stripe will trigger webhooks in the administrator site. These webhooks will be triggered when somebody pays, and they'll call tenants.usp_StartPaidSubscription.
             // To support this, we need to pass the subscription ID as metadata to the Stripe session.
-
-            // Then, return the tenant's ID and the Stripe session ID
-            createdTenant.ToString();
-
-            return Ok();
+            return Ok(creationResponse);
         }
     }
 }

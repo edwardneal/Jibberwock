@@ -38,5 +38,10 @@ namespace Jibberwock.Shared.Configuration
         /// Configuration for Application Insights.
         /// </summary>
         public AppInsightsConfiguration AppInsightsConfiguration { get; set; }
+
+        /// <summary>
+        /// Configuration for Stripe.
+        /// </summary>
+        public StripeConfiguration Stripe { get; set; }
     }
 }

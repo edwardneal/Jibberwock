@@ -22,6 +22,11 @@ namespace Jibberwock.Core.API.ActionModels.Tenants
         public TenantContact Contact { get; set; }
 
         /// <summary>
+        /// The base URL for all payment-based login redirects.
+        /// </summary>
+        public string PaymentUrlBase { get; set; }
+
+        /// <summary>
         /// A list of invitations to be sent to the new tenant.
         /// </summary>
         public IEnumerable<InvitationRequest> Invitations { get; set; }

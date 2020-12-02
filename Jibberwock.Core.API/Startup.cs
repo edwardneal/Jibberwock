@@ -9,6 +9,7 @@ using Jibberwock.Shared.Cryptography;
 using Jibberwock.Shared.Http.Authentication;
 using Jibberwock.Shared.Http.Middleware;
 using Jibberwock.Shared.Json;
+using Jibberwock.Shared.Payments;
 using MaximeRouiller.Azure.AppService.EasyAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -64,7 +65,8 @@ namespace Jibberwock.Core.API
             services.AddAuthentication("EasyAuth")
                 .AddEasyAuthAuthentication(o => { });
             services.AddJibberwockSecurity()
-                .AddJibberwockCryptography();
+                .AddJibberwockCryptography()
+                .AddJibberwockPayments();
 
             services.AddControllers()
                 .AddJsonOptions(opts =>

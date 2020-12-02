@@ -250,9 +250,13 @@
                 {{ languageStrings.forms.buttons.previous }}
               </v-btn>
               <v-spacer />
-              <v-btn :disabled="$v.tenant.$invalid" :loading="creationPromiseResults.isPending" color="primary" @click="createTenant">
-                {{ languageStrings.auth.signUp }}
-              </v-btn>
+              <stripe-checkout ref="checkoutRef" :pk="stripeState.publishableKey" :session-id="stripeState.sessionId">
+                <template v-slot:checkout-button>
+                  <v-btn :disabled="$v.tenant.$invalid" :loading="creationPromiseResults.isPending" color="primary" @click="createTenant">
+                    {{ languageStrings.auth.signUp }}
+                  </v-btn>
+                </template>
+              </stripe-checkout>
             </v-card-actions>
           </v-card>
         </v-stepper-content>
@@ -276,11 +280,13 @@
 <script>
 import { required, requiredUnless, maxLength, email } from 'vuelidate/lib/validators'
 import { Promised } from 'vue-promised'
+import { StripeCheckout } from 'vue-stripe-checkout'
 import { mapActions } from 'vuex'
 
 export default {
   components: {
-    Promised
+    Promised,
+    StripeCheckout
   },
   props: {
     languageStrings: {
@@ -314,6 +320,10 @@ export default {
         identityProvider: 'google.com',
         sendEmail: true,
         loginRedirectUrl: window.location.origin
+      },
+      stripeState: {
+        publishableKey: null,
+        sessionId: null
       }
     }
   },
@@ -445,6 +455,7 @@ export default {
       this.tenant.creationPromise = this.createTenantInternal({
         name: this.tenant.name,
         contact: this.tenant.contact,
+        paymentUrlBase: window.location.origin + '/tenants/{tenantId}/subscriptions',
         invitations: this.tenant.invitations,
         subscriptions: this.tenant.selectedProducts.map((sp) => {
           return {
@@ -452,6 +463,15 @@ export default {
             productConfiguration: JSON.stringify(sp.defaultProductConfiguration.configuration)
           }
         })
+      }).then((resp) => {
+        if (resp.data.paymentRequired) {
+          this.stripeState.publishableKey = resp.data.stripePublishableKey
+          this.stripeState.sessionId = resp.data.stripeSessionId
+
+          this.$refs.checkoutRef.redirectToCheckout()
+        } else {
+          this.$router.push({ name: 'tenants/id', params: { id: resp.data.tenantId } })
+        }
       })
     },
     getProductComponent (prod) {

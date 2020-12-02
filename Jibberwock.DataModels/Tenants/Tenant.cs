@@ -17,6 +17,11 @@ namespace Jibberwock.DataModels.Tenants
         public long Id { get; set; }
 
         /// <summary>
+        /// A unique external reference for this <see cref="Tenant"/> in the billing system.
+        /// </summary>
+        public string ExternalId { get; set; }
+
+        /// <summary>
         /// The preferred name of this <see cref="Tenant"/>. This will be the name which is displayed for a user when they log in.
         /// </summary>
         public string Name { get; set; }

@@ -114,3 +114,6 @@ GO
 
 GRANT EXECUTE ON [tenants].[usp_CreateSubscription] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [tenants].[usp_SyncTenantExternalIdentifier] TO [CoreAPI]
+GO
