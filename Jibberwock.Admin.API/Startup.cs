@@ -110,7 +110,10 @@ namespace Jibberwock.Admin.API
                 endpoints.MapControllers();
 
                 endpoints.MapSendGridWebHooks();
-                endpoints.MapStripeWebHooks();
+                endpoints.MapStripeWebHooks()
+                    .SubscribeEvent<Stripe.Customer>(Stripe.Events.CustomerUpdated, WebHooks.Stripe.JibberwockEventProcessing.UpdateCustomer)
+                    .SubscribeEvent<Stripe.Subscription>(Stripe.Events.CustomerSubscriptionCreated, WebHooks.Stripe.JibberwockEventProcessing.MaintainSubscription)
+                    .SubscribeEvent<Stripe.Subscription>(Stripe.Events.CustomerSubscriptionUpdated, WebHooks.Stripe.JibberwockEventProcessing.MaintainSubscription);
             });
         }
     }

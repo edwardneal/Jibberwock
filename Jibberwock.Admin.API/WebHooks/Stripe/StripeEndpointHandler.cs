@@ -46,7 +46,7 @@ namespace Jibberwock.Admin.API.WebHooks.Stripe
                     // Try to construct the event from the known signature. Pass any exceptions through to make the client fail.
                     try
                     {
-                        resultantEvent = EventUtility.ConstructEvent(requestBody, whSignatureHeader, webApiConfiguration.Stripe.WebHookSecret);
+                        resultantEvent = EventUtility.ConstructEvent(requestBody, whSignature, webApiConfiguration.Stripe.WebHookSecret);
                         logger.LogInformation("Webhook was verified successfully.");
                     }
                     catch(StripeException sE)
@@ -91,8 +91,10 @@ namespace Jibberwock.Admin.API.WebHooks.Stripe
                 // First, write this event out to Application Insights
                 appInsightsTelemetry.TrackEvent(eventTelemetry);
 
+                logger.LogInformation("Invoking Jibberwock event-specific handlers.");
                 // Then, provide the Jibberwock-specific handling
-                await stripeEventHub.RaiseEvent(resultantEvent);
+                await stripeEventHub.RaiseEvent(httpContext.RequestServices, resultantEvent);
+                logger.LogInformation("Jibberwock event-specific handlers invoked.");
             }
             catch(Exception ex)
             {
@@ -100,22 +102,6 @@ namespace Jibberwock.Admin.API.WebHooks.Stripe
             }
 
             logger.LogDebug("Left Stripe webhook");
-
-            // customer.updated:
-            //  update Tenant.Name, Tenant.BillingContact.Email, Tenant.BillingContact.PhoneNumber
-            //      if possible, use the Stripe ID. if not, check to see if metadata.jibberwock_id matches. if it does, update External_Identifier to match.
-            // customer.subscription.created:
-            //  update Subscription.External_Identifiers based upon metadata.jibberwock_ids.split(";"), setting all records to the subscription ID
-            //      this builds the cross-reference
-            // customer.subscription.created, customer.subscription.updated:
-            //  set Status_ID based upon status:
-            //      incomplete = 1
-            //      active = 3
-            //      trialing = 2
-            //      past_due = 4
-            //      canceled = 6
-            //      unpaid = 6
-            //  set Last_Invoice_External_Identifier based on "latest_invoice"
         }
     }
 }

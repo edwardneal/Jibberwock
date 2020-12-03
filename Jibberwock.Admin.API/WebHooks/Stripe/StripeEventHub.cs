@@ -13,26 +13,26 @@ namespace Jibberwock.Admin.API.WebHooks.Stripe
     /// </summary>
     public class StripeEventHub
     {
-        private ConcurrentDictionary<string, ConcurrentBag<Func<IHasObject, Task>>> _events = new ConcurrentDictionary<string, ConcurrentBag<Func<IHasObject, Task>>>();
+        private ConcurrentDictionary<string, ConcurrentBag<Func<IServiceProvider, IHasObject, Task>>> _events = new ConcurrentDictionary<string, ConcurrentBag<Func<IServiceProvider, IHasObject, Task>>>();
 
         // NB: this enables me to handle a Subscription, etc. in a type-safe, asynchronous manner.
-        public StripeEventHub SubscribeEvent<T>(string eventName, Func<T, Task> handler) where T : class, IHasObject
+        public StripeEventHub SubscribeEvent<T>(string eventName, Func<IServiceProvider, T, Task> handler) where T : class, IHasObject
         {
-            var handlerList = _events.GetOrAdd(eventName.ToLower(), new ConcurrentBag<Func<IHasObject, Task>>());
+            var handlerList = _events.GetOrAdd(eventName.ToLower(), new ConcurrentBag<Func<IServiceProvider, IHasObject, Task>>());
 
-            handlerList.Add(async (ih) => await handler(ih as T));
+            handlerList.Add(async (iSP, ih) => await handler(iSP, ih as T));
 
             return this;
         }
 
         // NB: I can't simply await Task.WhenAll because that could push the handlers onto separate threads - and having two threads
         // share a SQL connection doesn't work!
-        public async Task RaiseEvent(Event stripeEvent)
+        public async Task RaiseEvent(IServiceProvider serviceProvider, Event stripeEvent)
         {
-            var handlerList = _events.GetOrAdd(stripeEvent.Type.ToLower(), new ConcurrentBag<Func<IHasObject, Task>>());
+            var handlerList = _events.GetOrAdd(stripeEvent.Type.ToLower(), new ConcurrentBag<Func<IServiceProvider, IHasObject, Task>>());
 
             foreach (var handler in handlerList.ToArray())
-                await handler(stripeEvent.Data.Object);
+                await handler(serviceProvider, stripeEvent.Data.Object);
         }
     }
 }
