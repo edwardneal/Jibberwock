@@ -72,7 +72,7 @@ namespace Jibberwock.Shared.Payments.Stripe
                     Metadata = subscriptionMetadata
                 },
                 PaymentMethodTypes = new List<string>() { "card" },
-                SuccessUrl = returnUrlBase + "?result=success&session_id={{CHECKOUT_SESSION_ID}}",
+                SuccessUrl = returnUrlBase + "?result=success&session_id={CHECKOUT_SESSION_ID}",
                 CancelUrl = returnUrlBase + "?result=cancel"
             };
 

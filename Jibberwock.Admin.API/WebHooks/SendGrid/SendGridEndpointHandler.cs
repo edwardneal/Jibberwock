@@ -79,7 +79,7 @@ namespace Jibberwock.Admin.API.WebHooks.SendGrid
                     logger.LogInformation($"Processing SendGrid '{webhookEvent.EventType}' event (ID: \"{webhookEvent.SgEventId}\")");
 
                     var eventTelemetry = new Microsoft.ApplicationInsights.DataContracts.EventTelemetry($"SendGrid Event: {webhookEvent.EventType}")
-                    // Tie the timstamp to the webhook event timestamp. This is in UTC
+                    // Tie the timestamp to the webhook event timestamp. This is in UTC
                     { Timestamp = new DateTimeOffset(webhookEvent.Timestamp, TimeSpan.Zero) };
 
                     // Always include the SendGrid identifiers (for the sake of traceability and querying)

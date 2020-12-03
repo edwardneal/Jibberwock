@@ -66,7 +66,8 @@ namespace Jibberwock.Admin.API
             services.AddAuthentication("EasyAuth")
                 .AddEasyAuthAuthentication(o => { });
             services.AddJibberwockSecurity()
-                .AddJibberwockCryptography();
+                .AddJibberwockCryptography()
+                .AddJibberwockStripeEvents();
 
             services.AddControllers()
                 .AddJsonOptions(opts =>
@@ -109,6 +110,7 @@ namespace Jibberwock.Admin.API
                 endpoints.MapControllers();
 
                 endpoints.MapSendGridWebHooks();
+                endpoints.MapStripeWebHooks();
             });
         }
     }
