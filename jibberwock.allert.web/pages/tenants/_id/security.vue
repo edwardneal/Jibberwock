@@ -21,28 +21,46 @@
             </template>
 
             <template v-slot:explanation>
-              <p>HI THERE - SECURITY TEXT HERE</p>
+              <p>Welcome to your tenant's <strong>Security</strong> page. You can use this page for three purposes:</p>
+              <ul>
+                <li>Invite users to this tenant (or revoke their invitations.)</li>
+                <li>Create custom roles and associate them with sets of permissions.</li>
+                <li>Change users' role memberships</li>
+              </ul>
+              <p>
+                To do these things, go to the <strong>{{ languageStrings.pages.tenant_security.tabs.invitations }}</strong>,
+                <strong>{{ languageStrings.pages.tenant_security.tabs.users }}</strong> and
+                <strong>{{ languageStrings.pages.tenant_security.tabs.roles }}</strong> tabs on the right.
+                You'll find more guidance on the next steps on those tabs.
+              </p>
             </template>
           </ClientTenantDetails>
         </v-col>
         <v-col cols="12" md="7">
           <v-card>
             <v-tabs>
-              <v-tab>{{ languageStrings.pages.tenant_security.tabs.users }}</v-tab>
               <v-tab>{{ languageStrings.pages.tenant_security.tabs.invitations }}</v-tab>
+              <v-tab>{{ languageStrings.pages.tenant_security.tabs.users }}</v-tab>
               <v-tab>{{ languageStrings.pages.tenant_security.tabs.roles }}</v-tab>
 
               <v-tab-item>
                 <v-card>
                   <v-card-text>
-                    {{ languageStrings.pages.tenant_security.tabs.users }}
+                    {{ languageStrings.pages.tenant_security.tabs.invitations }}
+                  </v-card-text>
+                  <v-card-text>
+                    INVITE BUTTON. CREATE INVITATION API CALL.
+                    LIST OF INVITATIONS. ABILITY TO REVOKE AN INVITATION.
                   </v-card-text>
                 </v-card>
               </v-tab-item>
               <v-tab-item>
                 <v-card>
                   <v-card-text>
-                    {{ languageStrings.pages.tenant_security.tabs.invitations }}
+                    {{ languageStrings.pages.tenant_security.tabs.users }}
+                  </v-card-text>
+                  <v-card-text>
+                    LIST OF USERS. CLICK ON ONE OF THESE, ADD/REMOVE FROM A GROUP OR DISABLE THEIR MEMBERSHIP.
                   </v-card-text>
                 </v-card>
               </v-tab-item>
@@ -50,6 +68,10 @@
                 <v-card>
                   <v-card-text>
                     {{ languageStrings.pages.tenant_security.tabs.roles }}
+                  </v-card-text>
+                  <v-card-text>
+                    LIST OF GROUPS. CLICK ON ONE OF THESE, ADD/REMOVE/DISABLE MEMBERSHIPS AND ADD/REMOVE PERMISSIONS.
+                    CREATE/DELETE GROUP BUTTON. DO NOT ALLOW DELETION OF WELL-KNOWN GROUPS.
                   </v-card-text>
                 </v-card>
               </v-tab-item>
