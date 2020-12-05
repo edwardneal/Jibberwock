@@ -8,7 +8,8 @@
 
 insert into @services (Service_ID, [Name], [Url], Securable_Resource_Identifier)
 values (1, 'Jibberwock Admin Portal', 'https://admin.jibberwock.com', 'SVC-000001'),
-	(2, 'Allert', 'https://allert.jibberwock.com', 'SVC-000002')
+	(2, 'Allert', 'https://allert.jibberwock.com', 'SVC-000002'),
+	(3, 'Jibberwock Core API', 'https://www.jibberwock.com', 'SVC-000003')
 
 set identity_insert [security].[SecurableResource] on
 insert into [security].[SecurableResource] (Securable_Resource_ID, [Type_ID], [Identifier])
