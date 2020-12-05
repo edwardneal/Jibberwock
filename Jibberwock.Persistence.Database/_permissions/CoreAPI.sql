@@ -115,5 +115,11 @@ GO
 GRANT EXECUTE ON [tenants].[usp_CreateSubscription] TO [CoreAPI]
 GO
 
-GRANT EXECUTE ON [tenants].[usp_SyncTenantExternalIdentifier] TO [CoreAPI]
+GRANT EXECUTE ON [tenants].[usp_SyncTenantFromBillingProvider] TO [CoreAPI]
+GO
+
+GRANT EXECUTE ON TYPE::[tenants].[udt_Subscription] TO [CoreAPI]
+GO
+
+GRANT EXECUTE ON [tenants].[usp_SyncSubscriptionsFromBillingProvider] TO [CoreAPI]
 GO
