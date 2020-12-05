@@ -96,7 +96,7 @@
                             </tr>
                             <tr>
                               <td>{{ languageStrings.pages.audit_trail.headers.performedBy }}</td>
-                              <td>{{ selectedEntries[0].performedBy.name }}</td>
+                              <td>{{ selectedEntries[0].performedBy ? selectedEntries[0].performedBy.name : 'N/A' }}</td>
                             </tr>
                             <tr>
                               <td>{{ languageStrings.pages.audit_trail.headers.originatingService }}</td>
@@ -151,6 +151,9 @@ import EditCharacteristic from '@/components/audit_trail_entry_displays/EditChar
 import EditTier from '@/components/audit_trail_entry_displays/EditTier.vue'
 import EditNotification from '@/components/audit_trail_entry_displays/EditNotification.vue'
 import DismissNotification from '@/components/audit_trail_entry_displays/DismissNotification.vue'
+import InviteUser from '@/components/audit_trail_entry_displays/InviteUser.vue'
+import Subscription from '@/components/audit_trail_entry_displays/Subscription.vue'
+import SyncSubscription from '@/components/audit_trail_entry_displays/SyncSubscription.vue'
 
 export default {
   components: {
@@ -163,7 +166,10 @@ export default {
     EditCharacteristic,
     EditTier,
     EditNotification,
-    DismissNotification
+    DismissNotification,
+    InviteUser,
+    Subscription,
+    SyncSubscription
   },
   props: {
     languageStrings: {

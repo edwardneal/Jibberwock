@@ -156,6 +156,36 @@ export default {
         contactName: 'Contact Name',
         creatingTenant: 'New Tenant?'
       }
+    },
+    inviteUser: {
+      fields: {
+        tenantName: 'Invited To',
+        serviceBusMessageId: 'Batch Message ID'
+      }
+    },
+    subscription: {
+      fields: {
+        tierName: 'Tier',
+        isPaid: 'Payment Required?',
+        subscriptionId: 'Internal Subscription ID'
+      }
+    },
+    syncSubscriptions: {
+      fields: {
+        externalSubscriptionIdentifier: 'External Subscription ID',
+        latestInvoiceIdentifier: 'Latest Invoice ID',
+        status: 'Status',
+        subscriptionIds: 'Internal Subscription ID(s)'
+      },
+      subscriptionStatuses: [
+        { id: null, label: '(unchanged)' },
+        { id: 1, label: 'Payment Pending' },
+        { id: 2, label: 'Trial' },
+        { id: 3, label: 'Active' },
+        { id: 4, label: 'Expired' },
+        { id: 5, label: 'Payment Details Expired' },
+        { id: 6, label: 'Unpaid' }
+      ]
     }
   },
   notificationList: {
@@ -344,7 +374,10 @@ export default {
         { id: 6, label: 'Edit Tier', component: 'EditTier' },
         { id: 7, label: 'Edit Notification', component: 'EditNotification' },
         { id: 8, label: 'Dismiss Notification', component: 'DismissNotification' },
-        { id: 9, label: 'Edit Tenant', component: 'EditTenant' }
+        { id: 9, label: 'Edit Tenant', component: 'EditTenant' },
+        { id: 10, label: 'Invite User', component: 'InviteUser' },
+        { id: 11, label: 'New Subscription', component: 'Subscription' },
+        { id: 12, label: 'Subscription Sync', component: 'SyncSubscription' }
       ]
     },
     status: {
@@ -521,7 +554,8 @@ export default {
         externalId: 'SendGrid Message ID'
       },
       batchTypes: [
-        { id: 1, label: 'Notification' }
+        { id: 1, label: 'Notification' },
+        { id: 2, label: 'Invitation' }
       ]
     }
   }
