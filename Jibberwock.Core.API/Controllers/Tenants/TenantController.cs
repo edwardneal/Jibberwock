@@ -219,5 +219,28 @@ namespace Jibberwock.Core.API.Controllers.Tenants
             else
             { return NotFound(); }
         }
+
+        [Route("{id:int}/groups")]
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Group>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetTenantSecurityGroups([ResourcePermissions(SecurableResourceType.Tenant, Permission.Read)] long id)
+        {
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var listGroupsCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.ListTenantGroups(Logger, new Tenant() { Id = id });
+            var groups = await listGroupsCommand.Execute(SqlServerDataSource);
+
+            if (groups != null && groups.Any())
+            { return Ok(groups); }
+            else
+            { return NotFound(); }
+        }
     }
 }

@@ -126,3 +126,6 @@ GO
 
 GRANT EXECUTE ON [tenants].[usp_GetTenantById] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [security].[usp_GetTenantSecurityGroups] TO [CoreAPI]
+GO

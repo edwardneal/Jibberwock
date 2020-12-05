@@ -27,6 +27,11 @@ namespace Jibberwock.DataModels.Security
         public Tenant Tenant { get; set; }
 
         /// <summary>
+        /// If this <see cref="Group"/> is a well-known group, its type. <c>null</c> if this is a custom group.
+        /// </summary>
+        public WellKnownGroupType? WellKnownGroupType { get; set; }
+
+        /// <summary>
         /// Members of this <see cref="Group"/>
         /// </summary>
         public IEnumerable<GroupMembership> Users { get; set; }
