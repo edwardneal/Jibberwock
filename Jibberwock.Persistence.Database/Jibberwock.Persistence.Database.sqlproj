@@ -173,6 +173,7 @@
     <Build Include="tenants\usp_SyncTenantFromBillingProvider.sql" />
     <Build Include="tenants\udt_Subscription.sql" />
     <Build Include="tenants\usp_SyncSubscriptionsFromBillingProvider.sql" />
+    <Build Include="tenants\usp_GetTenantById.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

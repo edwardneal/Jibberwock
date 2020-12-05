@@ -4,37 +4,9 @@
       <v-row>
         <v-spacer />
         <v-col cols="12" md="3">
-          <v-card>
-            <v-card-title class="pb-0">
-              {{ tenant.name }}
-            </v-card-title>
-
-            <v-list>
-              <v-list-item>
-                <v-list-item-icon class="mr-4 align-self-center">
-                  <v-avatar rounded size="40" color="primary">
-                    <span class="white--text headline">{{ tenant.contact.name.substring(0, 1).toLocaleUpperCase() }}</span>
-                  </v-avatar>
-                </v-list-item-icon>
-
-                <v-list-item-content>
-                  <v-list-item-title>{{ tenant.contact.name }}</v-list-item-title>
-                  <v-list-item-subtitle v-if="tenant.contact.phoneNumber">
-                    <v-icon left>
-                      mdi-phone
-                    </v-icon>
-                    <a :href="'tel:' + tenant.contact.phoneNumber">{{ tenant.contact.phoneNumber }}</a>
-                  </v-list-item-subtitle>
-                  <v-list-item-subtitle v-if="tenant.contact.emailAddress">
-                    <v-icon left>
-                      mdi-email
-                    </v-icon>
-                    <a :href="'mailto:' + tenant.contact.emailAddress">{{ tenant.contact.emailAddress }}</a>
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-
-              <v-list-item>
+          <ClientTenantDetails :language-strings="languageStrings" :tenant-id="$route.params.id">
+            <template v-slot:product="{ retrievedTenant }">
+              <v-list-item :to="{ name: 'tenants/id/allert', params: { id: retrievedTenant.id.toString() } }" nuxt>
                 <v-list-item-icon class="mr-4 my-0 align-self-center">
                   <v-icon size="40">
                     mdi-cloud-alert
@@ -46,34 +18,12 @@
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
+            </template>
 
-              <v-list-item>
-                <v-list-item-icon class="mr-4 my-0 align-self-center">
-                  <v-icon size="40">
-                    mdi-account-multiple
-                  </v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ languageStrings.tenantList.sections.tenants.buttons.security }}
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-
-              <v-list-item>
-                <v-list-item-icon class="mr-4 my-0 align-self-center">
-                  <v-icon size="40">
-                    mdi-cash
-                  </v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ languageStrings.tenantList.sections.tenants.buttons.subscriptions }}
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-card>
+            <template v-slot:explanation>
+              <p>HI THERE - HOMEPAGE TEXT HERE</p>
+            </template>
+          </ClientTenantDetails>
         </v-col>
         <v-col cols="12" md="7">
           <v-card>
@@ -122,8 +72,11 @@
 </style>
 
 <script>
+import ClientTenantDetails from '~/components/ClientTenantDetails.vue'
+
 export default {
   components: {
+    ClientTenantDetails
   },
   props: {
     languageStrings: {

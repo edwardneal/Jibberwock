@@ -3,7 +3,8 @@ const baseUrl = process.env.NODE_ENV === 'production' ? 'https://www.jibberwock.
 export const state = () => ({
   urls: {
     listTenants: baseUrl + '/tenant',
-    createTenant: baseUrl + '/tenant'
+    createTenant: baseUrl + '/tenant',
+    getTenant: baseUrl + '/tenant/{id}'
   },
   tenants: []
 })
@@ -25,5 +26,10 @@ export const actions = {
   },
   createTenant ({ state }, tenant) {
     return this.$axios.post(state.urls.createTenant, tenant)
+  },
+  getTenant ({ state }, tenantId) {
+    const getTenantUrl = state.urls.getTenant.replace('{id}', encodeURIComponent(tenantId))
+
+    return this.$axios.get(getTenantUrl)
   }
 }

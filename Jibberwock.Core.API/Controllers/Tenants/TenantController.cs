@@ -2,12 +2,14 @@
 using Jibberwock.Core.API.ActionModels.Tenants;
 using Jibberwock.DataModels.Products;
 using Jibberwock.DataModels.Products.Configuration;
+using Jibberwock.DataModels.Security;
 using Jibberwock.DataModels.Tenants;
 using Jibberwock.DataModels.Users;
 using Jibberwock.Persistence.DataAccess.DataSources;
 using Jibberwock.Shared.Configuration;
 using Jibberwock.Shared.Http;
 using Jibberwock.Shared.Http.Authentication;
+using Jibberwock.Shared.Http.Authorization;
 using Jibberwock.Shared.Http.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -185,6 +187,37 @@ namespace Jibberwock.Core.API.Controllers.Tenants
             // NB: Stripe will trigger webhooks in the administrator site. These webhooks will be triggered when somebody pays, and they'll call tenants.usp_StartPaidSubscription.
             // To support this, we need to pass the subscription ID as metadata to the Stripe session.
             return Ok(creationResponse);
+        }
+
+        /// <summary>
+        /// Gets a <see cref="Tenant"/> by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="Tenant"/>.</param>
+        /// <remarks>This requires <see cref="Permission.Read"/> over the <see cref="Tenant"/>.</remarks>
+        /// <response code="200" nullable="false">A <see cref="Tenant"/> which is accessible by the current <see cref="User"/>.</response>
+        /// <response code="400" nullable="false">The <paramref name="id"/> parameter was <c>0</c>.</response>
+        /// <response code="401" nullable="false">The <see cref="Tenant"/> is not accessible by the current <see cref="User"/> or does not exist.</response>
+        [Route("{id:int}")]
+        [HttpGet]
+        [ProducesResponseType(typeof(Tenant), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetById([ResourcePermissions(SecurableResourceType.Tenant, Permission.Read)] long id)
+        {
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, string.Empty); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var getTenantCommand = new Jibberwock.Persistence.DataAccess.Commands.Tenants.GetTenantById(Logger, id);
+            var tenant = await getTenantCommand.Execute(SqlServerDataSource);
+
+            if (tenant != null)
+            { return Ok(tenant); }
+            else
+            { return NotFound(); }
         }
     }
 }

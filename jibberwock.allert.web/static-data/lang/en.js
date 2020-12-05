@@ -19,7 +19,8 @@ export default {
     noIdentityProvider: 'Please select a sign-in provider.',
     identityProviderTooLong: 'This sign-in provider name is too long. Please provide a shorter sign-in provider.',
     unableToLoadTenantList: 'We can\'t get the list of tenants right now. Please try again later.',
-    unableToCreateTenant: 'We can\'t create a tenant right now. Please try again later.'
+    unableToCreateTenant: 'We can\'t create a tenant right now. Please try again later.',
+    unableToGetTenant: 'We can\'t get this tenant right now. Please try again later.'
   },
   dropdownValues: {
     identityProvider: [
@@ -110,7 +111,8 @@ export default {
         buttons: {
           subscriptions: 'Subscriptions',
           security: 'Security',
-          allert: 'Allert Configuration'
+          allert: 'Allert Configuration',
+          apiKeys: 'API Keys'
         }
       }
     }
@@ -141,6 +143,20 @@ export default {
         alertDefinitions: 'Alert Definitions',
         activeAlerts: 'Active Alerts'
       }
+    },
+    tenant_security: {
+      title: 'Tenant Security',
+      tabs: {
+        users: 'Users',
+        invitations: 'Invitations',
+        roles: 'User Roles'
+      }
+    },
+    tenant_subscriptions: {
+      title: 'Tenant Subscriptions'
+    },
+    tenant_api_keys: {
+      title: 'API Keys'
     }
   }
 }

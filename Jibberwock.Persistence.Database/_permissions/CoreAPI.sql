@@ -123,3 +123,6 @@ GO
 
 GRANT EXECUTE ON [tenants].[usp_SyncSubscriptionsFromBillingProvider] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [tenants].[usp_GetTenantById] TO [CoreAPI]
+GO
