@@ -156,7 +156,7 @@ export default {
       title: 'Tenant Subscriptions'
     },
     tenant_api_keys: {
-      title: 'API Keys'
+      title: 'Tenant API Keys'
     }
   }
 }

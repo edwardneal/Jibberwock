@@ -11,11 +11,17 @@
           </v-tooltip>
         </v-alert>
 
-        <v-card-title v-if="! error && ! isPending" class="pb-0">
-          {{ tenant.name }}
-        </v-card-title>
+        <v-skeleton-loader v-if="isPending" :loading="isPending" type="list-item, list-item-avatar, list-item@5, paragraph" />
 
         <v-list v-if="! error && ! isPending">
+          <v-list-item :to="{ name: 'tenants/id', params: { id: tenant.id } }" nuxt exact>
+            <v-list-item-content>
+              <v-list-item-title class="headline">
+                {{ tenant.name }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
           <v-list-item>
             <v-list-item-icon class="mr-4 align-self-center">
               <v-avatar rounded size="40" color="primary">
@@ -82,7 +88,7 @@
           </v-list-item>
         </v-list>
 
-        <v-card-text>
+        <v-card-text v-if="! error && ! isPending">
           <slot name="explanation" />
         </v-card-text>
       </v-card>
