@@ -29,6 +29,14 @@ export default {
       { id: 'live.com', label: 'Microsoft', icon: 'mdi-microsoft' },
       { id: 'github.com', label: 'GitHub', icon: 'mdi-github' },
       { id: 'Azure Active Directory', label: '(new account)', icon: 'mdi-account' }
+    ],
+    securableResourceType: [
+      { id: 1, label: 'Tenant', icon: 'mdi-account-group', allowAdd: true },
+      { id: 2, label: 'API Key', icon: 'mdi-api', allowAdd: true },
+      { id: 3, label: 'Product', icon: 'mdi-package-variant', allowAdd: false },
+      { id: 4, label: 'Service', icon: 'mdi-file-cloud', allowAdd: false },
+      { id: 5, label: 'Alert Definition', icon: 'mdi-cloud-alert', allowAdd: true },
+      { id: 6, label: 'Alert Definition Group', icon: 'mdi-table-cog', allowAdd: true }
     ]
   },
   actions: {
@@ -158,7 +166,9 @@ export default {
         roles: {
           headings: {
             roleName: 'Group Name',
-            wellKnownGroupName: 'Well-Known Group'
+            wellKnownGroupName: 'Well-Known Group',
+            members: 'Members',
+            permissions: 'Permissions'
           }
         }
       }
