@@ -20,7 +20,8 @@ export default {
     identityProviderTooLong: 'This sign-in provider name is too long. Please provide a shorter sign-in provider.',
     unableToLoadTenantList: 'We can\'t get the list of tenants right now. Please try again later.',
     unableToCreateTenant: 'We can\'t create a tenant right now. Please try again later.',
-    unableToGetTenant: 'We can\'t get this tenant right now. Please try again later.'
+    unableToGetTenant: 'We can\'t get this tenant right now. Please try again later.',
+    cannotDeleteWellKnownGroup: 'This group is one of this tenant\'s well-known groups, so it cannot be deleted.'
   },
   dropdownValues: {
     identityProvider: [
@@ -31,7 +32,9 @@ export default {
     ]
   },
   actions: {
-    create: 'Create'
+    create: 'Create',
+    delete: 'Delete',
+    edit: 'Edit'
   },
   dialogs: {
   },
@@ -149,7 +152,15 @@ export default {
       tabs: {
         users: 'Users',
         invitations: 'Invitations',
-        roles: 'User Roles'
+        roles: 'Groups'
+      },
+      sections: {
+        roles: {
+          headings: {
+            roleName: 'Group Name',
+            wellKnownGroupName: 'Well-Known Group'
+          }
+        }
       }
     },
     tenant_subscriptions: {

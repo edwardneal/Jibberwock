@@ -50,6 +50,9 @@
             </v-icon>
           </v-chip>
         </template>
+        <template v-slot:item._actions="{ item }">
+          <slot name="item-actions" v-bind="{ item }" />
+        </template>
       </v-data-table>
     </template>
   </Promised>
