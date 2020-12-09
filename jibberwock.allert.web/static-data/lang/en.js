@@ -21,6 +21,7 @@ export default {
     unableToLoadTenantList: 'We can\'t get the list of tenants right now. Please try again later.',
     unableToCreateTenant: 'We can\'t create a tenant right now. Please try again later.',
     unableToGetTenant: 'We can\'t get this tenant right now. Please try again later.',
+    unableToGetSecurityGroup: 'We can\'t get this security group right now. Please try again later.',
     cannotDeleteWellKnownGroup: 'This group is one of this tenant\'s well-known groups, so it cannot be deleted.'
   },
   dropdownValues: {
@@ -37,6 +38,17 @@ export default {
       { id: 4, label: 'Service', icon: 'mdi-file-cloud', allowAdd: false },
       { id: 5, label: 'Alert Definition', icon: 'mdi-cloud-alert', allowAdd: true },
       { id: 6, label: 'Alert Definition Group', icon: 'mdi-table-cog', allowAdd: true }
+    ],
+    permission: [
+      { id: 1, label: 'Read', allowAdd: true },
+      { id: 2, label: 'Change', allowAdd: true },
+      { id: 3, label: 'Change Billing Contact', allowAdd: true },
+      { id: 4, label: 'Change Subscription Billing', allowAdd: true },
+      { id: 5, label: 'Delete', allowAdd: true },
+      { id: 6, label: 'Invite', allowAdd: true },
+      { id: 7, label: 'Read Logs', allowAdd: true },
+      { id: 8, label: 'Create API Key', allowAdd: true },
+      { id: 9, label: 'Create Product', allowAdd: false }
     ]
   },
   actions: {

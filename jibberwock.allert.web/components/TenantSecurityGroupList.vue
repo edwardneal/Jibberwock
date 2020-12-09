@@ -49,56 +49,86 @@
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-card v-if="securityGroups.selectedGroups && securityGroups.selectedGroups.length > 0" flat>
-            <v-toolbar dense>
-              <v-toolbar-items>
-                <v-btn class="pl-3">
-                  <v-icon left>
-                    mdi-pencil
-                  </v-icon>
-                  {{ languageStrings.actions.edit }}
-                </v-btn>
-                <v-btn :disabled="securityGroups.selectedGroups[0].wellKnownGroupType !== null" class="pl-3" color="error">
-                  <v-icon left>
-                    mdi-delete-forever
-                  </v-icon>
-                  {{ languageStrings.actions.delete }}
-                </v-btn>
-              </v-toolbar-items>
-            </v-toolbar>
+          <Promised v-if="securityGroups.selectedGroups && securityGroups.selectedGroups.length > 0" :promise="securityGroups.detailsPromise">
+            <template v-slot:combined="{ isPending, error }">
+              <v-card :loading="isPending" flat>
+                <v-toolbar dense>
+                  <v-toolbar-items>
+                    <v-btn class="pl-3" :disabled="isPending && ! error">
+                      <v-icon left>
+                        mdi-pencil
+                      </v-icon>
+                      {{ languageStrings.actions.edit }}
+                    </v-btn>
+                    <v-btn :disabled="securityGroups.selectedGroups[0].wellKnownGroupType !== null" class="pl-3" color="error">
+                      <v-icon left>
+                        mdi-delete-forever
+                      </v-icon>
+                      {{ languageStrings.actions.delete }}
+                    </v-btn>
+                  </v-toolbar-items>
+                </v-toolbar>
 
-            <v-card-title>{{ securityGroups.selectedGroups[0].name }}</v-card-title>
-            <v-card-text v-if="securityGroups.selectedGroups[0].wellKnownGroupType !== null">
-              {{ languageStrings.validationErrorMessages.cannotDeleteWellKnownGroup }}
-            </v-card-text>
+                <v-card-title>{{ securityGroups.selectedGroups[0].name }}</v-card-title>
+                <v-card-text v-if="securityGroups.selectedGroups[0].wellKnownGroupType !== null">
+                  {{ languageStrings.validationErrorMessages.cannotDeleteWellKnownGroup }}
+                </v-card-text>
 
-            <v-card-text>
-              <h4 class="text--h3">
-                {{ languageStrings.pages.tenant_security.sections.roles.headings.members }}
-              </h4>
-              <v-chip class="my-1" small label>Member 1</v-chip>
-              <v-chip class="my-1" small label color="error">Member 2</v-chip>
-              <v-chip class="my-1" small label>Member 3</v-chip>
-              <v-chip class="my-1" small label>...</v-chip>
-            </v-card-text>
+                <v-alert v-if="error !== null" dense dismissible outlined type="error">
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <span v-bind="attrs" v-on="on">{{ languageStrings.validationErrorMessages.unableToGetSecurityGroup }}</span>
+                    </template>
+                    <span>{{ error.message }}</span>
+                  </v-tooltip>
+                </v-alert>
 
-            <v-card-text>
-              <h4 class="text--h3">
-                {{ languageStrings.pages.tenant_security.sections.roles.headings.permissions }}: Read
-              </h4>
-              <v-tooltip bottom v-for="srType in languageStrings.dropdownValues.securableResourceType" :key="srType.id">
-                <template v-slot:activator="{ on, attrs }">
-                  <v-chip class="ma-1" small label v-bind="attrs" v-on="on">
-                    <v-icon small left>
-                      {{ srType.icon }}
-                    </v-icon>
-                    {{ srType.label }}
+                <v-card-text v-if="securityGroups.selectedGroups[0].users !== null">
+                  <h4 class="text--h3">
+                    {{ languageStrings.pages.tenant_security.sections.roles.headings.members }}
+                  </h4>
+                  <template v-for="(mem, memIdx) in securityGroups.selectedGroups[0].users">
+                    <v-chip
+                      v-if="memIdx < 2"
+                      :key="memIdx"
+                      :color="! mem.enabled ? 'error' : undefined"
+                      class="my-1"
+                      small
+                      label
+                    >
+                      {{ mem.user.name }}
+                    </v-chip>
+                  </template>
+
+                  <v-chip v-if="securityGroups.selectedGroups[0].users.length > 2" class="my-1" small label>
+                    ...
                   </v-chip>
+                </v-card-text>
+
+                <template v-if="securityGroups.selectedGroups[0].accessControlEntries !== null">
+                  <v-card-text
+                    v-for="(permGroup, permGroupIdx) in getPermissionGroups(securityGroups.selectedGroups[0].accessControlEntries)"
+                    :key="permGroupIdx"
+                  >
+                    <h4 class="text--h3">
+                      {{ languageStrings.pages.tenant_security.sections.roles.headings.permissions }}: {{ permGroup.label }}
+                    </h4>
+                    <v-tooltip v-for="res in permGroup.resources" :key="permGroupIdx + '.tooltip.' + res.name" bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-chip class="ma-1" small label v-bind="attrs" v-on="on">
+                          <v-icon small left>
+                            {{ res.type.icon }}
+                          </v-icon>
+                          {{ res.name }}
+                        </v-chip>
+                      </template>
+                      {{ res.type.label }}
+                    </v-tooltip>
+                  </v-card-text>
                 </template>
-                {{ srType.label }}
-              </v-tooltip>
-            </v-card-text>
-          </v-card>
+              </v-card>
+            </template>
+          </Promised>
         </v-col>
       </v-row>
     </v-card-text>
@@ -107,11 +137,14 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { Promised } from 'vue-promised'
 import PromisedTable from '~/components/PromisedTable.vue'
+import { groupBy } from '~/utility/collections'
 
 export default {
   components: {
-    PromisedTable
+    PromisedTable,
+    Promised
   },
   props: {
     languageStrings: {
@@ -134,7 +167,8 @@ export default {
           { text: this.languageStrings.pages.tenant_security.sections.roles.headings.roleName, value: 'name', sortable: true, filterable: false },
           { text: '', value: '_actions', sortable: false, filterable: false, align: 'right' }
         ],
-        selectedGroups: []
+        selectedGroups: [],
+        detailsPromise: Promise.resolve()
       }
     }
   },
@@ -142,10 +176,42 @@ export default {
   },
   methods: {
     ...mapActions({
-      getTenantSecurityGroupsInternal: 'tenants/getTenantSecurityGroups'
+      getTenantSecurityGroupsInternal: 'tenants/getTenantSecurityGroups',
+      getSingleTenantSecurityGroupInternal: 'tenants/getSingleTenantSecurityGroup'
     }),
     updateSelectedSecurityGroup (value) {
-      this.securityGroups.selectedGroups = value
+      this.securityGroups.detailsPromise = Promise.resolve(value)
+        .then((newSelection) => {
+          this.securityGroups.selectedGroups = newSelection
+
+          // When we're selecting a group, we want to get its details (members and permissions.)
+          // To keep our references straight, we'll just upgrade the users and accessControlEntries properties.
+          return newSelection.length === 0
+            ? Promise.resolve()
+            : this.getSingleTenantSecurityGroupInternal({
+              tenantId: this.tenant.id,
+              groupId: newSelection[0].id
+            })
+              .then((data) => {
+                this.securityGroups.selectedGroups[0].users = data.data.users
+                this.securityGroups.selectedGroups[0].accessControlEntries = data.data.accessControlEntries
+              })
+        })
+    },
+    // Converts the full list of access control entries to a grouped list by permission
+    getPermissionGroups (accessControlEntries) {
+      return groupBy(accessControlEntries, 'permission')
+        .map((perm) => {
+          const permDetails = this.languageStrings.dropdownValues.permission.find(p => p.id === perm.key)
+
+          return {
+            label: permDetails.label,
+            resources: perm.values.map(v => ({
+              name: v.resource.name,
+              type: this.languageStrings.dropdownValues.securableResourceType.find(rt => rt.id === v.resource.resourceType)
+            }))
+          }
+        })
     }
   }
 }
