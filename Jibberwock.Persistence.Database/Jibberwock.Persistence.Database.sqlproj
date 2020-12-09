@@ -175,6 +175,7 @@
     <Build Include="tenants\usp_SyncSubscriptionsFromBillingProvider.sql" />
     <Build Include="tenants\usp_GetTenantById.sql" />
     <Build Include="security\usp_GetTenantSecurityGroups.sql" />
+    <Build Include="security\usp_GetSecurityGroupById.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

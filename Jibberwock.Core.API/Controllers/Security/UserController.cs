@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Jibberwock.Core.API.Controllers.Users
+namespace Jibberwock.Core.API.Controllers.Security
 {
     [ApiController]
     [Route("api/[controller]")]

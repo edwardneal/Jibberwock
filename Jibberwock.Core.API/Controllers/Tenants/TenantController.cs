@@ -220,6 +220,14 @@ namespace Jibberwock.Core.API.Controllers.Tenants
             { return NotFound(); }
         }
 
+        /// <summary>
+        /// Gets all groups in this <see cref="Tenant"/>.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="Tenant"/>.</param>
+        /// <remarks>This requires <see cref="Permission.Read"/> over the <see cref="Tenant"/>. It only retrieves top-level information about each <see cref="Group"/>.</remarks>
+        /// <response code="200" nullable="false">A set of <see cref="Group"/> items, one for every group in the specified <see cref="Tenant"/>.</response>
+        /// <response code="400" nullable="false">The <paramref name="id"/> parameter was <c>0</c>.</response>
+        /// <response code="401" nullable="false">The <see cref="Tenant"/> is not accessible by the current <see cref="User"/> or does not exist.</response>
         [Route("{id:int}/groups")]
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Group>), StatusCodes.Status200OK)]
@@ -241,6 +249,34 @@ namespace Jibberwock.Core.API.Controllers.Tenants
             { return Ok(groups); }
             else
             { return NotFound(); }
+        }
+
+        /// <summary>
+        /// Gets the details of a single group in this <see cref="Tenant"/>.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="Tenant"/>.</param>
+        /// <param name="groupId">The ID of the <see cref="Group"/>.</param>
+        /// <remarks>This requires <see cref="Permission.Read"/> over the <see cref="Tenant"/>. It retrieves all information for the specified <see cref="Group"/>.</remarks>
+        /// <response code="200" nullable="false">A single <see cref="Group"/>, with all fields populated.</response>
+        /// <response code="400" nullable="false">The <paramref name="id"/> or the <paramref name="groupId"/> parameter was <c>0</c>.</response>
+        /// <response code="401" nullable="false">The <see cref="Tenant"/> is not accessible by the current <see cref="User"/> or does not exist.</response>
+        [Route("{id:int}/groups/{groupId}")]
+        [HttpGet]
+        [ProducesResponseType(typeof(Group), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetSingleTenantSecurityGroup([ResourcePermissions(SecurableResourceType.Tenant, Permission.Read)]  long id, long groupId)
+        {
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(id)); }
+            if (groupId == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(groupId)); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            return Ok();
         }
     }
 }
