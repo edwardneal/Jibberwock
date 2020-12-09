@@ -276,7 +276,13 @@ namespace Jibberwock.Core.API.Controllers.Tenants
             if (!ModelState.IsValid)
             { return BadRequest(ModelState); }
 
-            return Ok();
+            var getSecurityGroupCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.GetSecurityGroupById(Logger, new Group() { Id = groupId, Tenant = new Tenant() { Id = id } });
+            var retrievedGroup = await getSecurityGroupCommand.Execute(SqlServerDataSource);
+
+            if (retrievedGroup != null)
+            { return Ok(retrievedGroup); }
+            else
+            { return NotFound(); }
         }
     }
 }

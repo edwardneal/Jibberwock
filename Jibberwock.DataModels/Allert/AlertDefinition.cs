@@ -13,7 +13,7 @@ namespace Jibberwock.DataModels.Allert
         /// <summary>
         /// The unique identifier of this <see cref="AlertDefinition"/>.
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// The friendly name of this <see cref="AlertDefinition"/>.

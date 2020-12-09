@@ -32,8 +32,13 @@ namespace Jibberwock.DataModels.Security
         public WellKnownGroupType? WellKnownGroupType { get; set; }
 
         /// <summary>
-        /// Members of this <see cref="Group"/>
+        /// Members of this <see cref="Group"/>.
         /// </summary>
         public IEnumerable<GroupMembership> Users { get; set; }
+
+        /// <summary>
+        /// Access control entries which grant this <see cref="Group"/> permissions over <see cref="SecurableResource"/>s.
+        /// </summary>
+        public IEnumerable<AccessControlEntry> AccessControlEntries { get; set; }
     }
 }
