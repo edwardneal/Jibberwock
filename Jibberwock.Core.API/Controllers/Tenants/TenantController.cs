@@ -284,5 +284,39 @@ namespace Jibberwock.Core.API.Controllers.Tenants
             else
             { return NotFound(); }
         }
+
+        /// <summary>
+        /// Gets all <see cref="SecurableResource"/>s in this <see cref="Tenant"/> with a name which matches <paramref name="filter"/>.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="Tenant"/>.</param>
+        /// <param name="filter">The filter to apply to various <see cref="SecurableResource"/> names.</param>
+        /// <remarks>This requires <see cref="Permission.Read"/> over the <see cref="Tenant"/>. It only returns sub-tenant <see cref="SecurableResource"/>s which the user has some kind of access to.</remarks>
+        /// <response code="200" nullable="false">A set of <see cref="SecurableResource"/> derivatives.</response>
+        /// <response code="401" nullable="false">The <see cref="Tenant"/> is not accessible by the current <see cref="User"/> or does not exist.</response>
+        [Route("{id:int}/securableresources")]
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<SecurableResource>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetSecurableResourcesByFilter([ResourcePermissions(SecurableResourceType.Tenant, Permission.Read)] long id, [FromQuery] string filter)
+        {
+            var safeFilter = filter;
+
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(id)); }
+
+            if (string.IsNullOrWhiteSpace(safeFilter))
+            { safeFilter = "%"; }
+            else
+            { safeFilter = safeFilter.Replace("*", "%"); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var currUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            var getResourcesCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.GetSecurableResourcesByName(Logger, safeFilter, currUser, new Tenant() { Id = id });
+            var resources = await getResourcesCommand.Execute(SqlServerDataSource);
+
+            return Ok(resources);
+        }
     }
 }

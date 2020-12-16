@@ -176,6 +176,7 @@
     <Build Include="tenants\usp_GetTenantById.sql" />
     <Build Include="security\usp_GetTenantSecurityGroups.sql" />
     <Build Include="security\usp_GetSecurityGroupById.sql" />
+    <Build Include="security\usp_GetSecurableResourcesByName.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

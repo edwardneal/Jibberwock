@@ -64,33 +64,10 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
                                                  {
                                                      Id = ace.Id,
                                                      Permission = (Permission)ace.Permission,
-                                                     Resource = getSecurableResource(ace)
+                                                     Resource = SecurableResourceHelpers.GetSecurableResourceFromDatabase(ace)
                                                  }).ToArray();
 
             return groupDetails;
-        }
-
-        private static SecurableResource getSecurableResource(dynamic resourceRow)
-        {
-            var resourceType = (SecurableResourceType)resourceRow.ResourceType;
-
-            switch (resourceType)
-            {
-                case SecurableResourceType.Tenant:
-                    return new Jibberwock.DataModels.Tenants.Tenant() { Id = resourceRow.Id, Name = resourceRow.ResourceName, ResourceIdentifier = resourceRow.ResourceIdentifier, ResourceType = resourceType };
-                case SecurableResourceType.ApiKey:
-                    throw new ArgumentOutOfRangeException("ResourceType");
-                case SecurableResourceType.Product:
-                    return new Jibberwock.DataModels.Products.Product() { Id = resourceRow.Id, Name = resourceRow.ResourceName, ResourceIdentifier = resourceRow.ResourceIdentifier, ResourceType = resourceType };
-                case SecurableResourceType.Service:
-                    return new Jibberwock.DataModels.Core.Service() { Id = resourceRow.Id, Name = resourceRow.ResourceName, ResourceIdentifier = resourceRow.ResourceIdentifier, ResourceType = resourceType };
-                case SecurableResourceType.Allert_AlertDefinition:
-                    return new Jibberwock.DataModels.Allert.AlertDefinition() { Id = resourceRow.Id, Name = resourceRow.ResourceName, ResourceIdentifier = resourceRow.ResourceIdentifier, ResourceType = resourceType };
-                case SecurableResourceType.Allert_AlertDefinitionGroup:
-                    return new Jibberwock.DataModels.Allert.AlertDefinitionGroup() { Id = resourceRow.Id, Name = resourceRow.ResourceName, ResourceIdentifier = resourceRow.ResourceIdentifier, ResourceType = resourceType };
-                default:
-                    throw new ArgumentOutOfRangeException("ResourceType");
-            }
         }
     }
 }

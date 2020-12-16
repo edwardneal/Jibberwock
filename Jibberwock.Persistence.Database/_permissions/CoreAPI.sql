@@ -132,3 +132,6 @@ GO
 
 GRANT EXECUTE ON [security].[usp_GetSecurityGroupById] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [security].[usp_GetSecurableResourcesByName] TO [CoreAPI]
+GO
