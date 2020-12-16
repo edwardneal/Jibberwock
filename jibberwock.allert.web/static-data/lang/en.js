@@ -54,9 +54,30 @@ export default {
   actions: {
     create: 'Create',
     delete: 'Delete',
-    edit: 'Edit'
+    edit: 'Edit',
+    update: 'Update',
+    cancel: 'Cancel',
+    invite: 'Invite'
   },
   dialogs: {
+    updateTenantSecurityGroup: {
+      title: 'Update Group',
+      fields: {
+        group: {
+          name: 'Name',
+          members: 'Members',
+          accessControlEntries: 'Security'
+        },
+        member: {
+          name: 'User Name',
+          enabled: 'Enabled?'
+        },
+        accessControlEntry: {
+          resourceName: 'Resource',
+          permission: 'Permission'
+        }
+      }
+    }
   },
   forms: {
     createTenant: {

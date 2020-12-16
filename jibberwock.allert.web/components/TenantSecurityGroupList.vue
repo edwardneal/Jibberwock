@@ -26,7 +26,7 @@
             <template v-slot:item-actions="{ item }">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on">
+                  <v-btn icon v-bind="attrs" v-on="on" @click="showUpdateForm(item)">
                     <v-icon>
                       mdi-pencil
                     </v-icon>
@@ -54,7 +54,7 @@
               <v-card :loading="isPending" flat>
                 <v-toolbar dense>
                   <v-toolbar-items>
-                    <v-btn class="pl-3" :disabled="isPending && ! error">
+                    <v-btn class="pl-3" :disabled="isPending && ! error" @click="showUpdateForm(securityGroups.selectedGroups[0])">
                       <v-icon left>
                         mdi-pencil
                       </v-icon>
@@ -129,6 +129,8 @@
               </v-card>
             </template>
           </Promised>
+
+          <UpdateTenantSecurityGroup :language-strings="languageStrings" :tenant-id="tenantId" :security-group="securityGroups.updateForm.groupToEdit" :visible.sync="securityGroups.updateForm.visible" />
         </v-col>
       </v-row>
     </v-card-text>
@@ -139,12 +141,14 @@
 import { mapActions } from 'vuex'
 import { Promised } from 'vue-promised'
 import PromisedTable from '~/components/PromisedTable.vue'
+import UpdateTenantSecurityGroup from '~/components/UpdateTenantSecurityGroup.vue'
 import { groupBy } from '~/utility/collections'
 
 export default {
   components: {
     PromisedTable,
-    Promised
+    Promised,
+    UpdateTenantSecurityGroup
   },
   props: {
     languageStrings: {
@@ -168,7 +172,11 @@ export default {
           { text: '', value: '_actions', sortable: false, filterable: false, align: 'right' }
         ],
         selectedGroups: [],
-        detailsPromise: Promise.resolve()
+        detailsPromise: Promise.resolve(),
+        updateForm: {
+          visible: false,
+          groupToEdit: null
+        }
       }
     }
   },
@@ -189,7 +197,7 @@ export default {
           return newSelection.length === 0
             ? Promise.resolve()
             : this.getSingleTenantSecurityGroupInternal({
-              tenantId: this.tenant.id,
+              tenantId: this.tenantId,
               groupId: newSelection[0].id
             })
               .then((data) => {
@@ -212,6 +220,10 @@ export default {
             }))
           }
         })
+    },
+    showUpdateForm (group) {
+      this.securityGroups.updateForm.groupToEdit = group
+      this.securityGroups.updateForm.visible = true
     }
   }
 }

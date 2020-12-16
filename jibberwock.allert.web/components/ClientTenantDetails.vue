@@ -14,7 +14,7 @@
         <v-skeleton-loader v-if="isPending" :loading="isPending" type="list-item, list-item-avatar, list-item@5, paragraph" />
 
         <v-list v-if="! error && ! isPending">
-          <v-list-item :to="{ name: 'tenants/id', params: { id: tenant.id } }" nuxt exact>
+          <v-list-item :to="{ name: 'tenants/id', params: { id: tenant.id.toString() } }" nuxt exact>
             <v-list-item-content>
               <v-list-item-title class="headline">
                 {{ tenant.name }}
@@ -48,7 +48,7 @@
 
           <slot name="product" :retrieved-tenant="tenant" />
 
-          <v-list-item :to="{ name: 'tenants/id/security', params: { id: tenant.id } }" nuxt>
+          <v-list-item :to="{ name: 'tenants/id/security', params: { id: tenant.id.toString() } }" nuxt>
             <v-list-item-icon class="mr-4 my-0 align-self-center">
               <v-icon size="40">
                 mdi-account-multiple
@@ -61,7 +61,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item :to="{ name: 'tenants/id/subscriptions', params: { id: tenant.id } }" nuxt>
+          <v-list-item :to="{ name: 'tenants/id/subscriptions', params: { id: tenant.id.toString() } }" nuxt>
             <v-list-item-icon class="mr-4 my-0 align-self-center">
               <v-icon size="40">
                 mdi-cash
@@ -74,7 +74,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item :to="{ name: 'tenants/id/api-keys', params: { id: tenant.id } }" nuxt>
+          <v-list-item :to="{ name: 'tenants/id/api-keys', params: { id: tenant.id.toString() } }" nuxt>
             <v-list-item-icon class="mr-4 my-0 align-self-center">
               <v-icon size="40">
                 mdi-api
