@@ -6,7 +6,9 @@ export const state = () => ({
     createTenant: baseUrl + '/tenant',
     getTenant: baseUrl + '/tenant/{id}',
     getTenantSecurityGroups: baseUrl + '/tenant/{id}/groups',
-    getSingleTenantSecurityGroup: baseUrl + '/tenant/{id}/groups/{groupId}'
+    getSingleTenantSecurityGroup: baseUrl + '/tenant/{id}/groups/{groupId}',
+    getTenantSecurableResources: baseUrl + '/tenant/{id}/securableresources?filter={filter}',
+    getTenantMembers: baseUrl + '/tenant/{id}/members'
   },
   tenants: []
 })
@@ -43,5 +45,15 @@ export const actions = {
     const getSingleTenantSecurityGroupUrl = state.urls.getSingleTenantSecurityGroup.replace('{id}', encodeURIComponent(tenantId)).replace('{groupId}', encodeURIComponent(groupId))
 
     return this.$axios.get(getSingleTenantSecurityGroupUrl)
+  },
+  getTenantSecurableResources ({ state }, { tenantId, filter }) {
+    const getTenantSecurableResourcesUrl = state.urls.getTenantSecurableResources.replace('{id}', encodeURIComponent(tenantId)).replace('{filter}', encodeURIComponent(filter))
+
+    return this.$axios.get(getTenantSecurableResourcesUrl)
+  },
+  getTenantMembers ({ state }, tenantId) {
+    const getTenantMembersUrl = state.urls.getTenantMembers.replace('{id}', encodeURIComponent(tenantId))
+
+    return this.$axios.get(getTenantMembersUrl)
   }
 }

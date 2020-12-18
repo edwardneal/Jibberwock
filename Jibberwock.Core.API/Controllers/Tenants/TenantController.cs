@@ -318,5 +318,30 @@ namespace Jibberwock.Core.API.Controllers.Tenants
 
             return Ok(resources);
         }
+
+        /// <summary>
+        /// Gets all members of this <see cref="Tenant"/>.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="Tenant"/>.</param>
+        /// <remarks>This requires <see cref="Permission.Read"/> over the <see cref="Tenant"/>..</remarks>
+        /// <response code="200" nullable="false">A set of <see cref="GroupMembership"/> instances.</response>
+        /// <response code="401" nullable="false">The <see cref="Tenant"/> is not accessible by the current <see cref="User"/> or does not exist.</response>
+        [Route("{id:int}/members")]
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<GroupMembership>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetTenantMembers([ResourcePermissions(SecurableResourceType.Tenant, Permission.Read)]  long id)
+        {
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(id)); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var getMembersGroupCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.GetWellKnownTenantSecurityGroup(Logger, new Tenant() { Id = id }, WellKnownGroupType.TenantMembers);
+            var membersGroup = await getMembersGroupCommand.Execute(SqlServerDataSource);
+
+            return Ok(membersGroup.Users);
+        }
     }
 }

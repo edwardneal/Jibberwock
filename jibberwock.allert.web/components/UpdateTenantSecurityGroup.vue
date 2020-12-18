@@ -32,8 +32,6 @@
 
             <v-row>
               <v-col cols="12">
-                2x NEW API CALLS. LIST MEMBERS OF TENANT MEMBERS GROUP (FOR FIRST AUTOCOMPLETE)<br />
-                LIST SECURABLE RESOURCES IN TENANT. INCLUDE THEIR TYPES AND NAMES (FOR SECOND AUTOCOMPLETE)<br />
                 CONFIRM VALIDATION. MAKE THE ADD+DELETE BUTTONS WORK. CREATE THE THINGY TO SAVE A GROUP. NO API CALLS NOW - THAT'S FINE FOR NOW.<br />
                 CHANGE THE GROUP MEMBERSHIP API AND DATA MODEL, INDICATING WHETHER IT'S A PROPER USER OR AN INVITATION
               </v-col>
@@ -47,8 +45,16 @@
                 MEMBERS - WELL-KNOWN GROUPS MUST ALWAYS HAVE AT LEAST ONE ENABLED MEMBERSHIP (NOT AN INVITATION!)
                 <v-data-table :items="updatedSecurityGroup.users" :headers="members.headers">
                   <template v-slot:top>
-                    <v-toolbar class="control-toolbar mb-2" flat>
-                      AUTOCOMPLETE: MEMBERS OF TENANT MEMBER GROUP. DON'T SHOW IF A TENANT MEMBERS GROUP
+                    <v-toolbar class="control-toolbar mb-2 flex flex-fill flex-row" flat>
+                      <TenantMemberDropdown
+                        v-if="updatedSecurityGroup.wellKnownGroupType !== 6"
+                        v-model="members.memberToAdd.user"
+                        :language-strings="languageStrings"
+                        :tenant-id="tenantId"
+                        :title="languageStrings.dialogs.updateTenantSecurityGroup.fields.member.name"
+                        :excluded-members="updatedSecurityGroup.users.map(mem => mem.user)"
+                        class="pr-2 grow"
+                      />
 
                       <v-toolbar-items>
                         <v-btn v-if="updatedSecurityGroup.wellKnownGroupType !== 6" depressed :disabled="!members.memberToAdd || !members.memberToAdd.user" @click="addMember">
@@ -87,7 +93,13 @@
                 <v-data-table :items="updatedSecurityGroup.accessControlEntries" :headers="accessControlEntries.headers">
                   <template v-slot:top>
                     <v-toolbar class="control-toolbar mb-2" flat>
-                      RESOURCE ID GOES HERE
+                      <TenantSecurableResourceDropdown
+                        v-model="accessControlEntries.entryToAdd.resource"
+                        :language-strings="languageStrings"
+                        :tenant-id="tenantId"
+                        :title="languageStrings.dialogs.updateTenantSecurityGroup.fields.accessControlEntry.resourceName"
+                        class="pr-2"
+                      />
 
                       <v-select
                         v-model="accessControlEntries.entryToAdd.permission"
@@ -97,7 +109,7 @@
                         item-value="id"
                         hide-details
                         single-line
-                        class="pr-1"
+                        class="pr-2"
                         @input="$v.accessControlEntries.entryToAdd.permission.$touch()"
                         @blur="$v.accessControlEntries.entryToAdd.permission.$touch()"
                       />
@@ -161,10 +173,14 @@
 import { required, maxLength } from 'vuelidate/lib/validators'
 import { mapActions } from 'vuex'
 import { Promised } from 'vue-promised'
+import TenantSecurableResourceDropdown from '~/components/TenantSecurableResourceDropdown'
+import TenantMemberDropdown from '~/components/TenantMemberDropdown'
 
 export default {
   components: {
-    Promised
+    Promised,
+    TenantSecurableResourceDropdown,
+    TenantMemberDropdown
   },
   props: {
     languageStrings: {
