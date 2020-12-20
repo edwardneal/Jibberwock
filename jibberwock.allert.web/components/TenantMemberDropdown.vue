@@ -76,6 +76,7 @@ export default {
       this.$emit('input', val?.user)
     },
     excludedMembers (_val) {
+      // todo: this is triggered whenever any records are added. This needs to be fixed.
       this.srPromise = this.getMembers(this.tenantId)
     }
   },

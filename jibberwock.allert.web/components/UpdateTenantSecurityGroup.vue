@@ -32,7 +32,7 @@
 
             <v-row>
               <v-col cols="12">
-                CONFIRM VALIDATION. MAKE THE ADD+DELETE BUTTONS WORK. CREATE THE THINGY TO SAVE A GROUP. NO API CALLS NOW - THAT'S FINE FOR NOW.<br />
+                CONFIRM VALIDATION. CREATE THE THINGY TO SAVE A GROUP. NO API CALLS NOW - THAT'S FINE FOR NOW.<br />
                 CHANGE THE GROUP MEMBERSHIP API AND DATA MODEL, INDICATING WHETHER IT'S A PROPER USER OR AN INVITATION
               </v-col>
             </v-row>
@@ -249,7 +249,7 @@ export default {
       }
     },
     accessControlEntries: {
-      memberToAdd: {
+      entryToAdd: {
         permission: {
           required
         },
@@ -318,16 +318,47 @@ export default {
       return (this.updatedSecurityGroup.wellKnownGroupType === null || this.updatedSecurityGroup.users.length > 1)
     },
     addMember () {
-      alert('add a member to the list!')
+      this.updatedSecurityGroup.users.push(this.members.memberToAdd)
+
+      this.members.pendingMemberAdditions.push(this.members.memberToAdd)
+      this.members.memberToAdd = { enabled: true, user: null }
     },
-    removeMember (_mem) {
-      alert('remove a member from the list!')
+    removeMember (mem) {
+      // Look for a member in the "pending additions" list. If it's present, we just remove it from that list.
+      // Otherwise, create a "pending removal" record
+      const memberAdditionIndex = this.members.pendingMemberAdditions.indexOf(mem)
+      const securityGroupIndex = this.updatedSecurityGroup.users.indexOf(mem)
+
+      if (memberAdditionIndex === -1) {
+        this.members.pendingMemberRemovals.push(mem)
+      } else {
+        this.members.pendingMemberAdditions.splice(memberAdditionIndex, 1)
+      }
+
+      if (securityGroupIndex !== -1) {
+        this.updatedSecurityGroup.users.splice(securityGroupIndex, 1)
+      }
     },
     addPermission () {
-      alert('add a permission to the list!')
+      this.updatedSecurityGroup.accessControlEntries.push(this.accessControlEntries.entryToAdd)
+
+      this.accessControlEntries.pendingEntryAdditions.push(this.accessControlEntries.entryToAdd)
+      this.accessControlEntries.entryToAdd = { permission: null, resource: null }
     },
-    removePermission (_perm) {
-      alert('remove a permission from the list!')
+    removePermission (perm) {
+      // This has the same logic as removeMember, but with ACEs
+      const entryAdditionIndex = this.accessControlEntries.pendingEntryAdditions.indexOf(perm)
+      const securityGroupIndex = this.updatedSecurityGroup.accessControlEntries.indexOf(perm)
+
+      if (entryAdditionIndex === -1) {
+        this.accessControlEntries.pendingEntryRemovals.push(perm)
+      } else {
+        this.accessControlEntries.pendingEntryAdditions.splice(entryAdditionIndex, 1)
+      }
+
+      if (securityGroupIndex !== -1) {
+        this.updatedSecurityGroup.accessControlEntries.splice(securityGroupIndex, 1)
+      }
     }
   }
 }
