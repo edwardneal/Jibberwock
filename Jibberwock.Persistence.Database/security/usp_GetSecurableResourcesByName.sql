@@ -7,10 +7,10 @@ BEGIN
 	set nocount on;
 	set xact_abort on;
 
-	select x.Id, x.ResourceIdentifier, x.ResourceType, x.ResourceName
+	select x.ResourceId, x.ResourceIdentifier, x.ResourceType, x.ResourceName
 	from
 	(
-		select distinct sr.Securable_Resource_ID as Id, sr.Identifier as ResourceIdentifier, sr.[Type_ID] as ResourceType,
+		select distinct sr.Securable_Resource_ID as ResourceId, sr.Identifier as ResourceIdentifier, sr.[Type_ID] as ResourceType,
 			case sr.[Type_ID]
 				when 1 then ten.[Name]
 				when 2 then N'(todo: API KEY)'

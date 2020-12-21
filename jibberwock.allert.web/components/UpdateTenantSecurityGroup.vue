@@ -32,7 +32,6 @@
 
             <v-row>
               <v-col cols="12">
-                CONFIRM VALIDATION. CREATE THE THINGY TO SAVE A GROUP. NO API CALLS NOW - THAT'S FINE FOR NOW.<br />
                 CHANGE THE GROUP MEMBERSHIP API AND DATA MODEL, INDICATING WHETHER IT'S A PROPER USER OR AN INVITATION
               </v-col>
             </v-row>
@@ -68,12 +67,12 @@
                   </template>
 
                   <template v-slot:item.enabled="{ item }">
-                    <v-chip v-if="item.enabled" color="success" small @click="if (canDisableMember(item)) { item.enabled = false }">
+                    <v-chip v-if="item.enabled" color="success" small @click="disableMember(item)">
                       <v-icon small>
                         mdi-check
                       </v-icon>
                     </v-chip>
-                    <v-chip v-else color="error" small @click="item.enabled = true">
+                    <v-chip v-else color="error" small @click="enableMember(item)">
                       <v-icon small>
                         mdi-block-helper
                       </v-icon>
@@ -152,7 +151,7 @@
 
           <v-card-actions>
             <v-spacer />
-            <v-btn color="primary" small :disabled="$v.$anyError">
+            <v-btn color="primary" small :disabled="$v.$anyError" @click="update">
               {{ languageStrings.actions.update }}
             </v-btn>
             <v-btn color="error" small @click="hideForm">
@@ -217,7 +216,8 @@ export default {
           user: null
         },
         pendingMemberAdditions: [],
-        pendingMemberRemovals: []
+        pendingMemberRemovals: [],
+        pendingMemberUpdates: []
       },
       accessControlEntries: {
         headers: [
@@ -275,7 +275,7 @@ export default {
   watch: {
     visible () {
       // We might be coming here from a group list, so force the users/accessControlEntries properties to contain values
-      this.dataAccessPromise = this.getSingleTenantSecurityGroupInternal({
+      this.dataAccessPromise = this.getSingleSecurityGroup({
         tenantId: this.tenantId,
         groupId: this.securityGroup.id
       })
@@ -289,14 +289,56 @@ export default {
   },
   methods: {
     ...mapActions({
-      getSingleTenantSecurityGroupInternal: 'tenants/getSingleTenantSecurityGroup'
+      getSingleSecurityGroup: 'groups/getTenantGroup',
+      updateSecurityGroup: 'groups/updateGroup',
+      addSecurityGroupMember: 'groups/addMember',
+      removeSecurityGroupMember: 'groups/removeMember',
+      updateSecurityGroupMember: 'groups/updateMember',
+      addSecurityGroupPermission: 'groups/addPermission',
+      removeSecurityGroupPermission: 'groups/removePermission'
     }),
     hideForm () {
       this.$emit('update:visible', false)
     },
     update () {
-      this.$emit('update-security-group', this.updatedSecurityGroup)
-      this.hideForm()
+      this.dataAccessPromise = this.updateSecurityGroup({
+        ...this.updatedSecurityGroup,
+        tenant: {
+          id: this.tenantId
+        }
+      }).then(() => {
+        // Handle the removal of various members and access control entries
+        return Promise.all(
+          this.accessControlEntries.pendingEntryRemovals.map(e => this.removeSecurityGroupPermission(e.id))
+            .concat(
+              this.members.pendingMemberRemovals.map(gm => this.removeSecurityGroupMember(gm.id))
+            )
+        )
+      }).then(() => {
+        // Now perform the additions and updates
+        return Promise.all(
+          this.accessControlEntries.pendingEntryAdditions.map(e => this.addSecurityGroupPermission(e))
+            .concat(
+              this.members.pendingMemberAdditions.map(gm => this.addSecurityGroupMember(gm))
+            )
+            .concat(
+              this.members.pendingMemberUpdates.map(gm => this.updateSecurityGroupMember(gm))
+            )
+        )
+      }).then((resp) => {
+        if (resp.status === 200) {
+          this.members.pendingMemberAdditions = []
+          this.members.pendingMemberRemovals = []
+          this.members.memberToAdd = { enabled: true, user: null }
+
+          this.accessControlEntries.pendingEntryAdditions = []
+          this.accessControlEntries.pendingEntryRemovals = []
+          this.accessControlEntries.entryToAdd = { permission: null, resource: null }
+
+          this.$emit('update-security-group', resp.data)
+          this.hideForm()
+        }
+      })
     },
     inviteUser () {
       this.$emit('invitation')
@@ -317,6 +359,23 @@ export default {
       // todo: this needs to make sure the users aren't shadow (i.e. invitation) users
       return (this.updatedSecurityGroup.wellKnownGroupType === null || this.updatedSecurityGroup.users.length > 1)
     },
+    enableMember (mem) {
+      // No need to push this onto the list of updates if it's already on the list of additions - we'll just create it in the right state to begin with
+      if (!this.members.pendingMemberUpdates.includes(mem) && !this.members.pendingMemberAdditions.includes(mem)) {
+        this.members.pendingMemberUpdates.push(mem)
+      }
+
+      mem.enabled = true
+    },
+    disableMember (mem) {
+      if (this.canDisableMember(mem)) {
+        if (!this.members.pendingMemberUpdates.includes(mem) && !this.members.pendingMemberAdditions.includes(mem)) {
+          this.members.pendingMemberUpdates.push(mem)
+        }
+
+        mem.enabled = false
+      }
+    },
     addMember () {
       this.updatedSecurityGroup.users.push(this.members.memberToAdd)
 
@@ -327,12 +386,18 @@ export default {
       // Look for a member in the "pending additions" list. If it's present, we just remove it from that list.
       // Otherwise, create a "pending removal" record
       const memberAdditionIndex = this.members.pendingMemberAdditions.indexOf(mem)
+      const memberUpdateIndex = this.members.pendingMemberUpdates.indexOf(mem)
       const securityGroupIndex = this.updatedSecurityGroup.users.indexOf(mem)
 
       if (memberAdditionIndex === -1) {
         this.members.pendingMemberRemovals.push(mem)
       } else {
         this.members.pendingMemberAdditions.splice(memberAdditionIndex, 1)
+      }
+
+      // Removing a member also removes it from the "pending updates" list.
+      if (memberUpdateIndex !== -1) {
+        this.members.pendingMemberUpdates.splice(memberUpdateIndex, 1)
       }
 
       if (securityGroupIndex !== -1) {

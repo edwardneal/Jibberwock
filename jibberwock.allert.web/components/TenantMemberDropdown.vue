@@ -67,8 +67,9 @@ export default {
   },
   data () {
     return {
-      srPromise: this.getMembers(this.tenantId),
-      selectedItem: null
+      srPromise: Promise.resolve(),
+      selectedItem: null,
+      membersPromise: null
     }
   },
   watch: {
@@ -76,7 +77,6 @@ export default {
       this.$emit('input', val?.user)
     },
     excludedMembers (_val) {
-      // todo: this is triggered whenever any records are added. This needs to be fixed.
       this.srPromise = this.getMembers(this.tenantId)
     }
   },
@@ -85,7 +85,11 @@ export default {
       getMembersInternal: 'tenants/getTenantMembers'
     }),
     getMembers (tenantId) {
-      return this.getMembersInternal(tenantId)
+      if (!this.membersPromise) {
+        this.membersPromise = this.getMembersInternal(tenantId)
+      }
+
+      return this.membersPromise
         .then((resp) => {
           return resp.data.filter((mem) => {
             return !this.excludedMembers.map(u => u.id).includes(mem.user.id)
