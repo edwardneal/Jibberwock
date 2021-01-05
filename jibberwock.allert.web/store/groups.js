@@ -25,5 +25,10 @@ export const actions = {
     const updateTenantGroupUrl = state.urls.updateGroup.replace('{id}', encodeURIComponent(tenant.id)).replace('{groupId}', encodeURIComponent(id))
 
     return this.$axios.put(updateTenantGroupUrl, { name })
+  },
+  addMember ({ state }, membership) {
+    const addMemberUrl = state.urls.addMember.replace('{id}', encodeURIComponent(membership.group.tenant.id)).replace('{groupId}', encodeURIComponent(membership.group.id))
+
+    return this.$axios.post(addMemberUrl, membership)
   }
 }

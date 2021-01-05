@@ -260,7 +260,7 @@ namespace Jibberwock.Core.API.Controllers.Tenants
         /// <response code="200" nullable="false">A single <see cref="Group"/>, with all fields populated.</response>
         /// <response code="400" nullable="false">The <paramref name="id"/> or the <paramref name="groupId"/> parameter was <c>0</c>.</response>
         /// <response code="401" nullable="false">The <see cref="Tenant"/> is not accessible by the current <see cref="User"/> or does not exist.</response>
-        [Route("{id:int}/groups/{groupId}")]
+        [Route("{id:int}/groups/{groupId:int}")]
         [HttpGet]
         [ProducesResponseType(typeof(Group), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -290,11 +290,12 @@ namespace Jibberwock.Core.API.Controllers.Tenants
         /// </summary>
         /// <param name="id">The ID of the <see cref="Tenant"/>.</param>
         /// <param name="groupId">The ID of the <see cref="Group"/>.</param>
+        /// <param name="group">The information needed to create the <see cref="Group"/>.</param>
         /// <remarks>This requires <see cref="Permission.Change"/> over the <see cref="Tenant"/>. It retrieves top-level information for the specified <see cref="Group"/>.</remarks>
         /// <response code="200" nullable="false">A single <see cref="Group"/>, with top-level fields populated.</response>
         /// <response code="400" nullable="false">The <paramref name="id"/> or the <paramref name="groupId"/> parameter was <c>0</c>.</response>
         /// <response code="401" nullable="false">The <see cref="Tenant"/> is not accessible by the current <see cref="User"/> or does not exist.</response>
-        [Route("{id:int}/groups/{groupId}")]
+        [Route("{id:int}/groups/{groupId:int}")]
         [HttpPut]
         [ProducesResponseType(typeof(Group), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -315,12 +316,55 @@ namespace Jibberwock.Core.API.Controllers.Tenants
             { return BadRequest(ModelState); }
 
             var currUser = await CurrentUserRetriever.GetCurrentUserAsync();
-            var updateSecurityGroupCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.UpdateGroup(Logger, currUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, string.Empty,
-                new Group() { Id = groupId, Name = group.Name });
+            var updateSecurityGroupCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.UpdateSecurityGroup(Logger, currUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, string.Empty,
+                new Group() { Id = groupId, Name = group.Name, Tenant = new Tenant() { Id = id } });
             var updatedGroup = await updateSecurityGroupCommand.Execute(SqlServerDataSource);
 
             if (updatedGroup?.Result != null)
             { return Ok(updatedGroup.Result); }
+            else
+            { return NotFound(); }
+        }
+
+        /// <summary>
+        /// Adds a user to a specific group in this <see cref="Tenant"/>.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="Tenant"/>.</param>
+        /// <param name="groupId">The ID of the <see cref="Group"/>.</param>
+        /// <param name="groupMembership">The information needed to add a member to the <see cref="Group"/>.</param>
+        /// <remarks>This requires <see cref="Permission.Change"/> over the <see cref="Tenant"/>. It retrieves top-level information for the specified <see cref="Group"/>.</remarks>
+        /// <response code="200" nullable="false">A single <see cref="GroupMembership"/>, with top-level fields populated.</response>
+        /// <response code="400" nullable="false">The <paramref name="id"/> or the <paramref name="groupId"/> parameter was <c>0</c>.</response>
+        /// <response code="401" nullable="false">The <see cref="Tenant"/> is not accessible by the current <see cref="User"/> or does not exist.</response>
+        [Route("{id:int}/groups/{groupId:int}/members")]
+        [HttpPost]
+        [ProducesResponseType(typeof(GroupMembership), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> CreateSingleTenantSecurityGroupMembership([ResourcePermissions(SecurableResourceType.Tenant, Permission.Change)] long id, long groupId, [FromBody] GroupMembership groupMembership)
+        {
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(id)); }
+            if (groupId == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(groupId)); }
+            if (groupMembership == null)
+            { ModelState.AddModelError(ErrorResponses.MissingBody, string.Empty); }
+            if (groupMembership.User == null)
+            { ModelState.AddModelError(ErrorResponses.MissingBody, "group"); }
+            if (groupMembership.User.Id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, "user.id"); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var currUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            var createMembershipCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.CreateSecurityGroupMembership(Logger, currUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, string.Empty,
+                new GroupMembership() { Group = new Group() { Id = groupId, Tenant = new Tenant() { Id = id } }, Enabled = groupMembership.Enabled, User = new User() { Id = groupMembership.User.Id } });
+            var newMembership = await createMembershipCommand.Execute(SqlServerDataSource);
+
+            if (newMembership?.Result != null)
+            { return Ok(newMembership.Result); }
             else
             { return NotFound(); }
         }

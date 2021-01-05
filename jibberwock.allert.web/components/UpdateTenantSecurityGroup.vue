@@ -322,7 +322,16 @@ export default {
         return Promise.all(
           this.accessControlEntries.pendingEntryAdditions.map(e => this.addSecurityGroupPermission(e))
             .concat(
-              this.members.pendingMemberAdditions.map(gm => this.addSecurityGroupMember(gm))
+              this.members.pendingMemberAdditions.map(gm => this.addSecurityGroupMember({
+                enabled: gm.enabled,
+                group: {
+                  id: gm.group.id,
+                  tenant: {
+                    id: this.tenantId
+                  }
+                },
+                user: { id: gm.user.id }
+              }))
             )
             .concat(
               this.members.pendingMemberUpdates.map(gm => this.updateSecurityGroupMember(gm))

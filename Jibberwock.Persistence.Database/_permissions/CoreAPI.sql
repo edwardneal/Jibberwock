@@ -141,3 +141,6 @@ GO
 
 GRANT EXECUTE ON [security].[usp_UpdateSecurityGroup] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [security].[usp_CreateSecurityGroupMembership] TO [CoreAPI]
+GO

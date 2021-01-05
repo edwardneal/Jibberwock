@@ -60,6 +60,10 @@ namespace Jibberwock.DataModels.Security.Audit
         /// <summary>
         /// Entry is a <see cref="Jibberwock.DataModels.Security.Audit.EntryTypes.ModifyGroup"/> record.
         /// </summary>
-        ModifyGroup = 13
+        ModifyGroup = 13,
+        /// <summary>
+        /// Entry is a <see cref="Jibberwock.DataModels.Security.Audit.EntryTypes.ModifyGroupMembership"/> record.
+        /// </summary>
+        ModifyGroupMembership = 14
     }
 }

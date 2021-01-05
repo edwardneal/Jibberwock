@@ -18,7 +18,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
     /// <summary>
     /// Updates a single group.
     /// </summary>
-    public class UpdateGroup : AuditingCommand<Group, Jibberwock.DataModels.Security.Audit.EntryTypes.ModifyGroup>
+    public class UpdateSecurityGroup : AuditingCommand<Group, Jibberwock.DataModels.Security.Audit.EntryTypes.ModifyGroup>
     {
         /// <summary>
         /// The desired state of the group.
@@ -26,7 +26,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
         [Required]
         public Group Group { get; set; }
 
-        public UpdateGroup(ILogger logger, User performedBy, string connectionId, int serviceId, string comment, Group group)
+        public UpdateSecurityGroup(ILogger logger, User performedBy, string connectionId, int serviceId, string comment, Group group)
             : base(logger, performedBy, connectionId, serviceId, comment)
         {
             Group = group;
@@ -40,6 +40,8 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
                 throw new ArgumentOutOfRangeException(nameof(Group), "Group.Name must have a value");
 
             var databaseConnection = await dataSource.GetDbConnection();
+
+            provisionalAuditTrailEntry.RelatedTenant = Group.Tenant;
 
             var resultantGroup = await databaseConnection.QuerySingleAsync<Group>("security.usp_UpdateSecurityGroup",
                 new { Security_Group_ID = Group.Id, Name = Group.Name },
