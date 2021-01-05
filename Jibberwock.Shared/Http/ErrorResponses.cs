@@ -77,5 +77,9 @@ namespace Jibberwock.Shared.Http
         /// There is a server-side misconfiguration: the Application Insights Tenant ID has not been specified.
         /// </summary>
         public const string MisconfiguredApplicationInsightsTenant = "invalid_appinsights_tenantid";
+        /// <summary>
+        /// Group name is missing.
+        /// </summary>
+        public const string MissingGroupName = "missing_group_name";
     }
 }

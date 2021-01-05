@@ -138,3 +138,6 @@ GO
 
 GRANT EXECUTE ON [security].[usp_GetWellKnownTenantSecurityGroup] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [security].[usp_UpdateSecurityGroup] TO [CoreAPI]
+GO

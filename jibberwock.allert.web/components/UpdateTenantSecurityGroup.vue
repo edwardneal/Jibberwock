@@ -306,15 +306,18 @@ export default {
         tenant: {
           id: this.tenantId
         }
-      }).then(() => {
+      }).then((resp) => {
         // Handle the removal of various members and access control entries
         return Promise.all(
           this.accessControlEntries.pendingEntryRemovals.map(e => this.removeSecurityGroupPermission(e.id))
             .concat(
               this.members.pendingMemberRemovals.map(gm => this.removeSecurityGroupMember(gm.id))
+            ).
+            concat(
+              Promise.resolve(resp)
             )
         )
-      }).then(() => {
+      }).then((resps) => {
         // Now perform the additions and updates
         return Promise.all(
           this.accessControlEntries.pendingEntryAdditions.map(e => this.addSecurityGroupPermission(e))
@@ -324,9 +327,12 @@ export default {
             .concat(
               this.members.pendingMemberUpdates.map(gm => this.updateSecurityGroupMember(gm))
             )
+            .concat(
+              resps.map(r => Promise.resolve(r))
+            )
         )
-      }).then((resp) => {
-        if (resp.status === 200) {
+      }).then((resps) => {
+        if (!resps.some(resp => resp.status !== 200)) {
           this.members.pendingMemberAdditions = []
           this.members.pendingMemberRemovals = []
           this.members.memberToAdd = { enabled: true, user: null }

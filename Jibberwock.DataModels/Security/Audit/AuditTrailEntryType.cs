@@ -56,6 +56,10 @@ namespace Jibberwock.DataModels.Security.Audit
         /// <summary>
         /// Entry is a <see cref="Jibberwock.DataModels.Security.Audit.EntryTypes.SynchroniseSubscription"/> record.
         /// </summary>
-        SynchroniseSubscription = 12
+        SynchroniseSubscription = 12,
+        /// <summary>
+        /// Entry is a <see cref="Jibberwock.DataModels.Security.Audit.EntryTypes.ModifyGroup"/> record.
+        /// </summary>
+        ModifyGroup = 13
     }
 }

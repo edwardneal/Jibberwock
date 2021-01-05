@@ -20,5 +20,10 @@ export const actions = {
     const getTenantGroupUrl = state.urls.getTenantGroup.replace('{id}', encodeURIComponent(tenantId)).replace('{groupId}', encodeURIComponent(groupId))
 
     return this.$axios.get(getTenantGroupUrl)
+  },
+  updateGroup ({ state }, { tenant, name, id }) {
+    const updateTenantGroupUrl = state.urls.updateGroup.replace('{id}', encodeURIComponent(tenant.id)).replace('{groupId}', encodeURIComponent(id))
+
+    return this.$axios.put(updateTenantGroupUrl, { name })
   }
 }

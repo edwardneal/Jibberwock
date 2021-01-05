@@ -286,6 +286,46 @@ namespace Jibberwock.Core.API.Controllers.Tenants
         }
 
         /// <summary>
+        /// Updates a single group in this <see cref="Tenant"/>.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="Tenant"/>.</param>
+        /// <param name="groupId">The ID of the <see cref="Group"/>.</param>
+        /// <remarks>This requires <see cref="Permission.Change"/> over the <see cref="Tenant"/>. It retrieves top-level information for the specified <see cref="Group"/>.</remarks>
+        /// <response code="200" nullable="false">A single <see cref="Group"/>, with top-level fields populated.</response>
+        /// <response code="400" nullable="false">The <paramref name="id"/> or the <paramref name="groupId"/> parameter was <c>0</c>.</response>
+        /// <response code="401" nullable="false">The <see cref="Tenant"/> is not accessible by the current <see cref="User"/> or does not exist.</response>
+        [Route("{id:int}/groups/{groupId}")]
+        [HttpPut]
+        [ProducesResponseType(typeof(Group), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateSingleTenantSecurityGroup([ResourcePermissions(SecurableResourceType.Tenant, Permission.Change)] long id, long groupId, [FromBody] Group group)
+        {
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(id)); }
+            if (groupId == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(groupId)); }
+            if (group == null)
+            { ModelState.AddModelError(ErrorResponses.MissingBody, string.Empty); }
+            if (string.IsNullOrWhiteSpace(group.Name))
+            { ModelState.AddModelError(ErrorResponses.MissingGroupName, string.Empty); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var currUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            var updateSecurityGroupCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.UpdateGroup(Logger, currUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, string.Empty,
+                new Group() { Id = groupId, Name = group.Name });
+            var updatedGroup = await updateSecurityGroupCommand.Execute(SqlServerDataSource);
+
+            if (updatedGroup?.Result != null)
+            { return Ok(updatedGroup.Result); }
+            else
+            { return NotFound(); }
+        }
+
+        /// <summary>
         /// Gets all <see cref="SecurableResource"/>s in this <see cref="Tenant"/> with a name which matches <paramref name="filter"/>.
         /// </summary>
         /// <param name="id">The ID of the <see cref="Tenant"/>.</param>

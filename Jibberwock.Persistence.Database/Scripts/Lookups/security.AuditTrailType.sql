@@ -45,3 +45,7 @@ if 11 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
 if 12 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
 	insert into [security].[AuditTrailType] ([Audit_Trail_Type_ID], [Name])
 	values (12, 'sync_subscription')
+
+if 13 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
+	insert into [security].[AuditTrailType] ([Audit_Trail_Type_ID], [Name])
+	values (13, 'modify_group')
