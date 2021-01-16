@@ -6,7 +6,7 @@ export const state = () => ({
     updateGroup: baseUrl + '/tenant/{id}/groups/{groupId}',
     addMember: baseUrl + '/tenant/{id}/groups/{groupId}/members',
     removeMember: baseUrl + '/tenant/{id}/groups/{groupId}/members',
-    updateMember: baseUrl + '/tenant/{id}/groups/{groupId}/members',
+    updateMember: baseUrl + '/tenant/{id}/groups/{groupId}/members/{groupMembershipId}',
     addPermission: baseUrl + '/tenant/{id}/groups/{groupId}/permissions',
     removePermission: baseUrl + '/tenant/{id}/groups/{groupId}/permissions'
   }
@@ -30,5 +30,12 @@ export const actions = {
     const addMemberUrl = state.urls.addMember.replace('{id}', encodeURIComponent(membership.group.tenant.id)).replace('{groupId}', encodeURIComponent(membership.group.id))
 
     return this.$axios.post(addMemberUrl, membership)
+  },
+  updateMember ({ state }, membership) {
+    const updateMemberUrl = state.urls.updateMember.replace('{id}', encodeURIComponent(membership.group.tenant.id))
+      .replace('{groupId}', encodeURIComponent(membership.group.id))
+      .replace('{groupMembershipId}', encodeURIComponent(membership.id))
+
+    return this.$axios.post(updateMemberUrl, membership)
   }
 }

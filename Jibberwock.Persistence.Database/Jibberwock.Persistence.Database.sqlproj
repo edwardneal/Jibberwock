@@ -180,6 +180,7 @@
     <Build Include="security\usp_GetWellKnownTenantSecurityGroup.sql" />
     <Build Include="security\usp_UpdateSecurityGroup.sql" />
     <Build Include="security\usp_CreateSecurityGroupMembership.sql" />
+    <Build Include="security\usp_UpdateSecurityGroupMembership.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

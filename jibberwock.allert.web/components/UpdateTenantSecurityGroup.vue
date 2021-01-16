@@ -334,7 +334,17 @@ export default {
               }))
             )
             .concat(
-              this.members.pendingMemberUpdates.map(gm => this.updateSecurityGroupMember(gm))
+              this.members.pendingMemberUpdates.map(gm => this.updateSecurityGroupMember({
+                id: gm.id,
+                enabled: gm.enabled,
+                group: {
+                  id: gm.group.id,
+                  tenant: {
+                    id: this.tenantId
+                  }
+                },
+                user: { id: gm.user.id }
+              }))
             )
             .concat(
               resps.map(r => Promise.resolve(r))

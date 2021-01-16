@@ -17,9 +17,9 @@ using System.Threading.Tasks;
 namespace Jibberwock.Persistence.DataAccess.Commands.Security
 {
     /// <summary>
-    /// Creates a membership in a single group.
+    /// Updates a membership in a single group.
     /// </summary>
-    public class CreateSecurityGroupMembership : AuditingCommand<GroupMembership, Jibberwock.DataModels.Security.Audit.EntryTypes.ModifyGroupMembership>
+    public class UpdateSecurityGroupMembership : AuditingCommand<GroupMembership, Jibberwock.DataModels.Security.Audit.EntryTypes.ModifyGroupMembership>
     {
         /// <summary>
         /// The desired group membership.
@@ -27,7 +27,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
         [Required]
         public GroupMembership GroupMembership { get; set; }
 
-        public CreateSecurityGroupMembership(ILogger logger, User performedBy, string connectionId, int serviceId, string comment, GroupMembership groupMembership)
+        public UpdateSecurityGroupMembership(ILogger logger, User performedBy, string connectionId, int serviceId, string comment, GroupMembership groupMembership)
             : base(logger, performedBy, connectionId, serviceId, comment)
         {
             GroupMembership = groupMembership;
@@ -35,6 +35,8 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
 
         protected override async Task<GroupMembership> OnAuditedExecute(IReadWriteDataSource dataSource, IDbTransaction transaction, ModifyGroupMembership provisionalAuditTrailEntry)
         {
+            if (GroupMembership.Id == 0)
+                throw new ArgumentOutOfRangeException(nameof(GroupMembership), "GroupMembership.Id must have a value");
             if (GroupMembership.Group == null)
                 throw new ArgumentOutOfRangeException(nameof(GroupMembership), "GroupMembership.Group must have a value");
             if (GroupMembership.Group.Id == 0)
@@ -43,17 +45,12 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
                 throw new ArgumentOutOfRangeException(nameof(GroupMembership), "GroupMembership.Group.Tenant must have a value");
             if (GroupMembership.Group.Tenant.Id == 0)
                 throw new ArgumentOutOfRangeException(nameof(GroupMembership), "GroupMembership.Group.Tenant.Id must have a value");
-            if (GroupMembership.User == null)
-                throw new ArgumentOutOfRangeException(nameof(GroupMembership), "GroupMembership.User must have a value");
-            if (GroupMembership.User.Id == 0)
-                throw new ArgumentOutOfRangeException(nameof(GroupMembership), "GroupMembership.User.Id must have a value");
 
             var databaseConnection = await dataSource.GetDbConnection();
 
             provisionalAuditTrailEntry.RelatedTenant = GroupMembership.Group.Tenant;
-            provisionalAuditTrailEntry.RelatedUser = GroupMembership.User;
 
-            var resultantMemberships = await databaseConnection.QueryAsync<GroupMembership, Group, User, GroupMembership>("security.usp_CreateSecurityGroupMembership",
+            var resultantMemberships = await databaseConnection.QueryAsync<GroupMembership, Group, User, GroupMembership>("security.usp_UpdateSecurityGroupMembership",
                 (sgm, grp, usr) =>
                 {
                     if (sgm != null && grp != null)
@@ -64,13 +61,14 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
 
                     return sgm;
                 },
-                new { Tenant_ID = GroupMembership.Group.Tenant.Id, Security_Group_ID = GroupMembership.Group.Id, Member_User_ID = GroupMembership.User.Id, Enabled = GroupMembership.Enabled },
+                new { Tenant_ID = GroupMembership.Group.Tenant.Id, Security_Group_Membership_ID = GroupMembership.Id, Enabled = GroupMembership.Enabled },
                 transaction: transaction, commandType: System.Data.CommandType.StoredProcedure, commandTimeout: 30);
 
             GroupMembership = resultantMemberships.FirstOrDefault();
 
+            provisionalAuditTrailEntry.RelatedUser = GroupMembership.User;
             provisionalAuditTrailEntry.GroupMembership = GroupMembership;
-            provisionalAuditTrailEntry.NewGroupMembership = true;
+            provisionalAuditTrailEntry.NewGroupMembership = false;
 
             return GroupMembership;
         }
