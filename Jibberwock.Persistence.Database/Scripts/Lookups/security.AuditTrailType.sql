@@ -53,3 +53,7 @@ if 13 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
 if 14 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
 	insert into [security].[AuditTrailType] ([Audit_Trail_Type_ID], [Name])
 	values (14, 'modify_group_membership')
+
+if 15 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
+	insert into [security].[AuditTrailType] ([Audit_Trail_Type_ID], [Name])
+	values (15, 'delete_group_membership')

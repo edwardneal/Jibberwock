@@ -5,7 +5,7 @@ export const state = () => ({
     getTenantGroup: baseUrl + '/tenant/{id}/groups/{groupId}',
     updateGroup: baseUrl + '/tenant/{id}/groups/{groupId}',
     addMember: baseUrl + '/tenant/{id}/groups/{groupId}/members',
-    removeMember: baseUrl + '/tenant/{id}/groups/{groupId}/members',
+    removeMember: baseUrl + '/tenant/{id}/groups/{groupId}/members/{groupMembershipId}',
     updateMember: baseUrl + '/tenant/{id}/groups/{groupId}/members/{groupMembershipId}',
     addPermission: baseUrl + '/tenant/{id}/groups/{groupId}/permissions',
     removePermission: baseUrl + '/tenant/{id}/groups/{groupId}/permissions'
