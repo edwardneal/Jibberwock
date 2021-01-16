@@ -380,7 +380,7 @@ namespace Jibberwock.Core.API.Controllers.Tenants
         /// <response code="200" nullable="false">A single <see cref="GroupMembership"/>, with the <see cref="GroupMembership.Enabled"/> field populated.</response>
         /// <response code="400" nullable="false">The <paramref name="id"/>, <paramref name="groupId"/> or <paramref name="groupMembershipId"/> parameter was <c>0</c>.</response>
         /// <response code="401" nullable="false">The <see cref="Tenant"/> is not accessible by the current <see cref="User"/> or does not exist.</response>
-        [Route("{id:int}/groups/{groupId:int}/members/{membershipId:int}")]
+        [Route("{id:int}/groups/{groupId:int}/members/{groupMembershipId:int}")]
         [HttpPut]
         [ProducesResponseType(typeof(GroupMembership), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

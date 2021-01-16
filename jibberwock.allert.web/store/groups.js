@@ -36,6 +36,6 @@ export const actions = {
       .replace('{groupId}', encodeURIComponent(membership.group.id))
       .replace('{groupMembershipId}', encodeURIComponent(membership.id))
 
-    return this.$axios.post(updateMemberUrl, membership)
+    return this.$axios.put(updateMemberUrl, membership)
   }
 }

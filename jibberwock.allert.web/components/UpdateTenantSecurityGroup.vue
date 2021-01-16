@@ -301,46 +301,48 @@ export default {
       this.$emit('update:visible', false)
     },
     update () {
-      this.dataAccessPromise = this.updateSecurityGroup({
-        ...this.updatedSecurityGroup,
+      const scopedThis = this
+
+      scopedThis.dataAccessPromise = scopedThis.updateSecurityGroup({
+        ...scopedThis.updatedSecurityGroup,
         tenant: {
-          id: this.tenantId
+          id: scopedThis.tenantId
         }
       }).then((resp) => {
         // Handle the removal of various members and access control entries
         return Promise.all(
-          this.accessControlEntries.pendingEntryRemovals.map(e => this.removeSecurityGroupPermission(e.id))
+          scopedThis.accessControlEntries.pendingEntryRemovals.map(e => scopedThis.removeSecurityGroupPermission(e.id))
             .concat(
-              this.members.pendingMemberRemovals.map(gm => this.removeSecurityGroupMember(gm.id))
-            ).
-            concat(
+              scopedThis.members.pendingMemberRemovals.map(gm => scopedThis.removeSecurityGroupMember(gm.id))
+            )
+            .concat(
               Promise.resolve(resp)
             )
         )
       }).then((resps) => {
         // Now perform the additions and updates
         return Promise.all(
-          this.accessControlEntries.pendingEntryAdditions.map(e => this.addSecurityGroupPermission(e))
+          scopedThis.accessControlEntries.pendingEntryAdditions.map(e => scopedThis.addSecurityGroupPermission(e))
             .concat(
-              this.members.pendingMemberAdditions.map(gm => this.addSecurityGroupMember({
+              scopedThis.members.pendingMemberAdditions.map(gm => scopedThis.addSecurityGroupMember({
                 enabled: gm.enabled,
                 group: {
-                  id: gm.group.id,
+                  id: scopedThis.updatedSecurityGroup.id,
                   tenant: {
-                    id: this.tenantId
+                    id: Number.parseInt(scopedThis.tenantId)
                   }
                 },
                 user: { id: gm.user.id }
               }))
             )
             .concat(
-              this.members.pendingMemberUpdates.map(gm => this.updateSecurityGroupMember({
+              scopedThis.members.pendingMemberUpdates.map(gm => scopedThis.updateSecurityGroupMember({
                 id: gm.id,
                 enabled: gm.enabled,
                 group: {
-                  id: gm.group.id,
+                  id: scopedThis.updatedSecurityGroup.id,
                   tenant: {
-                    id: this.tenantId
+                    id: Number.parseInt(scopedThis.tenantId)
                   }
                 },
                 user: { id: gm.user.id }
@@ -352,16 +354,16 @@ export default {
         )
       }).then((resps) => {
         if (!resps.some(resp => resp.status !== 200)) {
-          this.members.pendingMemberAdditions = []
-          this.members.pendingMemberRemovals = []
-          this.members.memberToAdd = { enabled: true, user: null }
+          scopedThis.members.pendingMemberAdditions = []
+          scopedThis.members.pendingMemberRemovals = []
+          scopedThis.members.memberToAdd = { enabled: true, user: null }
 
-          this.accessControlEntries.pendingEntryAdditions = []
-          this.accessControlEntries.pendingEntryRemovals = []
-          this.accessControlEntries.entryToAdd = { permission: null, resource: null }
+          scopedThis.accessControlEntries.pendingEntryAdditions = []
+          scopedThis.accessControlEntries.pendingEntryRemovals = []
+          scopedThis.accessControlEntries.entryToAdd = { permission: null, resource: null }
 
-          this.$emit('update-security-group', resp.data)
-          this.hideForm()
+          scopedThis.$emit('update-security-group', resps[0].data)
+          scopedThis.hideForm()
         }
       })
     },
