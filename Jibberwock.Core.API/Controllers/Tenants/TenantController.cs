@@ -370,7 +370,7 @@ namespace Jibberwock.Core.API.Controllers.Tenants
         }
 
         /// <summary>
-        /// Enables or disabled a user's group membership in this <see cref="Tenant"/>.
+        /// Enables or disables a user's group membership in this <see cref="Tenant"/>.
         /// </summary>
         /// <param name="id">The ID of the <see cref="Tenant"/>.</param>
         /// <param name="groupId">The ID of the <see cref="Group"/>.</param>
@@ -409,6 +409,43 @@ namespace Jibberwock.Core.API.Controllers.Tenants
             { return Ok(updatedMembership.Result); }
             else
             { return NotFound(); }
+        }
+
+        /// <summary>
+        /// Removes a user's group membership in this <see cref="Tenant"/>.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="Tenant"/>.</param>
+        /// <param name="groupId">The ID of the <see cref="Group"/>.</param>
+        /// <param name="groupMembershipId">The ID of the <see cref="GroupMembership"/>.</param>
+        /// <remarks>This requires <see cref="Permission.Change"/> over the <see cref="Tenant"/>.</remarks>
+        /// <response code="200" nullable="false">This <see cref="GroupMembership"/> has been deleted.</response>
+        /// <response code="400" nullable="false">The <paramref name="id"/>, <paramref name="groupId"/> or <paramref name="groupMembershipId"/> parameter was <c>0</c>.</response>
+        /// <response code="401" nullable="false">The <see cref="Tenant"/> is not accessible by the current <see cref="User"/> or does not exist.</response>
+        [Route("{id:int}/groups/{groupId:int}/members/{groupMembershipId:int}")]
+        [HttpDelete]
+        [ProducesResponseType(typeof(GroupMembership), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteSingleTenantSecurityGroupMembership([ResourcePermissions(SecurableResourceType.Tenant, Permission.Change)] long id, long groupId, long groupMembershipId)
+        {
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(id)); }
+            if (groupId == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(groupId)); }
+            if (groupMembershipId == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(groupMembershipId)); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var currUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            var deleteMembershipCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.DeleteSecurityGroupMembership(Logger, currUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, string.Empty,
+                new GroupMembership() { Id = groupMembershipId, Group = new Group() { Id = groupId, Tenant = new Tenant() { Id = id } } });
+            
+            await deleteMembershipCommand.Execute(SqlServerDataSource);
+
+            return Ok();
         }
 
         /// <summary>

@@ -313,7 +313,11 @@ export default {
         return Promise.all(
           scopedThis.accessControlEntries.pendingEntryRemovals.map(e => scopedThis.removeSecurityGroupPermission(e.id))
             .concat(
-              scopedThis.members.pendingMemberRemovals.map(gm => scopedThis.removeSecurityGroupMember(gm.id))
+              scopedThis.members.pendingMemberRemovals.map(gm => scopedThis.removeSecurityGroupMember({
+                tenantId: Number.parseInt(scopedThis.tenantId),
+                groupId: scopedThis.updatedSecurityGroup.id,
+                groupMembershipId: gm.id
+              }))
             )
             .concat(
               Promise.resolve(resp)
@@ -355,6 +359,7 @@ export default {
       }).then((resps) => {
         if (!resps.some(resp => resp.status !== 200)) {
           scopedThis.members.pendingMemberAdditions = []
+          scopedThis.members.pendingMemberUpdates = []
           scopedThis.members.pendingMemberRemovals = []
           scopedThis.members.memberToAdd = { enabled: true, user: null }
 

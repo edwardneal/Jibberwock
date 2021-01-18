@@ -31,6 +31,13 @@ export const actions = {
 
     return this.$axios.post(addMemberUrl, membership)
   },
+  removeMember ({ state }, { tenantId, groupId, groupMembershipId }) {
+    const removeMemberUrl = state.urls.removeMember.replace('{id}', encodeURIComponent(tenantId))
+      .replace('{groupId}', encodeURIComponent(groupId))
+      .replace('{groupMembershipId}', encodeURIComponent(groupMembershipId))
+
+    return this.$axios.delete(removeMemberUrl)
+  },
   updateMember ({ state }, membership) {
     const updateMemberUrl = state.urls.updateMember.replace('{id}', encodeURIComponent(membership.group.tenant.id))
       .replace('{groupId}', encodeURIComponent(membership.group.id))
