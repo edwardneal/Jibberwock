@@ -11,11 +11,6 @@ namespace Jibberwock.DataModels.Core
     public class Service : SecurableResource
     {
         /// <summary>
-        /// The unique internal identifier for this <see cref="Service"/>.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
         /// The friendly name of this <see cref="Service"/>.
         /// </summary>
         public string Name { get; set; }

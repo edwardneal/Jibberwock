@@ -11,11 +11,6 @@ namespace Jibberwock.DataModels.Products
     public class Product : SecurableResource
     {
         /// <summary>
-        /// A unique identifier for this <see cref="Product"/>.
-        /// </summary>
-        public long Id { get; set; }
-
-        /// <summary>
         /// The friendly, public-facing name of this <see cref="Product"/>.
         /// </summary>
         public string Name { get; set; }

@@ -10,6 +10,11 @@ namespace Jibberwock.DataModels.Security
     public abstract class SecurableResource
     {
         /// <summary>
+        /// The unique internal identifier for this <see cref="SecurableResource"/>.
+        /// </summary>
+        public long Id { get; set; }
+
+        /// <summary>
         /// Describes the derived subclass type, used by API clients to determine the type of this resource.
         /// </summary>
         public SecurableResourceType ResourceType { get; set; }

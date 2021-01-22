@@ -150,3 +150,6 @@ GO
 
 GRANT EXECUTE ON [security].[usp_DeleteSecurityGroupMembership] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [security].[usp_CreateAccessControlEntry] TO [CoreAPI]
+GO

@@ -11,11 +11,6 @@ namespace Jibberwock.DataModels.Allert
     public class AlertDefinition : SecurableResource
     {
         /// <summary>
-        /// The unique identifier of this <see cref="AlertDefinition"/>.
-        /// </summary>
-        public long Id { get; set; }
-
-        /// <summary>
         /// The friendly name of this <see cref="AlertDefinition"/>.
         /// </summary>
         public string Name { get; set; }

@@ -12,11 +12,6 @@ namespace Jibberwock.DataModels.Tenants
     public class Tenant : SecurableResource
     {
         /// <summary>
-        /// The unique internal reference for this <see cref="Tenant"/>.
-        /// </summary>
-        public long Id { get; set; }
-
-        /// <summary>
         /// A unique external reference for this <see cref="Tenant"/> in the billing system.
         /// </summary>
         public string ExternalId { get; set; }

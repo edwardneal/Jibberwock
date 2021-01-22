@@ -16,7 +16,7 @@ namespace Jibberwock.Persistence.DataAccess.Utility
                 case SecurableResourceType.Tenant:
                     return new Jibberwock.DataModels.Tenants.Tenant() { Id = resourceRow.ResourceId, Name = resourceRow.ResourceName, ResourceIdentifier = resourceRow.ResourceIdentifier, ResourceType = resourceType };
                 case SecurableResourceType.ApiKey:
-                    throw new ArgumentOutOfRangeException("ResourceType");
+                    return new Jibberwock.DataModels.Tenants.ApiKey() { Id = resourceRow.ResourceId, ResourceIdentifier = resourceRow.ResourceIdentifier, ResourceType = resourceType };
                 case SecurableResourceType.Product:
                     return new Jibberwock.DataModels.Products.Product() { Id = resourceRow.ResourceId, Name = resourceRow.ResourceName, ResourceIdentifier = resourceRow.ResourceIdentifier, ResourceType = resourceType };
                 case SecurableResourceType.Service:

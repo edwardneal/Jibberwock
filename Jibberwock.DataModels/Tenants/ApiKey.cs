@@ -13,11 +13,6 @@ namespace Jibberwock.DataModels.Tenants
     public class ApiKey : SecurableResource
     {
         /// <summary>
-        /// The unique internal reference for this <see cref="ApiKey"/>.
-        /// </summary>
-        public Guid Id { get; set; }
-
-        /// <summary>
         /// Determines if this <see cref="ApiKey"/> can be used. This can be used to immediately lock down a specific service.
         /// </summary>
         public bool Enabled { get; set; }

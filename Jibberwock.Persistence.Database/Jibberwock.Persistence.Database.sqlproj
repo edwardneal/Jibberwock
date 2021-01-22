@@ -182,6 +182,7 @@
     <Build Include="security\usp_CreateSecurityGroupMembership.sql" />
     <Build Include="security\usp_UpdateSecurityGroupMembership.sql" />
     <Build Include="security\usp_DeleteSecurityGroupMembership.sql" />
+    <Build Include="security\usp_CreateAccessControlEntry.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
