@@ -44,5 +44,10 @@ export const actions = {
       .replace('{groupMembershipId}', encodeURIComponent(membership.id))
 
     return this.$axios.put(updateMemberUrl, membership)
+  },
+  addPermission ({ state }, permission) {
+    const addPermissionUrl = state.urls.addPermission.replace('{id}', encodeURIComponent(permission.group.tenant.id)).replace('{groupId}', encodeURIComponent(permission.group.id))
+
+    return this.$axios.post(addPermissionUrl, permission)
   }
 }

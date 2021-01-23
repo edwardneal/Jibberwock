@@ -109,12 +109,10 @@
                         hide-details
                         single-line
                         class="pr-2"
-                        @input="$v.accessControlEntries.entryToAdd.permission.$touch()"
-                        @blur="$v.accessControlEntries.entryToAdd.permission.$touch()"
                       />
 
                       <v-toolbar-items>
-                        <v-btn depressed :disabled="updatedSecurityGroup.wellKnownGroupType !== null || (! (accessControlEntries.entryToAdd.permission !== null && accessControlEntries.entryToAdd.resource !== null))" @click="addPermission">
+                        <v-btn depressed :disabled="! canAddPermission" @click="addPermission">
                           {{ languageStrings.forms.buttons.add }}
                         </v-btn>
                       </v-toolbar-items>
@@ -249,14 +247,6 @@ export default {
       }
     },
     accessControlEntries: {
-      entryToAdd: {
-        permission: {
-          required
-        },
-        resource: {
-          required
-        }
-      }
     }
   },
   computed: {
@@ -270,6 +260,9 @@ export default {
         errors.push(this.languageStrings.validationErrorMessages.nameTooLong)
       }
       return errors
+    },
+    canAddPermission () {
+      return this.updatedSecurityGroup.wellKnownGroupType === null && this.accessControlEntries.entryToAdd.permission !== null && this.accessControlEntries.entryToAdd.resource !== null
     }
   },
   watch: {
@@ -326,7 +319,16 @@ export default {
       }).then((resps) => {
         // Now perform the additions and updates
         return Promise.all(
-          scopedThis.accessControlEntries.pendingEntryAdditions.map(e => scopedThis.addSecurityGroupPermission(e))
+          scopedThis.accessControlEntries.pendingEntryAdditions.map(e => scopedThis.addSecurityGroupPermission({
+            group: {
+              id: scopedThis.updatedSecurityGroup.id,
+              tenant: {
+                id: Number.parseInt(scopedThis.tenantId)
+              }
+            },
+            permission: e.permission,
+            resource: e.resource
+          }))
             .concat(
               scopedThis.members.pendingMemberAdditions.map(gm => scopedThis.addSecurityGroupMember({
                 enabled: gm.enabled,

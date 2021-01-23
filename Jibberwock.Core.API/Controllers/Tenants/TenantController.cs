@@ -449,6 +449,49 @@ namespace Jibberwock.Core.API.Controllers.Tenants
         }
 
         /// <summary>
+        /// Adds an access control entry which grants permissions to a specific group in this <see cref="Tenant"/>.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="Tenant"/>.</param>
+        /// <param name="groupId">The ID of the <see cref="Group"/>.</param>
+        /// <param name="accessControlEntry">The information needed to add an access control entry to the <see cref="Group"/>.</param>
+        /// <remarks>This requires <see cref="Permission.Change"/> over the <see cref="Tenant"/>. It retrieves top-level information for the specified <see cref="AccessControlEntry"/>.</remarks>
+        /// <response code="200" nullable="false">A single <see cref="AccessControlEntry"/>.</response>
+        /// <response code="400" nullable="false">The <paramref name="id"/> or the <paramref name="groupId"/> parameter was <c>0</c>.</response>
+        /// <response code="401" nullable="false">The <see cref="Tenant"/> is not accessible by the current <see cref="User"/> or does not exist.</response>
+        [Route("{id:int}/groups/{groupId:int}/permissions")]
+        [HttpPost]
+        [ProducesResponseType(typeof(AccessControlEntry), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> CreateSingleAccessControlEntry([ResourcePermissions(SecurableResourceType.Tenant, Permission.Change)] long id, long groupId, [FromBody] AccessControlEntry accessControlEntry)
+        {
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(id)); }
+            if (groupId == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(groupId)); }
+            if (accessControlEntry == null)
+            { ModelState.AddModelError(ErrorResponses.MissingBody, string.Empty); }
+            if (accessControlEntry.Resource == null)
+            { ModelState.AddModelError(ErrorResponses.MissingBody, "resource"); }
+            if (accessControlEntry.Resource.Id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, "resource.id"); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var currUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            var createAccessControlEntryCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.CreateAccessControlEntry(Logger, currUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, string.Empty,
+                new AccessControlEntry() { Group = new Group() { Id = groupId, Tenant = new Tenant() { Id = id } }, Resource = accessControlEntry.Resource, Permission = accessControlEntry.Permission });
+            var newAccessControlEntry = await createAccessControlEntryCommand.Execute(SqlServerDataSource);
+
+            if (newAccessControlEntry?.Result != null)
+            { return Ok(newAccessControlEntry.Result); }
+            else
+            { return NotFound(); }
+        }
+
+        /// <summary>
         /// Gets all <see cref="SecurableResource"/>s in this <see cref="Tenant"/> with a name which matches <paramref name="filter"/>.
         /// </summary>
         /// <param name="id">The ID of the <see cref="Tenant"/>.</param>

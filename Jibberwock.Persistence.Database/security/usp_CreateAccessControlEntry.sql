@@ -74,7 +74,7 @@ BEGIN
 
 		select ace.[Access_Control_Entry_ID] as Id, ace.[Permission_ID] as Permission,
 			sg.Security_Group_ID as Id, sg.[Name],
-			sr.[Securable_Resource_ID] as Id, sr.Identifier as ResourceIdentifier, sr.[Type_ID] as ResourceType,
+			sr.[Securable_Resource_ID] as Id, sr.[Securable_Resource_ID] as ResourceId, sr.Identifier as ResourceIdentifier, sr.[Type_ID] as ResourceType,
 			ace.[Parent_Tenant_ID] as Id
 		from [security].[AccessControlEntry] as ace
 		inner join [security].[SecurityGroup] as sg
