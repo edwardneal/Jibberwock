@@ -10,6 +10,7 @@ export default {
   },
   validationErrorMessages: {
     unableToLoadAvailableProductList: 'We can\'t download the list of available products right now. You can still create a tenant, but will need to enable the Allert functionality later.',
+    unableToCompleteAction: 'Unable to complete this action, please try again later.',
     invalidEmailAddress: 'Please provide a valid email address.',
     noName: 'Please provide a name.',
     nameTooLong: 'This name is too long. Please provide a shorter name.',
@@ -205,6 +206,9 @@ export default {
           },
           emptyLists: {
             members: 'Nobody has been added to this group yet.'
+          },
+          confirmations: {
+            delete: 'Are you sure you want to delete this group?'
           }
         }
       }

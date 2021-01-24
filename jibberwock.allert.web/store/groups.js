@@ -3,6 +3,7 @@ const baseUrl = process.env.NODE_ENV === 'production' ? 'https://www.jibberwock.
 export const state = () => ({
   urls: {
     getTenantGroup: baseUrl + '/tenant/{id}/groups/{groupId}',
+    removeGroup: baseUrl + '/tenant/{id}/groups/{groupId}',
     updateGroup: baseUrl + '/tenant/{id}/groups/{groupId}',
     addMember: baseUrl + '/tenant/{id}/groups/{groupId}/members',
     removeMember: baseUrl + '/tenant/{id}/groups/{groupId}/members/{groupMembershipId}',
@@ -20,6 +21,11 @@ export const actions = {
     const getTenantGroupUrl = state.urls.getTenantGroup.replace('{id}', encodeURIComponent(tenantId)).replace('{groupId}', encodeURIComponent(groupId))
 
     return this.$axios.get(getTenantGroupUrl)
+  },
+  removeGroup ({ state }, { tenantId, groupId }) {
+    const removeGroupUrl = state.urls.removeGroup.replace('{id}', encodeURIComponent(tenantId)).replace('{groupId}', encodeURIComponent(groupId))
+
+    return this.$axios.delete(removeGroupUrl)
   },
   updateGroup ({ state }, { tenant, name, id }) {
     const updateTenantGroupUrl = state.urls.updateGroup.replace('{id}', encodeURIComponent(tenant.id)).replace('{groupId}', encodeURIComponent(id))

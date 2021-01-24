@@ -36,7 +36,14 @@
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn :disabled="item.wellKnownGroupType !== null" v-bind="attrs" icon color="error" v-on="on">
+                  <v-btn
+                    :disabled="item.wellKnownGroupType !== null"
+                    v-bind="attrs"
+                    icon
+                    color="error"
+                    v-on="on"
+                    @click="showDeleteConfirmation(item)"
+                  >
                     <v-icon>
                       mdi-delete-forever
                     </v-icon>
@@ -60,7 +67,7 @@
                       </v-icon>
                       {{ languageStrings.actions.edit }}
                     </v-btn>
-                    <v-btn :disabled="securityGroups.selectedGroups[0].wellKnownGroupType !== null" class="pl-3" color="error">
+                    <v-btn :disabled="securityGroups.selectedGroups[0].wellKnownGroupType !== null" class="pl-3" color="error" @click="showDeleteConfirmation(securityGroups.selectedGroups[0])">
                       <v-icon left>
                         mdi-delete-forever
                       </v-icon>
@@ -141,6 +148,14 @@
             :visible.sync="securityGroups.updateForm.visible"
             @update-security-group="handleGroupUpdate"
           />
+
+          <ProgressDialog
+            :language-strings="languageStrings"
+            :prompt="languageStrings.pages.tenant_security.sections.roles.confirmations.delete"
+            :activity-promise-factory="securityGroups.deletionProgressFactory"
+            :confirm-button-text="languageStrings.actions.delete"
+            :cancel-button-text="languageStrings.actions.cancel"
+          />
         </v-col>
       </v-row>
     </v-card-text>
@@ -151,6 +166,7 @@
 import { mapActions } from 'vuex'
 import { Promised } from 'vue-promised'
 import PromisedTable from '~/components/PromisedTable.vue'
+import ProgressDialog from '~/components/ProgressDialog.vue'
 import UpdateTenantSecurityGroup from '~/components/UpdateTenantSecurityGroup.vue'
 import { groupBy } from '~/utility/collections'
 
@@ -158,6 +174,7 @@ export default {
   components: {
     PromisedTable,
     Promised,
+    ProgressDialog,
     UpdateTenantSecurityGroup
   },
   props: {
@@ -186,7 +203,8 @@ export default {
         updateForm: {
           visible: false,
           groupToEdit: null
-        }
+        },
+        deletionProgressFactory: null
       }
     }
   },
@@ -195,7 +213,8 @@ export default {
   methods: {
     ...mapActions({
       getTenantSecurityGroupsInternal: 'tenants/getTenantSecurityGroups',
-      getSingleTenantSecurityGroupInternal: 'tenants/getSingleTenantSecurityGroup'
+      getSingleTenantSecurityGroupInternal: 'groups/getTenantGroup',
+      removeSingleTenantSecurityGroup: 'groups/removeGroup'
     }),
     updateSelectedSecurityGroup (value) {
       this.securityGroups.detailsPromise = Promise.resolve(value)
@@ -242,6 +261,14 @@ export default {
       this.securityGroups.updateForm.groupToEdit.users = group.users
       this.securityGroups.updateForm.groupToEdit.tenant = group.tenant
       this.securityGroups.updateForm.groupToEdit.accessControlEntries = group.accessControlEntries
+    },
+    showDeleteConfirmation (group) {
+      this.securityGroups.deletionProgressFactory = () => this.removeSingleTenantSecurityGroup({
+        tenantId: this.tenantId,
+        groupId: group.id
+      }).then((resp) => {
+        alert(JSON.stringify(resp))
+      })
     }
   }
 }
