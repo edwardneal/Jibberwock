@@ -304,7 +304,11 @@ export default {
       }).then((resp) => {
         // Handle the removal of various members and access control entries
         return Promise.all(
-          scopedThis.accessControlEntries.pendingEntryRemovals.map(e => scopedThis.removeSecurityGroupPermission(e.id))
+          scopedThis.accessControlEntries.pendingEntryRemovals.map(e => scopedThis.removeSecurityGroupPermission({
+            tenantId: Number.parseInt(scopedThis.tenantId),
+            groupId: scopedThis.updatedSecurityGroup.id,
+            accessControlEntryId: e.id
+          }))
             .concat(
               scopedThis.members.pendingMemberRemovals.map(gm => scopedThis.removeSecurityGroupMember({
                 tenantId: Number.parseInt(scopedThis.tenantId),

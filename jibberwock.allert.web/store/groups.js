@@ -8,7 +8,7 @@ export const state = () => ({
     removeMember: baseUrl + '/tenant/{id}/groups/{groupId}/members/{groupMembershipId}',
     updateMember: baseUrl + '/tenant/{id}/groups/{groupId}/members/{groupMembershipId}',
     addPermission: baseUrl + '/tenant/{id}/groups/{groupId}/permissions',
-    removePermission: baseUrl + '/tenant/{id}/groups/{groupId}/permissions'
+    removePermission: baseUrl + '/tenant/{id}/groups/{groupId}/permissions/{accessControlEntryId}'
   }
 })
 
@@ -49,5 +49,12 @@ export const actions = {
     const addPermissionUrl = state.urls.addPermission.replace('{id}', encodeURIComponent(permission.group.tenant.id)).replace('{groupId}', encodeURIComponent(permission.group.id))
 
     return this.$axios.post(addPermissionUrl, permission)
+  },
+  removePermission ({ state }, { tenantId, groupId, accessControlEntryId }) {
+    const removePermissionUrl = state.urls.removePermission.replace('{id}', encodeURIComponent(tenantId))
+      .replace('{groupId}', encodeURIComponent(groupId))
+      .replace('{accessControlEntryId}', encodeURIComponent(accessControlEntryId))
+
+    return this.$axios.delete(removePermissionUrl)
   }
 }

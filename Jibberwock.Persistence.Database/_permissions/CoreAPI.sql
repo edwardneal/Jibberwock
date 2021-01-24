@@ -153,3 +153,6 @@ GO
 
 GRANT EXECUTE ON [security].[usp_CreateAccessControlEntry] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [security].[usp_DeleteAccessControlEntry] TO [CoreAPI]
+GO
