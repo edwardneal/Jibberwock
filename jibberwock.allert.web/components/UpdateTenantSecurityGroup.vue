@@ -380,14 +380,14 @@ export default {
       // For a well-known group, a person's group membership can be disabled only if there are other enabled members
       //  (i.e. there must always be at least one enabled member of each group)
       if (this.updatedSecurityGroup.wellKnownGroupType !== null) {
-        return (mem.enabled && (this.updatedSecurityGroup.users.some(u => u.user.id !== mem.user.id && u.enabled && u.type === 1)))
+        return (mem.enabled && (this.updatedSecurityGroup.users.some(u => u.user.id !== mem.user.id && u.enabled && u.user.type === 1)))
       } else {
         return (mem.enabled)
       }
     },
     canRemoveMember (mem) {
       // A well-known group must always contain at least one member
-      return (this.updatedSecurityGroup.wellKnownGroupType === null || this.updatedSecurityGroup.users.some(u => u.user.id !== mem.user.id && u.enabled && u.type === 1))
+      return (this.updatedSecurityGroup.wellKnownGroupType === null || this.updatedSecurityGroup.users.some(u => u.user.id !== mem.user.id && u.enabled && u.user.type === 1))
     },
     enableMember (mem) {
       // No need to push this onto the list of updates if it's already on the list of additions - we'll just create it in the right state to begin with
