@@ -65,3 +65,7 @@ if 16 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
 if 17 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
 	insert into [security].[AuditTrailType] ([Audit_Trail_Type_ID], [Name])
 	values (17, 'delete_access_control_entry')
+
+if 18 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
+	insert into [security].[AuditTrailType] ([Audit_Trail_Type_ID], [Name])
+	values (18, 'delete_group')

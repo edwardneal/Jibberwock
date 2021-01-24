@@ -76,6 +76,10 @@ namespace Jibberwock.DataModels.Security.Audit
         /// <summary>
         /// Entry is a <see cref="Jibberwock.DataModels.Security.Audit.EntryTypes.DeleteAccessControlEntry"/> record.
         /// </summary>
-        DeleteAccessControlEntry = 17
+        DeleteAccessControlEntry = 17,
+        /// <summary>
+        /// Entry is a <see cref="Jibberwock.DataModels.Security.Audit.EntryTypes.DeleteGroup"/> record.
+        /// </summary>
+        DeleteGroup = 18
     }
 }

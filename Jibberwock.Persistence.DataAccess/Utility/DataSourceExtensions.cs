@@ -46,6 +46,22 @@ namespace Jibberwock.Persistence.DataAccess.Utility
         }
 
         /// <summary>
+        /// Converts an <see cref="IReadWriteDataSource"/> into an <see cref="IReadableDataSource"/>.
+        /// </summary>
+        /// <param name="dataSource">The <see cref="IReadWriteDataSource"/> to convert.</param>
+        /// <returns>An <see cref="IReadableDataSource"/>.</returns>
+        public static IReadableDataSource GetReadableDataSource(this IReadWriteDataSource dataSource)
+        {
+            if (dataSource == null)
+                throw new ArgumentNullException(nameof(dataSource));
+
+            if (dataSource is SqlServerDataSource sqlServerDataSource)
+                return sqlServerDataSource;
+
+            throw new InvalidCastException($"{nameof(dataSource)} is not an expected type");
+        }
+
+        /// <summary>
         /// Gets the correct queue client from this <see cref="IQueueDataSource"/>.
         /// </summary>
         /// <param name="dataSource">The <see cref="IQueueDataSource"/> to get the queue client from.</param>

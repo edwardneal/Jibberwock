@@ -12,7 +12,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" md="6">
-          <PromisedTable :language-strings="languageStrings" :headers="securityGroups.headers" :populate-function="securityGroups.populate" @selection-changed="updateSelectedSecurityGroup">
+          <PromisedTable :language-strings="languageStrings" :headers="securityGroups.headers" :populate-function="securityGroups.populate" ref="groupList" @selection-changed="updateSelectedSecurityGroup">
             <template v-slot:toolbar-actions="{ shouldDisable }">
               <v-toolbar-items>
                 <v-btn :disabled="shouldDisable" class="pl-3" color="success">
@@ -267,7 +267,9 @@ export default {
         tenantId: this.tenantId,
         groupId: group.id
       }).then((resp) => {
-        alert(JSON.stringify(resp))
+        if (resp.status === 200) {
+          this.$refs.groupList.refresh()
+        }
       })
     }
   }

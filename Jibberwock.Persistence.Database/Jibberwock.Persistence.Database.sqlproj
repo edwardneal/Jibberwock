@@ -185,6 +185,7 @@
     <Build Include="security\usp_CreateAccessControlEntry.sql" />
     <Build Include="security\usp_DeleteAccessControlEntry.sql" />
     <Build Include="security\UserType.sql" />
+    <Build Include="security\usp_DeleteSecurityGroup.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
