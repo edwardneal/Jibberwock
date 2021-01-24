@@ -366,7 +366,8 @@ export default {
           scopedThis.accessControlEntries.pendingEntryRemovals = []
           scopedThis.accessControlEntries.entryToAdd = { permission: null, resource: null }
 
-          scopedThis.$emit('update-security-group', resps[0].data)
+          scopedThis.$emit('update-security-group', scopedThis.updatedSecurityGroup)
+          scopedThis.$emit('update:security-group', scopedThis.updatedSecurityGroup)
           scopedThis.hideForm()
         }
       })

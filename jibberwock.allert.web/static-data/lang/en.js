@@ -202,6 +202,9 @@ export default {
             wellKnownGroupName: 'Well-Known Group',
             members: 'Members',
             permissions: 'Permissions'
+          },
+          emptyLists: {
+            members: 'Nobody has been added to this group yet.'
           }
         }
       }

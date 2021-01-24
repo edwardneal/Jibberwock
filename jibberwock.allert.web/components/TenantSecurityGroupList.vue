@@ -92,13 +92,17 @@
                       v-if="memIdx < 2"
                       :key="memIdx"
                       :color="! mem.enabled ? 'error' : undefined"
-                      class="my-1"
+                      class="ma-1"
                       small
                       label
                     >
                       {{ mem.user.name }}
                     </v-chip>
                   </template>
+
+                  <span v-if="securityGroups.selectedGroups[0].users.length === 0">
+                    {{ languageStrings.pages.tenant_security.sections.roles.emptyLists.members }}
+                  </span>
 
                   <v-chip v-if="securityGroups.selectedGroups[0].users.length > 2" class="my-1" small label>
                     ...
@@ -130,7 +134,13 @@
             </template>
           </Promised>
 
-          <UpdateTenantSecurityGroup :language-strings="languageStrings" :tenant-id="tenantId" :security-group="securityGroups.updateForm.groupToEdit" :visible.sync="securityGroups.updateForm.visible" />
+          <UpdateTenantSecurityGroup
+            :language-strings="languageStrings"
+            :tenant-id="tenantId"
+            :security-group="securityGroups.updateForm.groupToEdit"
+            :visible.sync="securityGroups.updateForm.visible"
+            @update-security-group="handleGroupUpdate"
+          />
         </v-col>
       </v-row>
     </v-card-text>
@@ -201,6 +211,7 @@ export default {
               groupId: newSelection[0].id
             })
               .then((data) => {
+                this.securityGroups.selectedGroups[0].name = data.data.name
                 this.securityGroups.selectedGroups[0].users = data.data.users
                 this.securityGroups.selectedGroups[0].accessControlEntries = data.data.accessControlEntries
               })
@@ -224,6 +235,13 @@ export default {
     showUpdateForm (group) {
       this.securityGroups.updateForm.groupToEdit = group
       this.securityGroups.updateForm.visible = true
+    },
+    handleGroupUpdate (group) {
+      this.securityGroups.updateForm.groupToEdit.name = group.name
+      this.securityGroups.updateForm.groupToEdit.wellKnownGroupType = group.wellKnownGroupType
+      this.securityGroups.updateForm.groupToEdit.users = group.users
+      this.securityGroups.updateForm.groupToEdit.tenant = group.tenant
+      this.securityGroups.updateForm.groupToEdit.accessControlEntries = group.accessControlEntries
     }
   }
 }
