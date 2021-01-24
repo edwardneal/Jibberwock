@@ -24,8 +24,10 @@ BEGIN
 
 		select sgm.Security_Group_Membership_ID as Id, sgm.[Enabled],
 			sgm.[Security_Group_ID] as Id,
-			sgm.[User_ID] as Id
+			sgm.[User_ID] as Id, usr.[Type_ID] as [Type]
 		from [security].[SecurityGroupMembership] as sgm
+		inner join [security].[User] as usr
+			on (usr.[User_ID] = sgm.[User_ID])
 		where [Security_Group_Membership_ID] = SCOPE_IDENTITY()
 
 	commit transaction

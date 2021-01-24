@@ -20,7 +20,7 @@ BEGIN
 	where eI.External_Identifier = @External_Identifier
 		and eIP.Claim_Value = @Identity_Provider
 
-	select u.User_ID as Id, u.Name, u.Email_Address as EmailAddress, u.[Enabled]
+	select u.User_ID as Id, u.Name, u.Email_Address as EmailAddress, u.[Enabled], u.[Type_ID] as [Type]
 	from [security].[User] as u
 	inner join [security].[ExternalIdentity] as eI
 		on (eI.User_ID = u.User_ID)

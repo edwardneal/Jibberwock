@@ -5,7 +5,7 @@ BEGIN
 	set nocount on;
 	set xact_abort on;
 
-	select u.[User_ID] as Id, u.Name, u.[Enabled]
+	select u.[User_ID] as Id, u.Name, u.[Enabled], u.[Type_ID] as [Type]
 	from [security].[User] as u
 	where u.[Name] like @Name_Filter
 END

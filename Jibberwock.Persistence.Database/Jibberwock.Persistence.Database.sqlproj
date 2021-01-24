@@ -184,6 +184,7 @@
     <Build Include="security\usp_DeleteSecurityGroupMembership.sql" />
     <Build Include="security\usp_CreateAccessControlEntry.sql" />
     <Build Include="security\usp_DeleteAccessControlEntry.sql" />
+    <Build Include="security\UserType.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
@@ -206,5 +207,6 @@
     <None Include="Scripts\Lookups\core.NotificationPriority.sql" />
     <None Include="Scripts\Lookups\tenants.InvitationStatus.sql" />
     <None Include="Scripts\Lookups\tenants.SubscriptionStatus.sql" />
+    <None Include="Scripts\Lookups\security.UserType.sql" />
   </ItemGroup>
 </Project>

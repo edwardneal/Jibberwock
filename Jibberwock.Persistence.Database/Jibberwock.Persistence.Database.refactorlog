@@ -308,4 +308,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Subscription_Status_ID" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="d381a3a7-378e-4e5d-ac07-a1f7cdfb7b33" ChangeDateTime="01/24/2021 00:51:28">
+    <Property Name="ElementName" Value="[security].[UserType].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[security].[UserType]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="User_Type_ID" />
+  </Operation>
 </Operations>

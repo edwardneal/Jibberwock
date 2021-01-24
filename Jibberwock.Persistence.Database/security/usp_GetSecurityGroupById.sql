@@ -26,7 +26,7 @@ BEGIN
 			throw 50001, 'invalid_id', 1
 
 		select sgm.Security_Group_Membership_ID as Id, sgm.[Enabled],
-			u.[User_ID] as UserId, u.[Name] as UserName
+			u.[User_ID] as UserId, u.[Name] as UserName, u.[Type_ID] as [UserType]
 		from [security].[SecurityGroupMembership] as sgm
 		inner join [security].[User] as u
 			on (u.[User_ID] = sgm.[User_ID])

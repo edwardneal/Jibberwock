@@ -60,7 +60,8 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
                                       User = new Jibberwock.DataModels.Users.User()
                                       {
                                           Id = member.UserId,
-                                          Name = member.UserName
+                                          Name = member.UserName,
+                                          Type = (Jibberwock.DataModels.Users.UserType)(int)member.UserType
                                       }
                                   }).ToArray();
             groupDetails.AccessControlEntries = (from ace in permissionDetails

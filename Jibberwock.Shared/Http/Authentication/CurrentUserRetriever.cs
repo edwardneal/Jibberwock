@@ -53,7 +53,7 @@ namespace Jibberwock.Shared.Http.Authentication
 
                     // If this is null, the user doesn't exist in the database. We'll pretend that they do though, so we can run our permissions checks
                     localCachedUser = await getCurrentUserCommand.Execute(_dataSource)
-                        ?? new User() { Id = 0, Name = name, EmailAddress = emailAddress };
+                        ?? new User() { Id = 0, Name = name, EmailAddress = emailAddress, Type = UserType.UserAccount };
 
                     lock (_cachedUserLock)
                     { _cachedUser = localCachedUser; }

@@ -21,6 +21,7 @@ Post-Deployment Script Template
 :r .\Lookups\security.ExternalIdentityProvider.sql
 :r .\Lookups\security.SecurableResourceType.sql
 :r .\Lookups\security.Permission.sql
+:r .\Lookups\security.UserType.sql
 :r .\Lookups\security.WellKnownGroupType.sql
 :r .\Lookups\tenants.InvitationStatus.sql
 :r .\Lookups\tenants.SubscriptionStatus.sql
