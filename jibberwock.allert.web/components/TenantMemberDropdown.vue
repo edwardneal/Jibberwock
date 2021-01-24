@@ -63,6 +63,11 @@ export default {
       type: Array,
       required: false,
       default: () => []
+    },
+    value: {
+      type: Object,
+      required: false,
+      default: null
     }
   },
   data () {
@@ -78,6 +83,11 @@ export default {
     },
     excludedMembers (_val) {
       this.srPromise = this.getMembers(this.tenantId)
+    },
+    value (val) {
+      if (typeof val === 'undefined' || val === null) {
+        this.selectedItem = val
+      }
     }
   },
   methods: {

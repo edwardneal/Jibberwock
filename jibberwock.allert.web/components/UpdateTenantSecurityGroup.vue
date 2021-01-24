@@ -31,17 +31,10 @@
             </v-row>
 
             <v-row>
-              <v-col cols="12">
-                CHANGE THE GROUP MEMBERSHIP API AND DATA MODEL, INDICATING WHETHER IT'S A PROPER USER OR AN INVITATION
-              </v-col>
-            </v-row>
-
-            <v-row>
               <v-col cols="12" md="6">
                 <h3 class="text--h4">
                   {{ languageStrings.dialogs.updateTenantSecurityGroup.fields.group.members }}
                 </h3>
-                MEMBERS - WELL-KNOWN GROUPS MUST ALWAYS HAVE AT LEAST ONE ENABLED MEMBERSHIP (NOT AN INVITATION!)
                 <v-data-table :items="updatedSecurityGroup.users" :headers="members.headers">
                   <template v-slot:top>
                     <v-toolbar class="control-toolbar mb-2 flex flex-fill flex-row" flat>
@@ -386,16 +379,14 @@ export default {
       // For a well-known group, a person's group membership can be disabled only if there are other enabled members
       //  (i.e. there must always be at least one enabled member of each group)
       if (this.updatedSecurityGroup.wellKnownGroupType !== null) {
-        // todo: this needs to make sure the users aren't shadow (i.e. invitation) users
-        return (mem.enabled && (this.updatedSecurityGroup.users.some(u => u.user.id !== mem.user.id && u.enabled)))
+        return (mem.enabled && (this.updatedSecurityGroup.users.some(u => u.user.id !== mem.user.id && u.enabled && u.type === 1)))
       } else {
         return (mem.enabled)
       }
     },
-    canRemoveMember (_mem) {
+    canRemoveMember (mem) {
       // A well-known group must always contain at least one member
-      // todo: this needs to make sure the users aren't shadow (i.e. invitation) users
-      return (this.updatedSecurityGroup.wellKnownGroupType === null || this.updatedSecurityGroup.users.length > 1)
+      return (this.updatedSecurityGroup.wellKnownGroupType === null || this.updatedSecurityGroup.users.some(u => u.user.id !== mem.user.id && u.enabled && u.type === 1))
     },
     enableMember (mem) {
       // No need to push this onto the list of updates if it's already on the list of additions - we'll just create it in the right state to begin with

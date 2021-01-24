@@ -61,6 +61,11 @@ export default {
     title: {
       type: String,
       required: true
+    },
+    value: {
+      type: Object,
+      required: false,
+      default: null
     }
   },
   data () {
@@ -71,12 +76,16 @@ export default {
     }
   },
   watch: {
-    // todo: this doesn't get updated when the value is set to null, which looks misleading. This needs to be fixed - it needs to be cleared
     searchInput (filter) {
       this.srPromise = this.getSecurableResources({ tenantId: this.tenantId, filter: '*' + (filter ?? '*') + '*' })
     },
     selectedItem (val) {
       this.$emit('input', val)
+    },
+    value (val) {
+      if (typeof val === 'undefined' || val === null) {
+        this.selectedItem = val
+      }
     }
   },
   methods: {
