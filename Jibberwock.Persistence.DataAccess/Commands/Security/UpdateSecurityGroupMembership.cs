@@ -27,7 +27,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
         [Required]
         public GroupMembership GroupMembership { get; set; }
 
-        public UpdateSecurityGroupMembership(ILogger logger, User performedBy, string connectionId, int serviceId, string comment, GroupMembership groupMembership)
+        public UpdateSecurityGroupMembership(ILogger logger, User performedBy, string connectionId, long serviceId, string comment, GroupMembership groupMembership)
             : base(logger, performedBy, connectionId, serviceId, comment)
         {
             GroupMembership = groupMembership;

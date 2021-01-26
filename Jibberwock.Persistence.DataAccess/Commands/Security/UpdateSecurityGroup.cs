@@ -26,7 +26,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
         [Required]
         public Group Group { get; set; }
 
-        public UpdateSecurityGroup(ILogger logger, User performedBy, string connectionId, int serviceId, string comment, Group group)
+        public UpdateSecurityGroup(ILogger logger, User performedBy, string connectionId, long serviceId, string comment, Group group)
             : base(logger, performedBy, connectionId, serviceId, comment)
         {
             Group = group;

@@ -26,7 +26,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Tenants
         [Required]
         public Tenant Tenant { get; set; }
 
-        public CreateTenant(ILogger logger, User performedBy, string connectionId, int serviceId, string comment, Tenant tenant)
+        public CreateTenant(ILogger logger, User performedBy, string connectionId, long serviceId, string comment, Tenant tenant)
             : base(logger, performedBy, connectionId, serviceId, comment)
         {
             Tenant = tenant;

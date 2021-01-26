@@ -44,7 +44,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Products
         /// </summary>
         public string LatestInvoiceExternalIdentifier { get; set; }
 
-        public SyncSubscriptionsFromBillingProvider(ILogger logger, User performedBy, string connectionId, int serviceId, string comment,
+        public SyncSubscriptionsFromBillingProvider(ILogger logger, User performedBy, string connectionId, long serviceId, string comment,
             IEnumerable<Subscription> subscriptions, SubscriptionStatus? status, string externalIdentifier, string latestInvoiceExternalIdentifier)
             : base(logger, performedBy, connectionId, serviceId, comment)
         {

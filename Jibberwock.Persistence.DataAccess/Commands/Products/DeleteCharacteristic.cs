@@ -26,7 +26,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Products
         [Required]
         public ProductCharacteristic ProductCharacteristic { get; set; }
 
-        public DeleteCharacteristic(ILogger logger, User performedBy, string connectionId, int serviceId, string comment, ProductCharacteristic characteristic)
+        public DeleteCharacteristic(ILogger logger, User performedBy, string connectionId, long serviceId, string comment, ProductCharacteristic characteristic)
             : base(logger, performedBy, connectionId, serviceId, comment)
         {
             ProductCharacteristic = characteristic;

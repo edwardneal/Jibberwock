@@ -38,7 +38,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
         [Required]
         public bool SendAsEmail { get; set; }
 
-        public Notify(ILogger logger, User performedBy, string connectionId, int serviceId, string comment,
+        public Notify(ILogger logger, User performedBy, string connectionId, long serviceId, string comment,
             Notification notification, bool sendAsEmail, IQueueDataSource queueDataSource, string emailQueueName)
             : base(logger, performedBy, connectionId, serviceId, comment)
         {

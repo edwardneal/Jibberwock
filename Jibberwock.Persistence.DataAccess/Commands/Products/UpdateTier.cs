@@ -23,7 +23,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Products
         [Required]
         public Tier Tier { get; set; }
 
-        public UpdateTier(ILogger logger, User performedBy, string connectionId, int serviceId, string comment, Tier tier)
+        public UpdateTier(ILogger logger, User performedBy, string connectionId, long serviceId, string comment, Tier tier)
             : base(logger, performedBy, connectionId, serviceId, comment)
         {
             Tier = tier;

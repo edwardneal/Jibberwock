@@ -16,7 +16,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Auditing
     public abstract class AuditingCommand<TResult, TAuditTrailEntry> : ValidatingCommand<AuditedCommandResult<TResult, TAuditTrailEntry>, IReadWriteDataSource>
         where TAuditTrailEntry : Jibberwock.DataModels.Security.Audit.AuditTrailEntry, new()
     {
-        protected AuditingCommand(ILogger logger, User performedBy, string connectionId, int serviceId, string comment)
+        protected AuditingCommand(ILogger logger, User performedBy, string connectionId, long serviceId, string comment)
             : base(logger)
         {
             PerformedBy = performedBy;

@@ -35,7 +35,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Tenants
         [Required]
         public bool SendAsEmail { get; set; }
 
-        public Invite(ILogger logger, User performedBy, string connectionId, int serviceId, string comment,
+        public Invite(ILogger logger, User performedBy, string connectionId, long serviceId, string comment,
             Invitation invitation, bool sendAsEmail, IQueueDataSource queueDataSource, string emailQueueName,
             string baseUrl)
             : base(logger, performedBy, connectionId, serviceId, comment)

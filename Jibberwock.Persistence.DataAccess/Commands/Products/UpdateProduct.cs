@@ -27,7 +27,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Products
         [Required]
         public Product Product { get; set; }
 
-        public UpdateProduct(ILogger logger, User performedBy, string connectionId, int serviceId, string comment, Product product)
+        public UpdateProduct(ILogger logger, User performedBy, string connectionId, long serviceId, string comment, Product product)
             : base(logger, performedBy, connectionId, serviceId, comment)
         {
             Product = product;

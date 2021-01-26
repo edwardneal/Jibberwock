@@ -24,7 +24,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
         [Required]
         public User User { get; set; }
 
-        public ControlUserAccess(ILogger logger, User performedBy, string connectionId, int serviceId, string comment, User user)
+        public ControlUserAccess(ILogger logger, User performedBy, string connectionId, long serviceId, string comment, User user)
             : base(logger, performedBy, connectionId, serviceId, comment)
         {
             User = user;

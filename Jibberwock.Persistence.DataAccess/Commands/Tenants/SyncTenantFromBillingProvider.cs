@@ -26,7 +26,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Tenants
         [Required]
         public Tenant Tenant { get; set; }
 
-        public SyncTenantFromBillingProvider(ILogger logger, User performedBy, string connectionId, int serviceId, string comment,
+        public SyncTenantFromBillingProvider(ILogger logger, User performedBy, string connectionId, long serviceId, string comment,
             Tenant tenant)
             : base(logger, performedBy, connectionId, serviceId, comment)
         {

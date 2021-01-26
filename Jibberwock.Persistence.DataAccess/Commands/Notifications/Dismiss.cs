@@ -26,7 +26,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
         [Required]
         public Notification Notification { get; set; }
 
-        public Dismiss(ILogger logger, User performedBy, string connectionId, int serviceId, string comment,
+        public Dismiss(ILogger logger, User performedBy, string connectionId, long serviceId, string comment,
             Notification notification)
             : base(logger, performedBy, connectionId, serviceId, comment)
         {

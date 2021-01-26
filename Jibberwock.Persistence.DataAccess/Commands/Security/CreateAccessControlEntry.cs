@@ -28,7 +28,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
         [Required]
         public AccessControlEntry AccessControlEntry { get; set; }
 
-        public CreateAccessControlEntry(ILogger logger, User performedBy, string connectionId, int serviceId, string comment, AccessControlEntry accessControlEntry)
+        public CreateAccessControlEntry(ILogger logger, User performedBy, string connectionId, long serviceId, string comment, AccessControlEntry accessControlEntry)
             : base(logger, performedBy, connectionId, serviceId, comment)
         {
             AccessControlEntry = accessControlEntry;

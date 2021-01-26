@@ -27,7 +27,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Tenants
         [Required]
         public Subscription Subscription { get; set; }
 
-        public Subscribe(ILogger logger, User performedBy, string connectionId, int serviceId, string comment, Subscription subscription)
+        public Subscribe(ILogger logger, User performedBy, string connectionId, long serviceId, string comment, Subscription subscription)
             : base(logger, performedBy, connectionId, serviceId, comment)
         {
             Subscription = subscription;
