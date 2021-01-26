@@ -252,6 +252,93 @@ namespace Jibberwock.Core.API.Controllers.Tenants
         }
 
         /// <summary>
+        /// Creates a single group in this <see cref="Tenant"/>.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="Tenant"/>.</param>
+        /// <param name="group">The <see cref="Group"/> to create.</param>
+        /// <remarks>This requires <see cref="Permission.Change"/> over the <see cref="Tenant"/>. It retrieves all information for the specified <see cref="Group"/>.</remarks>
+        /// <response code="200" nullable="false">A single <see cref="Group"/>, with all fields populated.</response>
+        /// <response code="400" nullable="false">The <paramref name="id"/> parameter was <c>0</c>.</response>
+        /// <response code="401" nullable="false">The <see cref="Tenant"/> is not accessible by the current <see cref="User"/> or does not exist.</response>
+        [Route("{id:int}/groups")]
+        [HttpPost]
+        [ProducesResponseType(typeof(Group), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> CreateSingleTenantSecurityGroup([ResourcePermissions(SecurableResourceType.Tenant, Permission.Change)] long id, [FromBody] Group group)
+        {
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(id)); }
+            if (group == null)
+            { ModelState.AddModelError(ErrorResponses.MissingBody, string.Empty); }
+            if (string.IsNullOrWhiteSpace(group.Name))
+            { ModelState.AddModelError(ErrorResponses.MissingGroupName, string.Empty); }
+
+            if (group.Users != null)
+            {
+                var memberships = group.Users.ToArray();
+
+                for (int i = 0; i < memberships.Length; i++)
+                {
+                    var groupMembership = memberships[i];
+
+                    if (groupMembership == null)
+                    { ModelState.AddModelError(ErrorResponses.MissingBody, $"users[{i}]"); }
+                    if (groupMembership.User == null)
+                    { ModelState.AddModelError(ErrorResponses.MissingBody, $"users[{i}].user"); }
+                    if (groupMembership.User.Id == 0)
+                    { ModelState.AddModelError(ErrorResponses.InvalidId, $"users[{i}].user.id"); }
+                }
+            }
+
+            if (group.AccessControlEntries != null)
+            {
+                var accessControlEntries = group.AccessControlEntries.ToArray();
+
+                for(int i = 0; i < accessControlEntries.Length; i++)
+                {
+                    var accessControlEntry = accessControlEntries[i];
+
+                    if (accessControlEntry == null)
+                    { ModelState.AddModelError(ErrorResponses.MissingBody, $"accessControlEntries[{i}]"); }
+                    if (accessControlEntry.Resource == null)
+                    { ModelState.AddModelError(ErrorResponses.MissingBody, $"accessControlEntries[{i}].resource"); }
+                    if (accessControlEntry.Resource.Id == 0)
+                    { ModelState.AddModelError(ErrorResponses.InvalidId, $"accessControlEntries[{i}].resource.id"); }
+                }
+            }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var groupToCreate = new Group()
+            {
+                Name = group.Name,
+                Users = group.Users?.Select(gm => new GroupMembership()
+                {
+                    User = new User() { Id = gm.User.Id },
+                    Enabled = gm.Enabled
+                }).ToArray(),
+                AccessControlEntries = group.AccessControlEntries?.Select(ace => new AccessControlEntry()
+                {
+                    Resource = ace.Resource,
+                    Permission = ace.Permission
+                }),
+                Tenant = new Tenant() { Id = id }
+            };
+
+            var currUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            var createGroupCommand = new Jibberwock.Persistence.DataAccess.Commands.Security.CreateSecurityGroup(Logger, currUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, null, groupToCreate);
+            var createdGroup = await createGroupCommand.Execute(SqlServerDataSource);
+
+            if (createdGroup?.Result != null)
+            { return Ok(createdGroup.Result); }
+            else
+            { return NotFound(); }
+        }
+
+        /// <summary>
         /// Gets the details of a single group in this <see cref="Tenant"/>.
         /// </summary>
         /// <param name="id">The ID of the <see cref="Tenant"/>.</param>
