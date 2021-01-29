@@ -56,12 +56,20 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
 
             Group.Id = creationParameters.Get<long>("Security_Group_ID");
 
+            provisionalAuditTrailEntry.Group = Group;
+            provisionalAuditTrailEntry.NewGroup = true;
+
+            return Group;
+        }
+
+        protected override async Task OnCommandCompleted(IReadWriteDataSource dataSource, ModifyGroup auditTrailEntry, Group result)
+        {
             if (Group.Users != null)
             {
-                foreach(var mem in Group.Users)
+                foreach (var mem in Group.Users)
                 {
                     var createMembershipCommand = new CreateSecurityGroupMembership(Logger, PerformedBy, ConnectionId, OriginatingService.Id, Comment,
-                        new GroupMembership() { Group = Group, User = mem.User, Enabled = mem.Enabled } );
+                        new GroupMembership() { Group = Group, User = mem.User, Enabled = mem.Enabled });
 
                     await createMembershipCommand.Execute(dataSource);
                 }
@@ -69,7 +77,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
 
             if (Group.AccessControlEntries != null)
             {
-                foreach(var ace in Group.AccessControlEntries)
+                foreach (var ace in Group.AccessControlEntries)
                 {
                     var createACECommand = new CreateAccessControlEntry(Logger, PerformedBy, ConnectionId, OriginatingService.Id, Comment,
                         new AccessControlEntry() { Group = Group, Permission = ace.Permission, Resource = ace.Resource });
@@ -77,11 +85,6 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Security
                     await createACECommand.Execute(dataSource);
                 }
             }
-
-            provisionalAuditTrailEntry.Group = Group;
-            provisionalAuditTrailEntry.NewGroup = true;
-
-            return Group;
         }
     }
 }

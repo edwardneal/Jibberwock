@@ -90,6 +90,7 @@
                         :language-strings="languageStrings"
                         :tenant-id="tenantId"
                         :title="languageStrings.dialogs.updateTenantSecurityGroup.fields.accessControlEntry.resourceName"
+                        :disabled="updatedSecurityGroup.wellKnownGroupType !== null"
                         class="pr-2"
                       />
 
@@ -97,6 +98,7 @@
                         v-model="accessControlEntries.entryToAdd.permission"
                         :items="languageStrings.dropdownValues.permission.filter(p => p.allowAdd)"
                         :label="languageStrings.dialogs.updateTenantSecurityGroup.fields.accessControlEntry.permission"
+                        :disabled="updatedSecurityGroup.wellKnownGroupType !== null"
                         item-text="label"
                         item-value="id"
                         hide-details

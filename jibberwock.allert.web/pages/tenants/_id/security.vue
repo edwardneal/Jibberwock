@@ -38,7 +38,7 @@
         </v-col>
         <v-col cols="12" md="7">
           <v-card>
-            <v-tabs>
+            <v-tabs v-model="currentTab">
               <v-tab>{{ languageStrings.pages.tenant_security.tabs.invitations }}</v-tab>
               <v-tab>{{ languageStrings.pages.tenant_security.tabs.users }}</v-tab>
               <v-tab>{{ languageStrings.pages.tenant_security.tabs.roles }}</v-tab>
@@ -65,7 +65,7 @@
                 </v-card>
               </v-tab-item>
               <v-tab-item>
-                <TenantSecurityGroupList :language-strings="languageStrings" :tenant-id="tenant.id" />
+                <TenantSecurityGroupList :language-strings="languageStrings" :tenant-id="tenant.id" @invitation="currentTab = 0" />
               </v-tab-item>
             </v-tabs>
           </v-card>
@@ -104,7 +104,8 @@ export default {
     return {
       tenant: {
         id: this.$route.params.id
-      }
+      },
+      currentTab: 0
     }
   },
   computed: {

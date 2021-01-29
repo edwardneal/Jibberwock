@@ -94,7 +94,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Tenants
             return Invitation;
         }
 
-        protected override async Task OnCommandCompleted(InviteUser auditTrailEntry, Invitation result)
+        protected override async Task OnCommandCompleted(IReadWriteDataSource dataSource, InviteUser auditTrailEntry, Invitation result)
         {
             var emailQueueClient = SendAsEmail ? _queueDataSource.GetQueueClient(_emailQueueName) : null;
 

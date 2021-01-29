@@ -4,6 +4,7 @@
       <v-autocomplete
         v-if="! error"
         v-model="selectedItem"
+        v-bind="$attrs"
         :items="typeof data !== 'undefined' && data !== null ? data : []"
         :loading="isPending"
         :label="title"

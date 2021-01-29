@@ -120,7 +120,7 @@ namespace Jibberwock.Persistence.DataAccess.Commands.Notifications
             return Notification;
         }
 
-        protected override async Task OnCommandCompleted(ModifyNotification auditTrailEntry, Notification result)
+        protected override async Task OnCommandCompleted(IReadWriteDataSource dataSource, ModifyNotification auditTrailEntry, Notification result)
         {
             if (result.EmailBatch != null)
             {

@@ -3,6 +3,7 @@
     <template v-slot:combined="{ isPending, error, data }">
       <v-autocomplete
         v-model="selectedValue"
+        v-bind="$attrs"
         :items="typeof data != 'undefined' && data !== null && data.data !== null ? data.data : []"
         :loading="isPending"
         :label="label"

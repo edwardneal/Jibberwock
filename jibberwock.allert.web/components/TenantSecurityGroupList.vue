@@ -12,10 +12,10 @@
       </v-row>
       <v-row>
         <v-col cols="12" md="6">
-          <PromisedTable :language-strings="languageStrings" :headers="securityGroups.headers" :populate-function="securityGroups.populate" ref="groupList" @selection-changed="updateSelectedSecurityGroup">
+          <PromisedTable ref="groupList" :language-strings="languageStrings" :headers="securityGroups.headers" :populate-function="securityGroups.populate" @selection-changed="updateSelectedSecurityGroup">
             <template v-slot:toolbar-actions="{ shouldDisable }">
               <v-toolbar-items>
-                <v-btn :disabled="shouldDisable" class="pl-3" color="success">
+                <v-btn :disabled="shouldDisable" class="pl-3" color="success" @click="showCreateForm">
                   <v-icon left>
                     mdi-plus
                   </v-icon>
@@ -147,6 +147,15 @@
             :security-group="securityGroups.updateForm.groupToEdit"
             :visible.sync="securityGroups.updateForm.visible"
             @update-security-group="handleGroupUpdate"
+            @invitation="$emit('invitation')"
+          />
+
+          <CreateTenantSecurityGroup
+            :language-strings="languageStrings"
+            :tenant-id="tenantId"
+            :security-group="securityGroups.createForm.groupToCreate"
+            :visible.sync="securityGroups.createForm.visible"
+            @created-security-group="handleGroupCreation"
           />
 
           <ProgressDialog
@@ -168,6 +177,7 @@ import { Promised } from 'vue-promised'
 import PromisedTable from '~/components/PromisedTable.vue'
 import ProgressDialog from '~/components/ProgressDialog.vue'
 import UpdateTenantSecurityGroup from '~/components/UpdateTenantSecurityGroup.vue'
+import CreateTenantSecurityGroup from '~/components/CreateTenantSecurityGroup.vue'
 import { groupBy } from '~/utility/collections'
 
 export default {
@@ -175,7 +185,8 @@ export default {
     PromisedTable,
     Promised,
     ProgressDialog,
-    UpdateTenantSecurityGroup
+    UpdateTenantSecurityGroup,
+    CreateTenantSecurityGroup
   },
   props: {
     languageStrings: {
@@ -204,7 +215,11 @@ export default {
           visible: false,
           groupToEdit: null
         },
-        deletionProgressFactory: null
+        deletionProgressFactory: null,
+        createForm: {
+          visible: false,
+          groupToCreate: null
+        }
       }
     }
   },
@@ -262,6 +277,9 @@ export default {
       this.securityGroups.updateForm.groupToEdit.tenant = group.tenant
       this.securityGroups.updateForm.groupToEdit.accessControlEntries = group.accessControlEntries
     },
+    handleGroupCreation (_group) {
+      this.$refs.groupList.refresh()
+    },
     showDeleteConfirmation (group) {
       this.securityGroups.deletionProgressFactory = () => this.removeSingleTenantSecurityGroup({
         tenantId: this.tenantId,
@@ -271,6 +289,9 @@ export default {
           this.$refs.groupList.refresh()
         }
       })
+    },
+    showCreateForm () {
+      this.securityGroups.createForm.visible = true
     }
   }
 }
