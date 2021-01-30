@@ -11,6 +11,7 @@ export default {
   validationErrorMessages: {
     unableToLoadAvailableProductList: 'We can\'t download the list of available products right now. You can still create a tenant, but will need to enable the Allert functionality later.',
     unableToCompleteAction: 'Unable to complete this action, please try again later.',
+    unableToLoadRecords: 'Unable to refresh this table right now, please try again later.',
     invalidEmailAddress: 'Please provide a valid email address.',
     noName: 'Please provide a name.',
     nameTooLong: 'This name is too long. Please provide a shorter name.',
@@ -58,7 +59,8 @@ export default {
     edit: 'Edit',
     update: 'Update',
     cancel: 'Cancel',
-    invite: 'Invite'
+    invite: 'Invite',
+    revoke: 'Revoke'
   },
   dialogs: {
     updateTenantSecurityGroup: {
@@ -227,6 +229,16 @@ export default {
           },
           confirmations: {
             delete: 'Are you sure you want to delete this group?'
+          }
+        },
+        invitations: {
+          headings: {
+            emailAddress: 'Email Address',
+            invitationDate: 'Invitation Date',
+            expirationDate: 'Expiration Date'
+          },
+          confirmations: {
+            revoke: 'Are you sure you want to revoke this invitation?'
           }
         }
       }

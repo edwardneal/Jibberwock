@@ -44,15 +44,7 @@
               <v-tab>{{ languageStrings.pages.tenant_security.tabs.roles }}</v-tab>
 
               <v-tab-item>
-                <v-card>
-                  <v-card-text>
-                    {{ languageStrings.pages.tenant_security.tabs.invitations }}
-                  </v-card-text>
-                  <v-card-text>
-                    INVITE BUTTON. CREATE INVITATION API CALL.
-                    LIST OF INVITATIONS. ABILITY TO REVOKE AN INVITATION.
-                  </v-card-text>
-                </v-card>
+                <InvitationList :language-strings="languageStrings" :tenant-id="tenant.id" />
               </v-tab-item>
               <v-tab-item>
                 <v-card>
@@ -89,10 +81,12 @@
 <script>
 import { mapActions } from 'vuex'
 import TenantSecurityGroupList from '~/components/TenantSecurityGroupList.vue'
+import InvitationList from '~/components/InvitationList.vue'
 
 export default {
   components: {
-    TenantSecurityGroupList
+    TenantSecurityGroupList,
+    InvitationList
   },
   props: {
     languageStrings: {

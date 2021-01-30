@@ -1,14 +1,12 @@
 <template>
   <Promised :promise="internalPromise">
     <template v-slot:combined="{ isPending, error, data }">
-      <v-data-table
-        v-model="selectedRecords"
-        show-select
-        single-select
-        :headers="headers"
-        :loading="started && isPending"
-        :items="started && !isPending && error === null ? data.data : undefined"
-      >
+      <v-data-table v-model="selectedRecords"
+                    :show-select="selectable"
+                    :single-select="selectable"
+                    :headers="headers"
+                    :loading="started && isPending"
+                    :items="started && !isPending && error === null ? data.data : undefined">
         <template v-slot:top>
           <v-alert v-if="error !== null" dense dismissible outlined type="error">
             <v-tooltip bottom>
@@ -49,6 +47,9 @@
         <template v-slot:item._actions="{ item }">
           <slot name="item-actions" v-bind="{ item }" />
         </template>
+        <template v-for="slotName in Object.getOwnPropertyNames($scopedSlots).filter(pN => pN.toLowerCase().startsWith('item.'))" v-slot:[slotName]="{ item }">
+          <slot :name="slotName" v-bind="{ item }" />
+        </template>
       </v-data-table>
     </template>
   </Promised>
@@ -80,6 +81,11 @@ export default {
     populateFunction: {
       type: Function,
       required: true
+    },
+    selectable: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   },
   data () {

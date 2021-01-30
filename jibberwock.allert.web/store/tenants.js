@@ -7,7 +7,9 @@ export const state = () => ({
     getTenant: baseUrl + '/tenant/{id}',
     getTenantSecurityGroups: baseUrl + '/tenant/{id}/groups',
     getTenantSecurableResources: baseUrl + '/tenant/{id}/securableresources?filter={filter}',
-    getTenantMembers: baseUrl + '/tenant/{id}/members'
+    getTenantMembers: baseUrl + '/tenant/{id}/members',
+    getTenantInvitations: baseUrl + '/tenant/{id}/invitations',
+    invite: baseUrl + '/tenant/{id}/invitations'
   },
   tenants: []
 })
@@ -49,5 +51,15 @@ export const actions = {
     const getTenantMembersUrl = state.urls.getTenantMembers.replace('{id}', encodeURIComponent(tenantId))
 
     return this.$axios.get(getTenantMembersUrl)
+  },
+  getTenantInvitations ({ state }, tenantId) {
+    const getTenantInvitationsUrl = state.urls.getTenantInvitations.replace('{id}', encodeURIComponent(tenantId))
+
+    return this.$axios.get(getTenantInvitationsUrl)
+  },
+  invite ({ state }, { tenantId, invitation }) {
+    const inviteUrl = state.urls.invite.replace('{id}', encodeURIComponent(tenantId))
+
+    return this.$axios.post(inviteUrl, invitation)
   }
 }
