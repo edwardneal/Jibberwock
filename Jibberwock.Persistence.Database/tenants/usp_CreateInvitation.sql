@@ -34,8 +34,8 @@ BEGIN
 
 		-- This is actually a transient user account. It's only used in order to let people
 		-- control group membership in the time between invitation issuance and acceptance.
-		insert into [security].[User] ([Name], [Email_Address], [Enabled])
-		values ('(pending invitation)', @Email_Address, 0)
+		insert into [security].[User] ([Name], [Email_Address], [Enabled], [Type_ID])
+		values ('(pending invitation)', @Email_Address, 0, 2)
 
 		set @userId = SCOPE_IDENTITY()
 		-- Fold this user into the Tenant Members security group
