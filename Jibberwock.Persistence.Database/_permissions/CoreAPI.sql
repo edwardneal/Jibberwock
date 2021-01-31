@@ -159,3 +159,6 @@ GO
 
 GRANT EXECUTE ON [security].[usp_DeleteSecurityGroup] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [tenants].[usp_GetInvitationsByTenant] TO [CoreAPI]
+GO

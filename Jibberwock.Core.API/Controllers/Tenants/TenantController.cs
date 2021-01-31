@@ -707,5 +707,30 @@ namespace Jibberwock.Core.API.Controllers.Tenants
 
             return Ok(membersGroup.Users);
         }
+
+        /// <summary>
+        /// Gets all invitations to this <see cref="Tenant"/>.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="Tenant"/>.</param>
+        /// <remarks>This requires <see cref="Permission.Read"/> over the <see cref="Tenant"/>..</remarks>
+        /// <response code="200" nullable="false">A set of <see cref="Invitation"/> instances.</response>
+        /// <response code="401" nullable="false">The <see cref="Tenant"/> is not accessible by the current <see cref="User"/> or does not exist.</response>
+        [Route("{id:int}/invitations")]
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Invitation>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetTenantInvitations([ResourcePermissions(SecurableResourceType.Tenant, Permission.Read)] long id)
+        {
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(id)); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var getInvitationsCommand = new Jibberwock.Persistence.DataAccess.Commands.Tenants.GetInvitationsByTenant(Logger, new Tenant() { Id = id }, false);
+            var invitations = await getInvitationsCommand.Execute(SqlServerDataSource);
+
+            return Ok(invitations);
+        }
     }
 }
