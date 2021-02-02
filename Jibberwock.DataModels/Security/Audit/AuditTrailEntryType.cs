@@ -80,6 +80,10 @@ namespace Jibberwock.DataModels.Security.Audit
         /// <summary>
         /// Entry is a <see cref="Jibberwock.DataModels.Security.Audit.EntryTypes.DeleteGroup"/> record.
         /// </summary>
-        DeleteGroup = 18
+        DeleteGroup = 18,
+        /// <summary>
+        /// Entry is a <see cref="Jibberwock.DataModels.Security.Audit.EntryTypes.RevokeInvitation"/> record.
+        /// </summary>
+        RevokeInvitation = 19
     }
 }

@@ -8,9 +8,6 @@
             To invite somebody, you need to provide an email address and to describe how they'll sign in (via Google, Microsoft or GitHub accounts, or using a "local" Allert username.)
             They will then receive an email address inviting them to log in, and when they log in they will be able to accept or reject their invitation.
           </p>
-          <p>
-            APIS TO INVITE, REVOKE INVITATION
-          </p>
         </v-col>
       </v-row>
       <v-row>
@@ -205,7 +202,9 @@ export default {
       })
     },
     showRevokeConfirmation (invitation) {
-      this.invitations.revocationProgressFactory = () => this.revokeInvitation({ tenantId: this.tenant.id, invitationId: invitation.id })
+      this.invitations.revocationProgressFactory = () =>
+        this.revokeInvitation({ tenantId: this.tenant.id, invitationId: invitation.id })
+          .then(() => this.$refs.invitationList.refresh())
     }
   }
 }

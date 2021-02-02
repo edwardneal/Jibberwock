@@ -9,7 +9,8 @@ export const state = () => ({
     getTenantSecurableResources: baseUrl + '/tenant/{id}/securableresources?filter={filter}',
     getTenantMembers: baseUrl + '/tenant/{id}/members',
     getTenantInvitations: baseUrl + '/tenant/{id}/invitations',
-    invite: baseUrl + '/tenant/{id}/invitations'
+    invite: baseUrl + '/tenant/{id}/invitations',
+    revokeTenantInvitation: baseUrl + '/tenant/{id}/invitations/{invitationId}'
   },
   tenants: []
 })
@@ -65,5 +66,10 @@ export const actions = {
       sendEmail: process.env.NODE_ENV === 'production',
       loginRedirectUrl: window.location.origin
     })
+  },
+  revokeTenantInvitation ({ state }, { tenantId, invitationId }) {
+    const revokeTenantInvitationUrl = state.urls.revokeTenantInvitation.replace('{id}', encodeURIComponent(tenantId)).replace('{invitationId}', encodeURIComponent(invitationId))
+
+    return this.$axios.delete(revokeTenantInvitationUrl)
   }
 }

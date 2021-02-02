@@ -775,5 +775,39 @@ namespace Jibberwock.Core.API.Controllers.Tenants
             else
             { return Ok(auditedInvitation.Result); }
         }
+
+        /// <summary>
+        /// Revokes a single invitation to this <see cref="Tenant"/>.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="Tenant"/>.</param>
+        /// <param name="invitationId">The ID of the <see cref="Invitation"/>.</param>
+        /// <remarks>This requires <see cref="Permission.Invite"/> over the <see cref="Tenant"/>.</remarks>
+        /// <response code="200" nullable="false">This <see cref="Invitation"/> has been revoked.</response>
+        /// <response code="400" nullable="false">The <paramref name="id"/> or <paramref name="invitationId"/> parameter was <c>0</c>.</response>
+        /// <response code="401" nullable="false">The <see cref="Tenant"/> is not accessible by the current <see cref="User"/> or does not exist.</response>
+        [Route("{id:int}/invitations/{invitationId:int}")]
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> RevokeSingleInvitation([ResourcePermissions(SecurableResourceType.Tenant, Permission.Invite)] long id, long invitationId)
+        {
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(id)); }
+            if (invitationId == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(invitationId)); }
+
+            if (!ModelState.IsValid)
+            { return BadRequest(ModelState); }
+
+            var currUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            var revokeInvitationCommand = new Jibberwock.Persistence.DataAccess.Commands.Tenants.RevokeInvitation(Logger, currUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, string.Empty,
+                new Invitation() { Id = invitationId, Tenant = new Tenant() { Id = id } });
+
+            await revokeInvitationCommand.Execute(SqlServerDataSource);
+
+            return Ok();
+        }
     }
 }

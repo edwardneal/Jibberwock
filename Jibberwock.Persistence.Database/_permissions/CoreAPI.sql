@@ -162,3 +162,6 @@ GO
 
 GRANT EXECUTE ON [tenants].[usp_GetInvitationsByTenant] TO [CoreAPI]
 GO
+
+GRANT EXECUTE ON [tenants].[usp_RevokeInvitation] TO [CoreAPI]
+GO

@@ -187,6 +187,7 @@
     <Build Include="security\UserType.sql" />
     <Build Include="security\usp_DeleteSecurityGroup.sql" />
     <Build Include="tenants\usp_GetInvitationsByTenant.sql" />
+    <Build Include="tenants\usp_RevokeInvitation.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment.sql" />

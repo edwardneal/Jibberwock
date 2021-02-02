@@ -69,3 +69,7 @@ if 17 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
 if 18 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
 	insert into [security].[AuditTrailType] ([Audit_Trail_Type_ID], [Name])
 	values (18, 'delete_group')
+
+if 19 not in (select [Audit_Trail_Type_ID] from [security].[AuditTrailType])
+	insert into [security].[AuditTrailType] ([Audit_Trail_Type_ID], [Name])
+	values (19, 'revoke_invitation')
