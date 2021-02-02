@@ -318,7 +318,7 @@ export default {
       invitationToAdd: {
         emailAddress: '',
         identityProvider: 'google.com',
-        sendEmail: true,
+        sendEmail: process.env.NODE_ENV === 'production',
         loginRedirectUrl: window.location.origin
       },
       stripeState: {

@@ -60,6 +60,10 @@ export const actions = {
   invite ({ state }, { tenantId, invitation }) {
     const inviteUrl = state.urls.invite.replace('{id}', encodeURIComponent(tenantId))
 
-    return this.$axios.post(inviteUrl, invitation)
+    return this.$axios.post(inviteUrl, {
+      ...invitation,
+      sendEmail: process.env.NODE_ENV === 'production',
+      loginRedirectUrl: window.location.origin
+    })
   }
 }

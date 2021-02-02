@@ -9,7 +9,7 @@
             They will then receive an email address inviting them to log in, and when they log in they will be able to accept or reject their invitation.
           </p>
           <p>
-            APIS TO LIST TENANT INVITATIONS, INVITE, REVOKE INVITATION
+            APIS TO INVITE, REVOKE INVITATION
           </p>
         </v-col>
       </v-row>

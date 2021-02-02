@@ -732,5 +732,48 @@ namespace Jibberwock.Core.API.Controllers.Tenants
 
             return Ok(invitations);
         }
+
+        /// <summary>
+        /// Invites a single user account to this <see cref="Tenant"/>.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="Tenant"/>.</param>
+        /// <param name="invitation">The information needed to invite somebody to the <see cref="Tenant"/>.</param>
+        /// <remarks>This requires <see cref="Permission.Invite"/> over the <see cref="Tenant"/>. It retrieves top-level information for the specified <see cref="Invitation"/>.</remarks>
+        /// <response code="200" nullable="false">A single <see cref="Invitation"/>.</response>
+        /// <response code="400" nullable="false">The <paramref name="id"/> parameter was <c>0</c>.</response>
+        /// <response code="401" nullable="false">The <see cref="Tenant"/> is not accessible by the current <see cref="User"/> or does not exist.</response>
+        [Route("{id:int}/invitations")]
+        [HttpPost]
+        [ProducesResponseType(typeof(AccessControlEntry), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> InviteSingleUser([ResourcePermissions(SecurableResourceType.Tenant, Permission.Invite)] long id, [FromBody] InvitationRequest invitation)
+        {
+            if (id == 0)
+            { ModelState.AddModelError(ErrorResponses.InvalidId, nameof(id)); }
+
+            if (invitation == null)
+            { ModelState.AddModelError(ErrorResponses.MissingBody, string.Empty); }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(invitation.EmailAddress))
+                { ModelState.AddModelError(ErrorResponses.MissingInvitationEmailAddress, string.Empty); }
+                if (string.IsNullOrWhiteSpace(invitation.IdentityProvider))
+                { ModelState.AddModelError(ErrorResponses.MissingInvitationIdentityProvider, string.Empty); }
+            }
+
+            var currUser = await CurrentUserRetriever.GetCurrentUserAsync();
+            var inviteUserCommand = new Jibberwock.Persistence.DataAccess.Commands.Tenants.Invite(Logger, currUser, HttpContext.TraceIdentifier, WebApiConfiguration.Authorization.DefaultServiceId, null,
+                    new Invitation() { EmailAddress = invitation.EmailAddress, ExternalIdentityProvider = invitation.IdentityProvider, Tenant = new Tenant() { Id = id } }, invitation.SendEmail,
+                    _queueDataSource, WebApiConfiguration.ServiceBus.Queues.Notifications, invitation.LoginRedirectUrl);
+
+            var auditedInvitation = await inviteUserCommand.Execute(SqlServerDataSource);
+
+            if (auditedInvitation?.Result == null)
+            { return NotFound(); }
+            else
+            { return Ok(auditedInvitation.Result); }
+        }
     }
 }
